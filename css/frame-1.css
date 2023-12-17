@@ -1,0 +1,183 @@
+/* screen - frame-1 */
+
+@font-face {
+  font-family: 'arm-reg';
+  src: url('fonts/AdelleSansARM-Regular.otf');
+}
+
+.frame-1 {
+  align-items: flex-start;
+  background-color: var(--coloursecondarywhite-100-general);
+  display: flex;
+  height: 700px;
+  width: 1440px;
+}
+
+.frame-1 .overlap-group3 {
+  height: 85vh;
+  margin-left: -133px;
+  margin-top: -154px;
+  position: relative;
+  width: 1573px;
+}
+
+.frame-1 .rectangle-137 {
+  background-color: var(--logo-color);
+  height: 900px;
+  left: 133px;
+  position: absolute;
+  top: 154px;
+  width: 1440px;
+}
+
+.frame-1 .group-79 {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 85px;
+  left: 228px;
+  min-height: 608px;
+  position: absolute;
+  top: 175px;
+  width: 1300px;
+}
+
+.frame-1 .overlap-group2 {
+  position: relative;
+  margin-top: 25px;
+  align-items: flex-start;
+  background-color: var(--coloursecondarywhite-100-general);
+  display: flex;
+  height: 70px;
+  min-width: 70px;
+  padding: 24px;
+}
+
+.frame-1 .ellipse-1 {
+  background-color: var(--logo-color);
+  border-radius: 10.64px;
+  height: 21px;
+  width: 21px;
+}
+
+.frame-1 .group-81 {
+  align-items: flex-start;
+  display: flex;
+  gap: 39px;
+  margin-right: 3px;
+  min-width: 1297px;
+}
+
+.frame-1 .overlap-group {
+  height: 453px;
+  position: relative;
+  width: 625px;
+}
+
+.frame-1 .armenian-record-arch {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-extra-b';
+  font-size: 36.3px;
+  font-weight: 800;
+  height: 175px;
+  left: 0;
+  letter-spacing: 0.68px;
+  line-height: 41.3px;
+  position: absolute;
+  top: 0;
+  width: 625px;
+}
+
+.frame-1 .flex-container-515 {
+  gap: 9.14px;
+  height: 290px;
+  left: 0;
+  position: absolute;
+  top: 163px;
+  width: 545px;
+}
+
+.frame-1 .text {
+  align-self: stretch;
+  letter-spacing: 0;
+  line-height: 35px;
+  position: relative;
+}
+
+.frame-1 .flex-container-517 {
+  gap: 9.14px;
+  height: 325px;
+  left: 0;
+  position: absolute;
+  top: 128px;
+  width: 609px;
+}
+
+.frame-1 .group-80 {
+  align-items: flex-start;
+  display: flex;
+  height: 60px;
+  left: 883px;
+  min-width: 533px;
+  position: absolute;
+  top: 243px;
+}
+
+.frame-1 .flex-container-58 {
+  gap: 8.14px;
+  height: 60px;
+  position: relative;
+  width: 137px;
+}
+
+.frame-1 .text-1 {
+  align-self: stretch;
+  letter-spacing: 0.68px;
+  line-height: 6.8px;
+  position: relative;
+}
+
+.frame-1 .flex-container-59 {
+  gap: 8.14px;
+  height: 60px;
+  margin-left: 8px;
+  position: relative;
+  width: 119px;
+}
+
+.frame-1 .flex-container-57 {
+  gap: 8.14px;
+  height: 60px;
+  margin-left: 20px;
+  position: relative;
+  width: 125px;
+}
+
+.frame-1 .flex-container-56 {
+  gap: 8.14px;
+  height: 60px;
+  margin-left: 15px;
+  position: relative;
+  width: 101px;
+}
+
+.frame-1 .full-page-armenian {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'Fit-variable';
+  font-size: 94.4px;
+  font-weight: 400;
+  height: 494px;
+  left: -25px;
+  letter-spacing: 0.68px;
+  line-height: 78.4px;
+  position: absolute;
+  text-align: center;
+  top: -15px;
+  left: 222.5px;
+}
+
+.frame-1 .flex-container {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+}
