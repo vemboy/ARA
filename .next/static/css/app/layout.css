@@ -1,0 +1,1213 @@
+/*!*****************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[3]!./src/app/globals.css ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************/
+/* screen - frame-1 */
+
+@font-face {
+  font-family: 'arm-reg';
+  src: url(/_next/static/media/AdelleSansARM-Regular.ca1eab24.otf);
+}
+
+.frame-1 {
+  align-items: flex-start;
+  background-color: var(--coloursecondarywhite-100-general);
+  display: flex;
+  height: 700px;
+  width: 1440px;
+}
+
+.frame-1 .overlap-group3 {
+  height: 85vh;
+  margin-left: -133px;
+  margin-top: -154px;
+  position: relative;
+  width: 1573px;
+}
+
+.frame-1 .rectangle-137 {
+  background-color: var(--logo-color);
+  height: 900px;
+  left: 133px;
+  position: absolute;
+  top: 154px;
+  width: 1440px;
+}
+
+.frame-1 .group-79 {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 85px;
+  left: 228px;
+  min-height: 608px;
+  position: absolute;
+  top: 175px;
+  width: 1300px;
+}
+
+.frame-1 .overlap-group2 {
+  position: relative;
+  margin-top: 25px;
+  align-items: flex-start;
+  background-color: var(--coloursecondarywhite-100-general);
+  display: flex;
+  height: 70px;
+  min-width: 70px;
+  padding: 24px;
+}
+
+.frame-1 .ellipse-1 {
+  background-color: var(--logo-color);
+  border-radius: 10.64px;
+  height: 21px;
+  width: 21px;
+}
+
+.frame-1 .group-81 {
+  align-items: flex-start;
+  display: flex;
+  gap: 39px;
+  margin-right: 3px;
+  min-width: 1297px;
+}
+
+.frame-1 .overlap-group {
+  height: 453px;
+  position: relative;
+  width: 625px;
+}
+
+.frame-1 .armenian-record-arch {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-extra-b';
+  font-size: 36.3px;
+  font-weight: 800;
+  height: 175px;
+  left: 0;
+  letter-spacing: 0.68px;
+  line-height: 41.3px;
+  position: absolute;
+  top: 0;
+  width: 625px;
+}
+
+.frame-1 .flex-container-515 {
+  gap: 9.14px;
+  height: 290px;
+  left: 0;
+  position: absolute;
+  top: 163px;
+  width: 545px;
+}
+
+.frame-1 .text {
+  align-self: stretch;
+  letter-spacing: 0;
+  line-height: 35px;
+  position: relative;
+}
+
+.frame-1 .flex-container-517 {
+  gap: 9.14px;
+  height: 325px;
+  left: 0;
+  position: absolute;
+  top: 128px;
+  width: 609px;
+}
+
+.frame-1 .group-80 {
+  align-items: flex-start;
+  display: flex;
+  height: 60px;
+  left: 883px;
+  min-width: 533px;
+  position: absolute;
+  top: 243px;
+}
+
+.frame-1 .flex-container-58 {
+  gap: 8.14px;
+  height: 60px;
+  position: relative;
+  width: 137px;
+}
+
+.frame-1 .text-1 {
+  align-self: stretch;
+  letter-spacing: 0.68px;
+  line-height: 6.8px;
+  position: relative;
+}
+
+.frame-1 .flex-container-59 {
+  gap: 8.14px;
+  height: 60px;
+  margin-left: 8px;
+  position: relative;
+  width: 119px;
+}
+
+.frame-1 .flex-container-57 {
+  gap: 8.14px;
+  height: 60px;
+  margin-left: 20px;
+  position: relative;
+  width: 125px;
+}
+
+.frame-1 .flex-container-56 {
+  gap: 8.14px;
+  height: 60px;
+  margin-left: 15px;
+  position: relative;
+  width: 101px;
+}
+
+.frame-1 .full-page-armenian {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'Fit-variable';
+  font-size: 94.4px;
+  font-weight: 400;
+  height: 494px;
+  left: -25px;
+  letter-spacing: 0.68px;
+  line-height: 78.4px;
+  position: absolute;
+  text-align: center;
+  top: -15px;
+  left: 222.5px;
+}
+
+.frame-1 .flex-container {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+}
+
+
+:root { 
+  --black: #000000;
+  --cloud: #c4c4c4;
+  --colourmaingrey100: #e9ebec;
+  --colourmaingrey700: #454e54;
+  --coloursecondarywhite-100-general: #ffffff;
+  --landing-page-text-color: #ffffff;
+  --logo-color: #091133;
+  --red: #cd2032;
+ 
+  --font-size-l: 16.3px;
+  --font-size-m-special: 33px;
+  --font-size-m: 15px;
+  --font-size-s: 10px;
+  --font-size-xl: 19px;
+  --font-size-xxl: 23px;
+  --font-size-xxxl: 29px;
+  --font-size-xxxxl: 33px;
+ 
+  --font-family-adelle_sans_arm-bold: "Adelle Sans ARM-Bold", Helvetica;
+  --font-family-adelle_sans_arm-extrabold: "Adelle Sans ARM-ExtraBold", Helvetica;
+  --font-family-adelle_sans_arm-extrabolditalic: "Adelle Sans ARM-ExtraBoldItalic", Helvetica;
+  --font-family-adelle_sans_arm-heavy: "Adelle Sans ARM-Heavy", Helvetica;
+  --font-family-adelle_sans_arm-heavyitalic: "Adelle Sans ARM-HeavyItalic", Helvetica;
+  --font-family-adelle_sans_arm-light: "Adelle Sans ARM-Light", Helvetica;
+  --font-family-adelle_sans_arm-lightitalic: "Adelle Sans ARM-LightItalic", Helvetica;
+  --font-family-adelle_sans_arm-regular: "Adelle Sans ARM-Regular", Helvetica;
+  --font-family-adelle_sans_arm-semibold: "Adelle Sans ARM-SemiBold", Helvetica;
+  --font-family-fit-regular: "Fit-Regular", Helvetica;
+  --font-family-fit-skyline: "Fit-Skyline", Helvetica;
+  --font-family-fit-wide: "Fit-Wide", Helvetica;
+  --font-family-fit_variable-regular: "Fit Variable-Regular", Helvetica;
+}
+
+@font-face {
+  font-family: 'arm-reg';
+  src: url(/_next/static/media/AdelleSansARM-Regular.ca1eab24.otf);
+}
+
+@font-face {
+  font-family: 'arm-light';
+  src: url(/_next/static/media/AdelleSansARM-Light.a52fa478.otf);
+}
+
+@font-face {
+  font-family: 'arm-extra-b';
+  src: url(/_next/static/media/AdelleSansARM-Extrabold.102dcce0.otf);
+}
+
+@font-face {
+  font-family: 'arm-semi-b';
+  src: url(/_next/static/media/AdelleSansARM-Semibold.1eaf0501.otf);
+}
+
+@font-face {
+  font-family: 'arm-bold';
+  src: url(/_next/static/media/AdelleSansARM-Bold.f3edd9a6.otf);
+}
+
+@font-face {
+  font-family: 'arm-heavy';
+  src: url(/_next/static/media/AdelleSansARM-Heavy.ba1e6b9d.otf);
+}
+
+@font-face {
+    src: url(/_next/static/media/FitVariable-VF.abf9d69b.woff2) format("woff2"),
+         url(/_next/static/media/FitVariable-VF.454c3a77.woff) format("woff");
+    font-family: 'Fit-Variable';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url(/_next/static/media/Fit-Skyline.f0e16d6b.woff2) format("woff2"),
+         url(/_next/static/media/Fit-Skyline.dd0a8c65.woff) format("woff");
+    font-family: 'Fit-Skyline';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url(/_next/static/media/Fit-Compressed.05de7b4b.woff2) format("woff2"),
+         url(/_next/static/media/Fit-Compressed.91b6abf3.woff) format("woff");
+    font-family: 'Fit-Compressed';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url(/_next/static/media/Fit-ExtraCondensed.16fb1d78.woff2) format("woff2"),
+         url(/_next/static/media/Fit-ExtraCondensed.12ea8b4c.woff) format("woff");
+    font-family: 'Fit-ExtraCondensed';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url(/_next/static/media/Fit-Condensed.cfa9fe0a.woff2) format("woff2"),
+         url(/_next/static/media/Fit-Condensed.e468435c.woff) format("woff");
+    font-family: 'Fit-Condensed';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url(/_next/static/media/Fit-Regular.0f5e1605.woff2) format("woff2"),
+         url(/_next/static/media/Fit-Regular.b48bf850.woff) format("woff");
+    font-family: 'Fit';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url(/_next/static/media/Fit-Wide.adbeda5f.woff2) format("woff2"),
+         url(/_next/static/media/Fit-Wide.ed5fceb3.woff) format("woff");
+    font-family: 'Fit-Wide';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url(/_next/static/media/Fit-ExtraWide.b190e32d.woff2) format("woff2"),
+         url(/_next/static/media/Fit-ExtraWide.b43ab9ee.woff) format("woff");
+    font-family: 'Fit-ExtraWide';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url(/_next/static/media/Fit-Extended.2d3a6679.woff2) format("woff2"),
+         url(/_next/static/media/Fit-Extended.7e5b6ee4.woff) format("woff");
+    font-family: 'Fit-Extended';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url(/_next/static/media/Fit-ExtraExtended.36cb03a9.woff2) format("woff2"),
+         url(/_next/static/media/Fit-ExtraExtended.25e21c11.woff) format("woff");
+    font-family: 'Fit-ExtraExtended';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url(/_next/static/media/Fit-UltraExtended.317f23b5.woff2) format("woff2"),
+         url(/_next/static/media/Fit-UltraExtended.d0a18146.woff) format("woff");
+    font-family: 'Fit-UltraExtended';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+
+.adellesansarm-semi-bold-mako-10px {
+  color: var(--colourmaingrey700);
+  font-family: 'arm-semi-b';
+  font-size: var(--font-size-s);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.adellesansarm-regular-normal-midnight-15px {
+  color: var(--logo-color);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 400;
+}
+
+
+
+.adellesansarm-extra-extra-bold-midnight-23px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: var(--font-size-xxl);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-extra-extra-bold-white-19px {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-extra-b';
+  font-size: var(--font-size-xl);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-extra-extra-bold-midnight-16-3px {
+  font-size: 16px;
+  font-family: 'arm-extra-b';
+  color: #091133;
+}
+
+.adellesansarm-light-midnight-45px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-light);
+  font-size: 45px;
+  font-style: normal;
+  font-weight: 300;
+}
+
+.adell.macbook-pro-81 .hello-body-1esansarm-extra-extra-bold-midnight-16-3px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: var(--font-size-l);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-regular-normal-midnight-23px {
+  color: var(--logo-color);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-xxl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.adellesansarm-light-midnight-15px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-light);
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 300;
+}
+
+.adellesansarm-extra-extra-bold-white-16-3px {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-l);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-heavy-normal-midnight-15px {
+  color: var(--logo-color);
+  font-family: 'arm-heavy';
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.adellesansarm-lightitalic-light-midnight-15px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-lightitalic);
+  font-size: var(--font-size-m);
+  font-style: italic;
+  font-weight: 300;
+}
+
+.adellesansarm-extra-extra-bold-midnight-15px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-bold-mako-10px {
+  color: var(--colourmaingrey700);
+  font-family: 'arm-bold';
+  font-size: var(--font-size-s);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.adellesansarm-extra-extra-bold-midnight-34px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-regular-normal-white-29px {
+  margin-top: 5vh;
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-xxxl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.adellesansarm-bold-black-33px {
+  color: var(--black);
+  font-family: 'arm-bold';
+  font-size: var(--font-size-xxxxl);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.adellesansarm-regular-normal-white-19px {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-xl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.fitvariable-regular-normal-white-222px {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'Fit-variable';
+  font-size: 222px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.adellesansarm-heavyitalic-normal-midnight-15px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-heavyitalic);
+  font-size: var(--font-size-m);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.adellesansarm-semi-bold-black-33px {
+  color: var(--black);
+  font-family: 'arm-semi-b';
+  font-size: var(--font-size-xxxxl);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.adellesansarm-regular-normal-midnight-52px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: 52px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.fitvariable-regular-normal-midnight-222px {
+  color: var(--logo-color);
+  font-family: 'Fit-Variable';
+  font-size: 222px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.adellesansarm-extra-extra-bold-midnight-45px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: 45px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-extrabolditalic-extra-bold-midnight-15px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-extrabolditalic);
+  font-size: var(--font-size-m);
+  font-style: italic;
+  font-weight: 800;
+}
+
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+/* The following line is used to measure usage of this code. You can remove it if you want. */
+@import url("https://px.animaapp.com/6566122b79db752a5157befe.6566122d79db752a5157bf01.n4dCgYL.hcp.png");
+
+@font-face {
+  font-family: "Fit Variable-Regular";
+  font-style: normal;
+  font-weight: 400;
+  src: url(/_next/static/media/Fit-Regular-Edu.f22f12f5.woff) format("woff");
+}
+
+
+.screen a {
+  display: contents;
+  text-decoration: none;
+  decoration: none;
+  color:inherit;
+}
+
+.container-center-horizontal {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  pointer-events: none;
+  width: 100%;
+}
+
+.container-center-horizontal > * {
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.valign-text-middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.valign-text-bottom {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline
+}
+/*!******************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[3]!./src/app/globals2.css ***!
+  \******************************************************************************************************************************************************************************************************************************************************************/
+/* screen - macbook-pro-81 */
+
+.my_title {
+    font-family: 'Fit-Variable';
+    font-size: 105px;
+    margin-top: 3vh;
+    color: #091133;
+  }
+  
+  .my_title_2 {
+    font-family: 'Fit-Variable';
+    font-size: 250px;
+    margin-right: 3vw;
+    line-height: 235px;
+    color: #091133;
+    font-stretch: 200%;
+  }
+  
+  .stat-page-container {
+    width: 1440px;
+    height: 750px;
+    overflow: hidden;
+    background-color: #091133;
+    margin-top: 650px;
+    position: absolute;
+  }
+  
+  .about-us-container {
+    width: 1440px;
+    height: 500px;
+    overflow: hidden;
+    background-color: white;
+    margin-top: 1400px;
+    position: absolute;
+  }
+  
+  .footer-container {
+    width: 1440px;
+    height: 750px;
+    overflow: hidden;
+    background-color: #091133;
+    margin-top: 1945px;
+    position: absolute;
+  }
+  
+  .footer-container-1 {
+    width: 1440px;
+    height: 300px;
+    overflow: hidden;
+  
+  }
+  
+  .footer-container-1-1 {
+    width: 440px;
+    height: 300px;
+    overflow: hidden;
+    background-color: #091133;
+    float: left;
+  }
+  
+  .footer-container-1-2 {
+    width: 500px;
+    height: 300px;
+    overflow: hidden;
+    background-color: #091133;
+    float: left;
+  }
+  
+  .footer-container-1-3 {
+    width: 500px;
+    height: 300px;
+    overflow: hidden;
+    background-color: #091133;
+  }
+  
+  .footer-container-2 {
+    width: 1440px;
+    height: 450px;
+    overflow: hidden;
+    background-color: #091133;
+  }
+  
+  .footer-container-1-1-title {
+    color: white;
+    margin-top: 50px;
+    margin-left: 115px;
+    font-size:50px;
+    position: absolute;
+    font-family: 'arm-light';
+  }
+  
+  .footer-container-1-1-title-2 {
+    color: white;
+    margin-top: 100px;
+    margin-left: 115px;
+    font-size: 50px;
+    position: absolute;
+    font-family: 'arm-light';
+  }
+  
+  .footer-container-1-1-title-3 {
+    color: white;
+    margin-top: 150px;
+    margin-left: 115px;
+    font-size: 50px;
+    position: absolute;
+    font-family: 'arm-light';
+  }
+  .footer-container-1-1-title-4 {
+    color: white;
+    margin-top: 200px;
+    margin-left: 115px;
+    font-size: 50px;
+    position: absolute;
+    font-family: 'arm-light';
+  }
+  .footer-container-1-1-title-5 {
+    color: white;
+    margin-top: 250px;
+    margin-left: 115px;
+    font-size: 50px;
+    position: absolute;
+    font-family: 'arm-light';
+  }
+  
+  .footer-container-2-title {
+    color: white;
+    font-size: 400px;
+    font-family: 'Fit-variable';
+    font-stretch: 400%;
+    margin-left: 115px;
+  }
+  
+  
+  
+  .about-us-page-1 {
+    height: 500px;
+    width: 640px;
+    float: left;
+    overflow: hidden;
+    
+  }
+  
+  .about-us-page-2 {
+    height: 500px;
+    width: 800px;
+    float: left;
+    overflow: hidden;
+    background-color: white;
+  }
+  
+  .about-us-title {
+    color: #091133;
+    margin-top: 100px;
+    margin-left: 100px;
+    font-family: 'fit-variable';
+    font-size: 200px;
+    position: absolute;
+    font-stretch: 225%;
+  }
+  .about-us-title-2 {
+    color: #091133;
+    margin-top: 275px;
+    margin-left: 100px;
+    font-family: 'fit-variable';
+    font-size: 200px;
+    position: absolute;
+    font-stretch: 600%;
+  }
+  
+  .about-us-text {
+    margin-top: 150px;
+    margin-left: 75px;
+    color: #091133;
+    font-family: "arm-light";
+    font-size: 40px;
+    width: 650px;
+  }
+  .stat-page-1 {
+    width: 720px;
+    height: 750px;
+    float: left;
+    overflow: hidden;
+    
+  }
+  
+  .stat-page-2 {
+    width: 720px;
+    height: 750px;
+    float: left;
+    overflow: hidden;
+    
+  }
+  
+  .stat-text-1 {
+    color: white;
+    margin-top: 25px;
+    margin-left: 100px;
+    font-family: 'fit-variable';
+    font-size: 250px;
+    position: absolute;
+    font-stretch: 225%;
+  }
+  
+  .stat-text-2 {
+    color: white;
+    margin-left: 300px;
+    margin-top: 250px;
+    position: absolute;
+    font-family: 'fit-variable';
+    font-size: 250px;
+    font-stretch: 225%;
+  }
+  
+  .stat-text-3 {
+    color: white;
+  
+    margin-top: 475px;
+    margin-left: 380px;
+    font-family: 'fit-variable';
+    font-size: 250px;
+    position: absolute;
+    font-stretch: 225%;
+  }
+  
+  .stat-text-4 {
+    color: white;
+    
+    font-family: 'arm-bold';
+    font-size: 50px;
+    position: absolute;
+    margin-top: 150px;
+  }
+  
+  .stat-text-5 {
+    color: white;
+    font-family: 'arm-bold';
+    
+    position: absolute;
+    font-size: 50px;
+    margin-top: 375px;
+  }
+  
+  .stat-text-6 {
+    color: white;
+    font-family: 'arm-bold';
+   
+  
+    margin-top: 600px;
+    font-size: 50px;
+    position: absolute;
+  }
+  
+  .macbook-pro-81 {
+    align-items: flex-end;
+    background-color: var(--coloursecondarywhite-100-general);
+    display: flex;
+    flex-direction: column;
+   
+    overflow: hidden;
+    width: 1440px;
+  }
+  
+  .macbook-pro-81 .overlap-group1 {
+    height: 151px;
+    position: relative;
+    width: 1440px;
+  }
+  
+  .macbook-pro-81 .rectangle-33 {
+    background-color: var(--coloursecondarywhite-100-general);
+    height: 144px;
+    left: 0;
+    top: 0;
+  }
+  
+  .macbook-pro-81 .group-6 {
+    align-items: flex-end;
+    background-color: var(--logo-color);
+    height: 70px;
+    justify-content: flex-end;
+    left: 1313px;
+    min-width: 70px;
+    padding: 24.0px 24.0px;
+    top: 63px;
+  }
+  
+  .macbook-pro-81 .ellipse-1 {
+    background-color: var(--coloursecondarywhite-100-general);
+    border-radius: 10.64px;
+    height: 21px;
+    width: 21px;
+  }
+  
+  .macbook-pro-81 .group-4 {
+    align-items: flex-start;
+    height: 60px;
+    left: 762px;
+    min-width: 533px;
+    top: 91px;
+  }
+  
+  .macbook-pro-81 .flex-container-1 {
+    width: 137px;
+  }
+  
+  .macbook-pro-81 .text {
+    align-self: stretch;
+    letter-spacing: 0.68px;
+    line-height: 6.8px;
+    position: relative;
+  }
+  
+  .macbook-pro-81 .flex-container-12 {
+    margin-left: 8px;
+    width: 119px;
+  }
+  
+  .macbook-pro-81 .flex-container-1-1 {
+    margin-left: 20px;
+    width: 125px;
+  }
+  
+  .macbook-pro-81 .flex-container-1-2 {
+    margin-left: 15px;
+    width: 101px;
+  }
+  
+  .macbook-pro-81 .rectangle-32 {
+    background-color: var(--logo-color);
+    height: 3px;
+    left: 0;
+    top: 144px;
+  }
+  
+  .macbook-pro-81 .hello-body-container {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    align-self: center;
+    justify-content: center;
+    display: flex;
+    gap: 52px;
+    height: 750px;
+    margin-left: 34.0px;
+    margin-top: 110px;
+    min-width: 1260px;
+  }
+  
+  .macbook-pro-81 .hello-body {
+    color: var(--logo-color);
+    font-family: 'arm-extra-b';
+    font-size: 25px;
+    margin-right: 20px;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 43px;
+    min-height: 258px;
+    width: 604px;
+    
+  }
+  
+  .macbook-pro-81 .hello-body-1 {
+    color: var(--red);
+    font-family: 'arm-extra-b';
+    font-size: 30px;
+    font-weight: 800;
+    height: 68px;
+    letter-spacing: 0;
+    line-height: 34px;
+    margin-right: 86px;
+    margin-top: 200px;
+    width: 289px;
+  }
+  
+  .macbook-pro-81 .overlap-group2 {
+    height: 993px;
+    margin-top: 32px;
+    position: relative;
+    width: 1440px;
+  }
+  
+  .macbook-pro-81 .rectangle-16 {
+    background-color: var(--coloursecondarywhite-100-general);
+    height: 900px;
+    left: 0;
+    top: 93px;
+  }
+  
+  .macbook-pro-81 .group-65 {
+    align-items: flex-start;
+    gap: 33px;
+    height: 612px;
+    left: 93px;
+    min-width: 1254px;
+    top: 0;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-container-1 {
+    width: 289px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-2 {
+    background-color: var(--cloud);
+    height: 288px;
+    width: 289px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-3 {
+    background-color: var(--cloud);
+    height: 289px;
+    width: 289px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-container-2 {
+    width: 290px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-4 {
+    background-color: var(--cloud);
+    height: 288px;
+    width: 290px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-5 {
+    background-color: var(--cloud);
+    height: 289px;
+    width: 290px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-container {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    min-height: 612px;
+    width: 288px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery {
+    background-color: var(--cloud);
+    height: 288px;
+    width: 288px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-1 {
+    background-color: var(--cloud);
+    height: 289px;
+    width: 288px;
+  }
+  
+  .macbook-pro-81 .overlap-group {
+    height: 770px;
+    margin-top: 1000px;
+    position: relative;
+    width: 1573px;
+  }
+  
+  .macbook-pro-81 .rectangle-17 {
+    background-color: var(--coloursecondarywhite-100-general);
+    height: 900px;
+    left: 133px;
+    top: 151px;
+  }
+  
+  .macbook-pro-81 .group-8 {
+    align-items: flex-end;
+    background-color: var(--logo-color);
+    height: 70px;
+    justify-content: flex-end;
+    left: 1446px;
+    min-width: 70px;
+    padding: 24.0px 24.0px;
+    top: 214px;
+  }
+  
+  .macbook-pro-81 .full-page-armenian {
+    color: var(--logo-color);
+    font-family: var(--font-family-fit-regular);
+    font-size: var(--font-size-l);
+    font-weight: 400;
+    height: 494px;
+    left: 0;
+    letter-spacing: 0.68px;
+    line-height: 78.4px;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    width: 1081px;
+  }
+  
+  .macbook-pro-81 .group-9 {
+    align-items: flex-start;
+    height: 60px;
+    left: 895px;
+    min-width: 533px;
+    top: 242px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-container-3 {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    min-height: 612px;
+  }
+  
+  .macbook-pro-81 .flex-container {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 8.14px;
+    height: 60px;
+    position: relative;
+  }
+  
+  .macbook-pro-81 .flex-container-1-3 {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 8.14px;
+    height: 60px;
+    position: relative;
+  }
+  
+  .macbook-pro-81 .group {
+    display: flex;
+    position: absolute;
+  }
+  
+  .macbook-pro-81 .rectangle {
+    position: absolute;
+    width: 1440px;
+  }
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[2].use[1]!./node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js??ruleSet[1].rules[11].oneOf[2].use[2]!./node_modules/next/font/google/target.css?{"path":"src/app/layout.tsx","import":"Inter","arguments":[{"subsets":["latin"]}],"variableName":"inter"} ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/* cyrillic-ext */
+@font-face {
+  font-family: '__Inter_e66fe9';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(/_next/static/media/ec159349637c90ad-s.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: '__Inter_e66fe9';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(/_next/static/media/513657b02c5c193f-s.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: '__Inter_e66fe9';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(/_next/static/media/fd4db3eb5472fc27-s.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: '__Inter_e66fe9';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(/_next/static/media/51ed15f9841b9f9d-s.woff2) format('woff2');
+  unicode-range: U+0370-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: '__Inter_e66fe9';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(/_next/static/media/05a31a2ca4975f99-s.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: '__Inter_e66fe9';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(/_next/static/media/d6b16ce4a6175f26-s.woff2) format('woff2');
+  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: '__Inter_e66fe9';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(/_next/static/media/c9a5bc6a7c948fb0-s.p.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}@font-face {font-family: '__Inter_Fallback_e66fe9';src: local("Arial");ascent-override: 90.20%;descent-override: 22.48%;line-gap-override: 0.00%;size-adjust: 107.40%
+}.__className_e66fe9 {font-family: '__Inter_e66fe9', '__Inter_Fallback_e66fe9';font-style: normal
+}
+

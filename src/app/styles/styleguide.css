@@ -1,0 +1,363 @@
+:root { 
+  --black: #000000;
+  --cloud: #c4c4c4;
+  --colourmaingrey100: #e9ebec;
+  --colourmaingrey700: #454e54;
+  --coloursecondarywhite-100-general: #ffffff;
+  --landing-page-text-color: #ffffff;
+  --logo-color: #091133;
+  --red: #cd2032;
+ 
+  --font-size-l: 16.3px;
+  --font-size-m-special: 33px;
+  --font-size-m: 15px;
+  --font-size-s: 10px;
+  --font-size-xl: 19px;
+  --font-size-xxl: 23px;
+  --font-size-xxxl: 29px;
+  --font-size-xxxxl: 33px;
+ 
+  --font-family-adelle_sans_arm-bold: "Adelle Sans ARM-Bold", Helvetica;
+  --font-family-adelle_sans_arm-extrabold: "Adelle Sans ARM-ExtraBold", Helvetica;
+  --font-family-adelle_sans_arm-extrabolditalic: "Adelle Sans ARM-ExtraBoldItalic", Helvetica;
+  --font-family-adelle_sans_arm-heavy: "Adelle Sans ARM-Heavy", Helvetica;
+  --font-family-adelle_sans_arm-heavyitalic: "Adelle Sans ARM-HeavyItalic", Helvetica;
+  --font-family-adelle_sans_arm-light: "Adelle Sans ARM-Light", Helvetica;
+  --font-family-adelle_sans_arm-lightitalic: "Adelle Sans ARM-LightItalic", Helvetica;
+  --font-family-adelle_sans_arm-regular: "Adelle Sans ARM-Regular", Helvetica;
+  --font-family-adelle_sans_arm-semibold: "Adelle Sans ARM-SemiBold", Helvetica;
+  --font-family-fit-regular: "Fit-Regular", Helvetica;
+  --font-family-fit-skyline: "Fit-Skyline", Helvetica;
+  --font-family-fit-wide: "Fit-Wide", Helvetica;
+  --font-family-fit_variable-regular: "Fit Variable-Regular", Helvetica;
+}
+
+@font-face {
+  font-family: 'arm-reg';
+  src: url('../../../public/fonts/AdelleSansARM-Regular.otf');
+}
+
+@font-face {
+  font-family: 'arm-light';
+  src: url('../../../public/fonts/AdelleSansARM-Light.otf');
+}
+
+@font-face {
+  font-family: 'arm-extra-b';
+  src: url('../../../public/fonts/AdelleSansARM-Extrabold.otf');
+}
+
+@font-face {
+  font-family: 'arm-semi-b';
+  src: url('../../../public/fonts/AdelleSansARM-Semibold.otf');
+}
+
+@font-face {
+  font-family: 'arm-bold';
+  src: url('../../../public/fonts/AdelleSansARM-Bold.otf');
+}
+
+@font-face {
+  font-family: 'arm-heavy';
+  src: url('../../../public/fonts/AdelleSansARM-Heavy.otf');
+}
+
+@font-face {
+    src: url('../../../public/fonts/FitVariable-VF.woff2') format("woff2"),
+         url('../../../public/fonts/FitVariable-VF.woff') format("woff");
+    font-family: 'Fit-Variable';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../../public/fonts/Fit-Skyline.woff2') format("woff2"),
+         url('../../../public/fonts/Fit-Skyline.woff') format("woff");
+    font-family: 'Fit-Skyline';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../../public/fonts/Fit-Compressed.woff2') format("woff2"),
+         url('../../../public/fonts/Fit-Compressed.woff') format("woff");
+    font-family: 'Fit-Compressed';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../../public/fonts/Fit-ExtraCondensed.woff2') format("woff2"),
+         url('../../../public/fonts/Fit-ExtraCondensed.woff') format("woff");
+    font-family: 'Fit-ExtraCondensed';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../../public/fonts/Fit-Condensed.woff2') format("woff2"),
+         url('../../../public/fonts/Fit-Condensed.woff') format("woff");
+    font-family: 'Fit-Condensed';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../../public/fonts/Fit-Regular.woff2') format("woff2"),
+         url('../../../public/fonts/Fit-Regular.woff') format("woff");
+    font-family: 'Fit';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../../public/fonts/Fit-Wide.woff2') format("woff2"),
+         url('../../../public/fonts/Fit-Wide.woff') format("woff");
+    font-family: 'Fit-Wide';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../../public/fonts/Fit-ExtraWide.woff2') format("woff2"),
+         url('../../../public/fonts/Fit-ExtraWide.woff') format("woff");
+    font-family: 'Fit-ExtraWide';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../../public/fonts/Fit-Extended.woff2') format("woff2"),
+         url('../../../public/fonts/Fit-Extended.woff') format("woff");
+    font-family: 'Fit-Extended';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../../public/fonts/Fit-ExtraExtended.woff2') format("woff2"),
+         url('../../../public/fonts/Fit-ExtraExtended.woff') format("woff");
+    font-family: 'Fit-ExtraExtended';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../../public/fonts/Fit-UltraExtended.woff2') format("woff2"),
+         url('../../../public/fonts/Fit-UltraExtended.woff') format("woff");
+    font-family: 'Fit-UltraExtended';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+
+.adellesansarm-semi-bold-mako-10px {
+  color: var(--colourmaingrey700);
+  font-family: 'arm-semi-b';
+  font-size: var(--font-size-s);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.adellesansarm-regular-normal-midnight-15px {
+  color: var(--logo-color);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 400;
+}
+
+
+
+.adellesansarm-extra-extra-bold-midnight-23px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: var(--font-size-xxl);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-extra-extra-bold-white-19px {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-extra-b';
+  font-size: var(--font-size-xl);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-extra-extra-bold-midnight-16-3px {
+  font-size: 16px;
+  font-family: 'arm-extra-b';
+  color: #091133;
+}
+
+.adellesansarm-light-midnight-45px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-light);
+  font-size: 45px;
+  font-style: normal;
+  font-weight: 300;
+}
+
+.adell.macbook-pro-81 .hello-body-1esansarm-extra-extra-bold-midnight-16-3px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: var(--font-size-l);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-regular-normal-midnight-23px {
+  color: var(--logo-color);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-xxl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.adellesansarm-light-midnight-15px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-light);
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 300;
+}
+
+.adellesansarm-extra-extra-bold-white-16-3px {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-l);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-heavy-normal-midnight-15px {
+  color: var(--logo-color);
+  font-family: 'arm-heavy';
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.adellesansarm-lightitalic-light-midnight-15px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-lightitalic);
+  font-size: var(--font-size-m);
+  font-style: italic;
+  font-weight: 300;
+}
+
+.adellesansarm-extra-extra-bold-midnight-15px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-bold-mako-10px {
+  color: var(--colourmaingrey700);
+  font-family: 'arm-bold';
+  font-size: var(--font-size-s);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.adellesansarm-extra-extra-bold-midnight-34px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-regular-normal-white-29px {
+  margin-top: 5vh;
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-xxxl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.adellesansarm-bold-black-33px {
+  color: var(--black);
+  font-family: 'arm-bold';
+  font-size: var(--font-size-xxxxl);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.adellesansarm-regular-normal-white-19px {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-xl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.fitvariable-regular-normal-white-222px {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'Fit-variable';
+  font-size: 222px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.adellesansarm-heavyitalic-normal-midnight-15px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-heavyitalic);
+  font-size: var(--font-size-m);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.adellesansarm-semi-bold-black-33px {
+  color: var(--black);
+  font-family: 'arm-semi-b';
+  font-size: var(--font-size-xxxxl);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.adellesansarm-regular-normal-midnight-52px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: 52px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.fitvariable-regular-normal-midnight-222px {
+  color: var(--logo-color);
+  font-family: 'Fit-Variable';
+  font-size: 222px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.adellesansarm-extra-extra-bold-midnight-45px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: 45px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-extrabolditalic-extra-bold-midnight-15px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-extrabolditalic);
+  font-size: var(--font-size-m);
+  font-style: italic;
+  font-weight: 800;
+}

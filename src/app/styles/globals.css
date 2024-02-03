@@ -1,0 +1,47 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+/* The following line is used to measure usage of this code. You can remove it if you want. */
+@import url("https://px.animaapp.com/6566122b79db752a5157befe.6566122d79db752a5157bf01.n4dCgYL.hcp.png");
+
+@font-face {
+  font-family: "Fit Variable-Regular";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../../../public/fonts/Fit-Regular-Edu.woff") format("woff");
+}
+
+
+.screen a {
+  display: contents;
+  text-decoration: none;
+  decoration: none;
+  color:inherit;
+}
+
+.container-center-horizontal {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  pointer-events: none;
+  width: 100%;
+}
+
+.container-center-horizontal > * {
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.valign-text-middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.valign-text-bottom {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+* {
+  box-sizing: border-box;
+} 
