@@ -1,7 +1,0 @@
-{
-  "/not-found": "app/not-found.js",
-  "/page": "app/page.js",
-  "/collection/page": "app/collection/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/collection-detail/page": "app/collection-detail/page.js"
-}
