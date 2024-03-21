@@ -71,9 +71,9 @@ const Album: React.FC<Props> = ({}) => {
               </span>
             </div>
           </div>
-          <div className="flex-container-1232 flex-container adellesansarm-semi-bold-black-33px">
+          <div style={{marginTop: "120px"}} className="flex-container-1232 flex-container adellesansarm-semi-bold-black-33px">
             <div className="text-1 text-6">
-              <span className="adellesansarm-semi-bold-black-33px">Canada</span>
+              <span className="adellesansarm-semi-bold-black-33px">Origin: Canada</span>
             </div>
             <div className="text-1 text-6">
               <span className="adellesansarm-semi-bold-black-33px">
@@ -86,27 +86,10 @@ const Album: React.FC<Props> = ({}) => {
               </span>
             </div>
           </div>
-          <div className="hello-body">SHARE/ԿԻՍՎԻ</div>
-          <div className="flex-container-1234 flex-container adellesansarm-bold-black-33px">
-            <div className="text-1 text-6">
-              <span className="adellesansarm-bold-black-33px">
-                Link to album
-              </span>
-            </div>
-            <div className="text-1 text-6">
-              <span className="adellesansarm-bold-black-33px">
-                Twitter/FB/Insta
-              </span>
-            </div>
-            <div className="text-1 text-6">
-              <span className="adellesansarm-bold-black-33px">YouTube</span>
-            </div>
-            <div className="text-1 text-6">
-              <span className="adellesansarm-bold-black-33px">Citation</span>
-            </div>
-          </div>
+      
+
           <div className="rectangle-90"></div>
-          <div className="rectangle-91"></div>
+         
         </div>
       </div>
       <div className="flex-container-1225 flex-container adellesansarm-regular-normal-midnight-52px">
@@ -115,15 +98,16 @@ const Album: React.FC<Props> = ({}) => {
             ԱՒՕ
           </span>
         </div>
-        <div className="text-2 text-6">
-          <span className="adellesansarm-regular-normal-midnight-52px">
-            {record.artist_original}
+        <div style={{marginTop: "75px", width: "35vw"}} className="text-2 text-6">
+          <span style={{fontSize: "35px", lineHeight: "normal"}}  className="adellesansarm-regular-normal-midnight-52px">
+            Artist(s): {record.artist_original}
           </span>
         </div>
-        <div className="text-2 text-6">
-          <span className="adellesansarm-regular-normal-midnight-52px">
-            {record.title}
+        <div style={{top: "0px"}} className="text-2 text-6">
+          <span style={{fontSize: "30px", color: "black !important"}} className="adellesansarm-regular-normal-midnight-52px">
+            Grouping: {record.title}
           </span>
+          
         </div>
       </div>
     </div>
@@ -135,116 +119,10 @@ export default function CollectionDetail() {
     <div className="container-center-horizontal">
       <div className="collection-detail screen">
         <div className="group-9">
-          <div className="overlap-group">
-            <div className="rectangle-9"></div>
-            <div className="rectangle-10"></div>
-          </div>
         </div>
-        <div className="rectangle-12"></div>
+        
         <Album></Album>
-        {/* <div className="overlap-group6">
-          
-          <div className="overlap-group8">
-            <img
-              className="r-11379693-1515454010-2972-3"
-              src="img/r-11379693-1515454010-2972-13.png"
-              alt="R-11379693-1515454010-2972 3"
-            />
-            <div className="overlap-group3">
-              <div className="flex-container-1226 flex-container adellesansarm-extra-extra-bold-white-19px">
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px"></span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px">
-                    3:51
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px"></span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px">
-                    3:35
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px"></span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px">
-                    7:33
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px"></span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px">
-                    4:20
-                  </span>
-                </div>
-              </div>
-              <div className="flex-container-1232 flex-container adellesansarm-semi-bold-black-33px">
-                <div className="text-1 text-6">
-                  <span className="adellesansarm-semi-bold-black-33px">
-                    Canada
-                  </span>
-                </div>
-                <div className="text-1 text-6">
-                  <span className="adellesansarm-semi-bold-black-33px">
-                    Folk, World, &amp; Country
-                  </span>
-                </div>
-                <div className="text-1 text-6">
-                  <span className="adellesansarm-semi-bold-black-33px">
-                    1977
-                  </span>
-                </div>
-              </div>
-              <div className="hello-body">SHARE/ԿԻՍՎԻ</div>
-              <div className="flex-container-1234 flex-container adellesansarm-bold-black-33px">
-                <div className="text-1 text-6">
-                  <span className="adellesansarm-bold-black-33px">
-                    Link to album
-                  </span>
-                </div>
-                <div className="text-1 text-6">
-                  <span className="adellesansarm-bold-black-33px">
-                    Twitter/FB/Insta
-                  </span>
-                </div>
-                <div className="text-1 text-6">
-                  <span className="adellesansarm-bold-black-33px">YouTube</span>
-                </div>
-                <div className="text-1 text-6">
-                  <span className="adellesansarm-bold-black-33px">
-                    Citation
-                  </span>
-                </div>
-              </div>
-              <div className="rectangle-90"></div>
-              <div className="rectangle-91"></div>
-            </div>
-          </div> 
-          <div className="flex-container-1225 flex-container adellesansarm-regular-normal-midnight-52px">
-            <div className="text-2 text-6">
-              <span className="adellesansarm-regular-normal-midnight-52px">
-                ԱՒՕ
-              </span>
-            </div>
-            <div className="text-2 text-6">
-              <span className="adellesansarm-regular-normal-midnight-52px">
-                Avo Sarkissian
-              </span>
-            </div>
-            <div className="text-2 text-6">
-              <span className="adellesansarm-regular-normal-midnight-52px">
-                From Montreal With Love
-              </span>
-            </div>
-          </div>
-        </div> */}
+       
         <div className="flex-container-1229 flex-container fitvariable-regular-normal-midnight-222px">
           <div className="text-3 valign-text-middle text-6">
             <span>

@@ -391,6 +391,8 @@
     gap: 33px;
     height: 612px;
     left: 93px;
+      display: flex;
+  flex-wrap: wrap;
     min-width: 1254px;
     top: 0;
   }

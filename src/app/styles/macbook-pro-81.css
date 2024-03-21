@@ -1,5 +1,6 @@
 /* screen - macbook-pro-81 */
 
+
 .my_title {
   font-family: 'Fit-Variable';
   font-size: 105px;
@@ -386,26 +387,28 @@
   top: 93px;
 }
 
-.macbook-pro-81 .group-65 {
+.group-65 {
   align-items: flex-start;
   gap: 33px;
   height: 612px;
   left: 93px;
-  min-width: 1254px;
+  width: 500px;
   top: 0;
 }
 
-.macbook-pro-81 .airtable-gallery-container-1 {
+.airtable-gallery-container {
   width: 289px;
+  gap: 35px;
 }
 
-.macbook-pro-81 .airtable-gallery-2 {
+.airtable-gallery-2 {
   background-color: var(--cloud);
-  height: 288px;
-  width: 289px;
+  height: 300px;
+  width: 300px;
 }
 
-.macbook-pro-81 .airtable-gallery-3 {
+
+.airtable-gallery-3 {
   background-color: var(--cloud);
   height: 289px;
   width: 289px;

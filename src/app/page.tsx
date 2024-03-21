@@ -3,21 +3,10 @@
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import RecordImage from './record-image'
 
 const HomePageGallery: React.FC<Props> = ({}) => {
-  const [imageIds, setImageIds] = useState([]);
 
-  useEffect(() => {
-    axios
-      .get(
-        "https://ara.directus.app/files/?limit=8&filter[folder][_in]=cc7dc79e-f5dc-4fae-bee1-44a925851d4e"
-      )
-      .then((response) => {
-        console.log(response);
-        const ids = response.data.data.map((image) => image.id);
-        setImageIds(ids);
-      });
-  }, []);
 
   // TODO: use key to request thumbnail instead of full image so it fetches (loads) faster
 
@@ -27,12 +16,12 @@ const HomePageGallery: React.FC<Props> = ({}) => {
         <div className="airtable-gallery-container-1 airtable-gallery-container-3">
           <div className="airtable-gallery-2">
             <img
-              style={{ width: "300px", height: "300px" }}
+              style={{width: "300px", height: "300px"}}
               src={`https://ara.directus.app/assets/${imageIds[0]}`}
               alt=""
             />
           </div>
-          <div className="airtable-gallery-3">
+          <div className="airtable-gallery-2">
             <img
               style={{ width: "300px", height: "300px" }}
               src={`https://ara.directus.app/assets/${imageIds[1]}`}
@@ -49,7 +38,7 @@ const HomePageGallery: React.FC<Props> = ({}) => {
               alt=""
             />
           </div>
-          <div className="airtable-gallery-5">
+          <div className="airtable-gallery-2">
             {" "}
             <img
               style={{ width: "300px", height: "300px" }}
@@ -58,7 +47,7 @@ const HomePageGallery: React.FC<Props> = ({}) => {
             />
           </div>
         </div>
-        <div className="airtable-gallery-container">
+        <div className="airtable-gallery-container 2">
           <div className="airtable-gallery">
             {" "}
             <img
@@ -67,7 +56,7 @@ const HomePageGallery: React.FC<Props> = ({}) => {
               alt=""
             />
           </div>
-          <div className="airtable-gallery-1">
+          <div className="airtable-gallery-2">
             {" "}
             <img
               style={{ width: "300px", height: "300px" }}
@@ -76,7 +65,7 @@ const HomePageGallery: React.FC<Props> = ({}) => {
             />
           </div>
         </div>
-        <div className="airtable-gallery-container">
+        <div className="airtable-gallery-container-2">
           <div className="airtable-gallery">
             {" "}
             <img
@@ -85,7 +74,7 @@ const HomePageGallery: React.FC<Props> = ({}) => {
               alt=""
             />
           </div>
-          <div className="airtable-gallery-1">
+          <div className="airtable-gallery-2">
             {" "}
             <img
               style={{ width: "300px", height: "300px" }}
@@ -121,6 +110,21 @@ const HomePageGallery: React.FC<Props> = ({}) => {
 };
 
 export default function Home() {
+
+    const [imageIds, setImageIds] = useState([]);
+  
+
+  useEffect(() => {
+    axios
+      .get(
+        "https://ara.directus.app/files/?limit=8&filter[folder][_in]=cc7dc79e-f5dc-4fae-bee1-44a925851d4e"
+      )
+      .then((response) => {
+        console.log(response);
+        const ids = response.data.data.slice(0,8).map((image) => image.id);
+        setImageIds(ids);
+      });
+  }, []);
   return (
     <div>
       <input type="hidden" id="anPageName" name="page" value="frame-1" />
@@ -194,14 +198,14 @@ export default function Home() {
                 <div className="text-1 valign-text-middle">
                   <span>
                     <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <a href="collection.html">COLLECTION</a>
+                      <a href="/collection">COLLECTION</a>
                     </span>{" "}
                   </span>
                 </div>
                 <div className="text-1 valign-text-middle">
                   <span>
                     <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <a href="collection.html">ՀԱԲԱԿԱԾՈՒ</a>
+                      <a href="/collection">ՀԱԲԱԿԱԾՈՒ</a>
                     </span>{" "}
                   </span>
                 </div>
@@ -293,7 +297,7 @@ export default function Home() {
               congue.
             </p>
           </div>
-          <a href="#">
+          <a href="/collection">
             <div className="hello-body-1 valign-text-bottom">
               View collection —&gt;
               <br />
@@ -358,11 +362,22 @@ export default function Home() {
                 </div>
                 <div className="footer-container-2">
                   <div className="footer-container-2-title">ARA</div>
-                </div>
+                </div>  
               </div>
             </div>
+          <div className="group-65 group">
 
-            <HomePageGallery></HomePageGallery>
+            {/* <HomePageGallery></HomePageGallery> */}
+
+            {imageIds.map(id => <RecordImage src={`https://ara.directus.app/assets/${id}`}></RecordImage>)}
+            {/* <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
+            <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
+            <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
+            <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage> */}
+            
+            </div>  
+            
+
           </div>
           <div className="overlap-group">`</div>
         </div>
