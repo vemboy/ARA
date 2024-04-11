@@ -15,7 +15,7 @@ const RecordGallery: React.FC<Props> = ({}) => {
       .get("https://ara.directus.app/items/record_archive?limit=500")
       .then((response) => {
         console.log(response);
-        const records = response.data.data.map((record) => {
+        const records = response.data.data.map((record: any) => {
           return {
             author: record.artist_original,
             title: record.title,
@@ -32,10 +32,10 @@ const RecordGallery: React.FC<Props> = ({}) => {
         <div style={{}}>
           <div className="airtable-gallery"></div>
           <p className="hello-body valign-text-middle adellesansarm-extra-extra-bold-midnight-15px">
-            {records.length > 0 ? records[0].author : null}
+            {records.length > 0 ? records[0]['author'] : null}
           </p>
           <div className="hello-body-1 valign-text-middle adellesansarm-extrabolditalic-extra-bold-midnight-15px">
-            {records.length > 0 ? records[0].title : null}
+            {records.length > 0 ? records[0]['title'] : null}
           </div>
         </div>
         <div className="airtable-gallery-1"></div>
