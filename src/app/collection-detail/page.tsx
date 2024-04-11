@@ -27,15 +27,15 @@ const Album: React.FC<Props> = ({}) => {
   return (
     <div className="overlap-group6">
       <div className="overlap-group8">
-        {/* <img
+        <img
           className="r-11379693-1515454010-2972-3"
           src={
-            record.record_image
-              ? `https://ara.directus.app/assets/${record.record_image}`
+            record['record_image']
+              ? `https://ara.directus.app/assets/${record['record_image']}`
               : "https://ara.directus.app/assets/bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48"
           }
           alt="R-11379693-1515454010-2972 3"
-        /> */}
+        />
         <div className="overlap-group3">
           <div className="flex-container-1226 flex-container adellesansarm-extra-extra-bold-white-19px">
             <div className="text">
@@ -77,12 +77,12 @@ const Album: React.FC<Props> = ({}) => {
             </div>
             <div className="text-1 text-6">
               <span className="adellesansarm-semi-bold-black-33px">
-                {record.genre ?? "Genre: Unkown"}
+                {record['genre'] ?? "Genre: Unkown"}
               </span>
             </div>
             <div className="text-1 text-6">
               <span className="adellesansarm-semi-bold-black-33px">
-                {record.record_original_recording_date ?? "Date: Unkown"}
+                {record['record_original_recording_date'] ?? "Date: Unkown"}
               </span>
             </div>
           </div>
@@ -100,12 +100,12 @@ const Album: React.FC<Props> = ({}) => {
         </div>
         <div style={{marginTop: "75px", width: "35vw"}} className="text-2 text-6">
           <span style={{fontSize: "35px", lineHeight: "normal"}}  className="adellesansarm-regular-normal-midnight-52px">
-            Artist(s): {record.artist_original}
+            Artist(s): {record['artist_original']}
           </span>
         </div>
         <div style={{top: "0px"}} className="text-2 text-6">
           <span style={{fontSize: "30px", color: "black !important"}} className="adellesansarm-regular-normal-midnight-52px">
-            Grouping: {record.title}
+            Grouping: {record['title']}
           </span>
           
         </div>
