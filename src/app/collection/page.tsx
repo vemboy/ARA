@@ -820,3 +820,5 @@ export default function Collection() {
     </div>
   );
 }
+
+console.log("HELLO")
