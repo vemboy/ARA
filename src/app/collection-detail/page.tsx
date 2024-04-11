@@ -27,7 +27,7 @@ const Album: React.FC<Props> = ({}) => {
   return (
     <div className="overlap-group6">
       <div className="overlap-group8">
-        <img
+        {/* <img
           className="r-11379693-1515454010-2972-3"
           src={
             record.record_image
@@ -35,7 +35,7 @@ const Album: React.FC<Props> = ({}) => {
               : "https://ara.directus.app/assets/bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48"
           }
           alt="R-11379693-1515454010-2972 3"
-        />
+        /> */}
         <div className="overlap-group3">
           <div className="flex-container-1226 flex-container adellesansarm-extra-extra-bold-white-19px">
             <div className="text">
