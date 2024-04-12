@@ -3,16 +3,21 @@
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { usePathname } from 'next/navigation'
 
 interface Props {}
 
 const Album: React.FC<Props> = ({}) => {
   const [record, setRecord] = useState(null);
+  const pathName = usePathname()
+  const recordId = pathName.split('/').slice(-1)[0]
+  console.log(pathName)
+  console.log(recordId)
 
   useEffect(() => {
     axios
       .get(
-        "https://ara.directus.app/items/record_archive/013fa7c9-9b78-4a07-ac2e-84b869929de5"
+        `https://ara.directus.app/items/record_archive/${recordId}`
       )
       .then((response) => {
         console.log(response);
@@ -20,6 +25,7 @@ const Album: React.FC<Props> = ({}) => {
       });
   }, []);
 
+  console.log(recordId)
   if (record === null) {
     return null;
   }

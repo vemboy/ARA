@@ -112,18 +112,31 @@ import RecordImage from './record-image'
 export default function Home() {
 
     const [imageIds, setImageIds] = useState([]);
-  
 
   useEffect(() => {
     axios
-      .get(
-        "https://ara.directus.app/files/?limit=8&filter[folder][_in]=cc7dc79e-f5dc-4fae-bee1-44a925851d4e"
-      )
+      .get("https://ara.directus.app/items/record_archive?limit=8")
       .then((response) => {
+        console.log("CORRECT")
         console.log(response);
-        const ids = response.data.data.slice(0,8).map((image: any) => image.id);
-        setImageIds(ids);
+        const records = response.data.data.map((record: any) => {
+          return {
+            image: record.record_image,
+            id: record.id,
+          };
+        });
+
+       setImageIds(records);
       });
+    // axios
+    //   .get(
+    //     "https://ara.directus.app/files/?limit=8&filter[folder][_in]=cc7dc79e-f5dc-4fae-bee1-44a925851d4e"
+    //   )
+    //   .then((response) => {
+    //     console.log(response);
+    //     const ids = response.data.data.slice(0,8).map((image: any) => image.id);
+    //     setImageIds(ids);
+    //   });
   }, []);
   return (
     <div>
@@ -369,12 +382,12 @@ export default function Home() {
 
             {/* <HomePageGallery></HomePageGallery> */}
 
-            {imageIds.map(id => <RecordImage src={`https://ara.directus.app/assets/${id}`}></RecordImage>)}
+            
+            {imageIds.map(record => <RecordImage id={record['id']} src={`https://ara.directus.app/assets/${record['image']}`}></RecordImage>)}
             {/* <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
             <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
             <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
             <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage> */}
-            
             </div>  
             
 
