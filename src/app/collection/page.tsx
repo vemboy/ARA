@@ -7,7 +7,7 @@ import RecordCollectionRow from './record-collection-row'
 
 export default function Collection() {
 
-  const [records, setRecords] = useState([]);
+  const [records, setRecords] = useState<any[]>([])
 
   useEffect(() => {
     axios
@@ -236,9 +236,9 @@ export default function Collection() {
           </div>
         </div>
 
-                  <div className="group-65 group">
+        <div className="group-65 group">
         {records.map(record => <RecordCollectionRow genre={record['genre'] ? record['genre'] : 'unknown genre'} year={record['year'] ? record['year'] : 'unknown year'} title={record['title']} author={record['author'].substring(0, 20)} src={`https://ara.directus.app/assets/${record['image'] ? record['image'] : 'bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48'}`}></RecordCollectionRow>)}
-</div>
+        </div>
 
         <div className="group-61">
           <div className="flex-row-2 flex-row-3">
