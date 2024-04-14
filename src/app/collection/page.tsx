@@ -5,81 +5,42 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import RecordCollectionRow from './record-collection-row'
 
-interface Props {}
+export default function Collection() {
 
-const RecordGallery: React.FC<Props> = ({}) => {
   const [records, setRecords] = useState([]);
 
   useEffect(() => {
     axios
-      .get("https://ara.directus.app/items/record_archive?limit=500")
+      .get("https://ara.directus.app/items/record_archive?limit=4")
       .then((response) => {
+        console.log("Hello")
         console.log(response);
+        
         const records = response.data.data.map((record: any) => {
           return {
             author: record.artist_original,
             title: record.title,
+            image: record.record_image,
+            id: record.id,
+            genre: record.genre,
+            year: record.year
           };
         });
 
         setRecords(records);
+        console.log(records)
       });
-  }, []);
+      }, []);
 
-  return (
-    <div>
-      <div className="airtable-gallery-container">
-        <div style={{}}>
-          <div className="airtable-gallery"></div>
-          <p className="hello-body valign-text-middle adellesansarm-extra-extra-bold-midnight-15px">
-            {records.length > 0 ? records[0]['author'] : null}
-          </p>
-          <div className="hello-body-1 valign-text-middle adellesansarm-extrabolditalic-extra-bold-midnight-15px">
-            {records.length > 0 ? records[0]['title'] : null}
-          </div>
-        </div>
-        <div className="airtable-gallery-1"></div>
-        <div className="airtable-gallery-2"></div>
-        <div className="airtable-gallery-3"></div>
-      </div>
-      <div className="x-container">
-        <div className="hello-body-container-1"></div>
-        <div className="hello-body-container-2">
-          <p className="hello-body valign-text-middle adellesansarm-extra-extra-bold-midnight-15px">
-            Avo Sarkissian / Աւօ Սարգիսյան
-          </p>
-          <div className="hello-body-1 valign-text-middle adellesansarm-extrabolditalic-extra-bold-midnight-15px">
-            From Montreal with Love
-          </div>
-        </div>
-        <div className="hello-body-container">
-          <p className="hello-body valign-text-middle adellesansarm-extra-extra-bold-midnight-15px">
-            Avo Sarkissian / Աւօ Սարգիսյան
-          </p>
-          <div className="hello-body-1 valign-text-middle adellesansarm-extrabolditalic-extra-bold-midnight-15px">
-            From Montreal with Love
-          </div>
-        </div>
-        <div className="hello-body-container">
-          <p className="hello-body valign-text-middle adellesansarm-extra-extra-bold-midnight-15px">
-            Avo Sarkissian / Աւօ Սարգիսյան
-          </p>
-          <div className="hello-body-1 valign-text-middle adellesansarm-extrabolditalic-extra-bold-midnight-15px">
-            From Montreal with Love
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+      
 
-export default function Collection() {
   return (
     <div className="container-center-horizontal">
       <div className="collection screen">
         <h1 className="hello valign-text-middle">
           Collection <br></br> ՀԱԲԱԿԱԾՈՒ
         </h1>
+        <div> 
         <div className="overlap-group11">
           <div className="flex-container-1169 flex-container adellesansarm-extra-extra-bold-midnight-34px">
             <div className="text valign-text-middle text-4">
@@ -247,6 +208,9 @@ export default function Collection() {
             </div>
           </div>
         </div>
+</div>
+
+
         <div className="overlap-group-container">
           <div className="flex-row flex">
             <div className="flex-col flex">
@@ -272,9 +236,9 @@ export default function Collection() {
           </div>
         </div>
 
-        <RecordCollectionRow></RecordCollectionRow>
-        <RecordCollectionRow></RecordCollectionRow>
-        <RecordCollectionRow></RecordCollectionRow>
+                  <div className="group-65 group">
+        {records.map(record => <RecordCollectionRow genre={record['genre'] ? record['genre'] : 'unknown genre'} year={record['year'] ? record['year'] : 'unknown year'} title={record['title']} author={record['author'].substring(0, 20)} src={`https://ara.directus.app/assets/${record['image'] ? record['image'] : 'bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48'}`}></RecordCollectionRow>)}
+</div>
 
         <div className="group-61">
           <div className="flex-row-2 flex-row-3">
@@ -284,7 +248,7 @@ export default function Collection() {
                 <div className="airtable-gallery-4"></div>
                 <img
                   className="r-11379693-1515454010-2972-1 r-11379693-1515454010-2972"
-                  src="img/r-11379693-1515454010-2972-13.png"
+                  src=""
                   alt="R-11379693-1515454010-2972 10"
                 />
               </div>
@@ -431,7 +395,7 @@ export default function Collection() {
                 <div className="group-57"></div>
                 <img
                   className="r-11379693-1515454010-2972-9 r-11379693-1515454010-2972"
-                  src="img/r-11379693-1515454010-2972-13.png"
+                  src=""
                   alt="R-11379693-1515454010-2972 9"
                 />
               </div>
@@ -712,7 +676,7 @@ export default function Collection() {
               <div className="airtable-gallery-4"></div>
               <img
                 className="r-11379693-1515454010-2972-1 r-11379693-1515454010-2972"
-                src="img/r-11379693-1515454010-2972-13.png"
+                src=""
                 alt="R-11379693-1515454010-2972 13"
               />
             </div>
@@ -817,8 +781,9 @@ export default function Collection() {
           </div>
         </div>
       </div>
+      
     </div>
+    
   );
 }
 
-console.log("HELLO")

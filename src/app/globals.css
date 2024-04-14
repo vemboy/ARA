@@ -513,6 +513,7 @@
   font-size: var(--font-size-xxxxl);
   font-style: normal;
   font-weight: 600;
+  margin-left: 1.5vw;
 }
 
 .adellesansarm-regular-normal-midnight-52px {
@@ -521,6 +522,18 @@
   font-size: 52px;
   font-style: normal;
   font-weight: 400;
+  margin-top: 5vh;
+  margin-left: 1.5vw;
+}
+
+.adellesansarm-regular-normal-midnight-52px-1 {
+  color: var(--logo-color);
+  font-family: 'Fit-Variable';
+  font-size: 150px;
+  font-style: normal;
+  font-weight: 400;
+  margin-top: 7.50vh;
+  margin-left: 1.5vw;
 }
 
 .fitvariable-regular-normal-midnight-222px {
@@ -603,4 +616,3 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   font: inherit;
   vertical-align: baseline
 }
-

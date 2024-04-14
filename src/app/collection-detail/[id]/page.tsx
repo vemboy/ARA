@@ -77,7 +77,7 @@ const Album: React.FC<Props> = ({}) => {
               </span>
             </div>
           </div>
-          <div style={{marginTop: "120px"}} className="flex-container-1232 flex-container adellesansarm-semi-bold-black-33px">
+          <div style={{marginTop: "70px"}} className="flex-container-1232 flex-container adellesansarm-semi-bold-black-33px">
             <div className="text-1 text-6">
               <span className="adellesansarm-semi-bold-black-33px">Origin: Canada</span>
             </div>
@@ -100,11 +100,11 @@ const Album: React.FC<Props> = ({}) => {
       </div>
       <div className="flex-container-1225 flex-container adellesansarm-regular-normal-midnight-52px">
         <div className="text-2 text-6">
-          <span className="adellesansarm-regular-normal-midnight-52px">
+          <span className="adellesansarm-regular-normal-midnight-52px-1">
             ԱՒՕ
           </span>
         </div>
-        <div style={{marginTop: "75px", width: "35vw"}} className="text-2 text-6">
+        <div style={{marginTop: "40px", width: "35vw"}} className="text-2 text-6">
           <span style={{fontSize: "35px", lineHeight: "normal"}}  className="adellesansarm-regular-normal-midnight-52px">
             Artist(s): {record['artist_original']}
           </span>

@@ -2,40 +2,31 @@ function RecordCollectionRow(props: any){
     return(
       <>
         <div className="airtable-gallery-container">
-          <div className="airtable-gallery"></div>
-          <div className="airtable-gallery-1"></div>
-          <div className="airtable-gallery-1"></div>
-          <div className="airtable-gallery-1"></div>
+          <img src={`${props.src}`} className="airtable-gallery"></img>
+          <img src={`${props.src}`} className="airtable-gallery-1"></img>
+          <img src={`${props.src}`} className="airtable-gallery-1"></img>
+          <img src={`${props.src}`} className="airtable-gallery-1"></img>
         </div>
 
 
         <div className="x-container adellesansarm-heavy-normal-midnight-15px">
           <p className="hello-body-2 valign-text-middle">
-            Avo Sarkissian / Աւօ Սարգիսյան
-          </p>
-          <p className="hello-body-3 valign-text-middle">
-            Avo Sarkissian / Աւօ Սարգիսյան
-          </p>
-          <p className="hello-body-4 valign-text-middle">
-            Avo Sarkissian / Աւօ Սարգիսյան
-          </p>
-          <p className="hello-body-4 valign-text-middle">
-            Avo Sarkissian / Աւօ Սարգիսյան
+            {props.author}
           </p>
         </div>
 
         <div className="hello-body-container-3 adellesansarm-light-midnight-15px">
           <div className="hello-body-2 valign-text-middle">
-            From Montreal with Love
+            {props.title}
           </div>
           <div className="hello-body-3 valign-text-middle">
-            From Montreal with Love
+            {props.title}
           </div>
           <div className="hello-body-4 valign-text-middle">
-            From Montreal with Love
+            {props.title}
           </div>
           <div className="hello-body-4 valign-text-middle">
-            From Montreal with Love
+            {props.title}
           </div>
         </div>
 
@@ -47,11 +38,11 @@ function RecordCollectionRow(props: any){
             </div>
             <div className="text-3 text-4">
               <span className="adellesansarm-semi-bold-mako-10px">
-                Folk, World, &amp; Country
+                {props.genre}
               </span>
             </div>
             <div className="text-3 text-4">
-              <span className="adellesansarm-semi-bold-mako-10px">1977</span>
+              <span className="adellesansarm-semi-bold-mako-10px">{props.year}</span>
             </div>
           </div>
           <div className="flex-container-1149 flex-container">
@@ -60,11 +51,11 @@ function RecordCollectionRow(props: any){
             </div>
             <div className="text-3 text-4">
               <span className="adellesansarm-semi-bold-mako-10px">
-                Folk, World, &amp; Country
+                {props.genre}
               </span>
             </div>
             <div className="text-3 text-4">
-              <span className="adellesansarm-semi-bold-mako-10px">1977</span>
+              <span className="adellesansarm-semi-bold-mako-10px">{props.year}</span>
             </div>
           </div>
           <div className="flex-container-1150 flex-container">
@@ -73,11 +64,11 @@ function RecordCollectionRow(props: any){
             </div>
             <div className="text-3 text-4">
               <span className="adellesansarm-semi-bold-mako-10px">
-                Folk, World, &amp; Country
+                {props.genre}
               </span>
             </div>
             <div className="text-3 text-4">
-              <span className="adellesansarm-semi-bold-mako-10px">1977</span>
+              <span className="adellesansarm-semi-bold-mako-10px">{props.year}</span>
             </div>
           </div>
           <div className="flex-container-1151 flex-container">
@@ -86,11 +77,11 @@ function RecordCollectionRow(props: any){
             </div>
             <div className="text-3 text-4">
               <span className="adellesansarm-semi-bold-mako-10px">
-                Folk, World, &amp; Country
+                {props.genre}
               </span>
             </div>
             <div className="text-3 text-4">
-              <span className="adellesansarm-semi-bold-mako-10px">1977</span>
+              <span className="adellesansarm-semi-bold-mako-10px">{props.year}</span>
             </div>
           </div>
         </div>

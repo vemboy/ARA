@@ -127,6 +127,7 @@ export default function Home() {
         });
 
        setImageIds(records);
+       console.log(records)
       });
     // axios
     //   .get(
@@ -383,7 +384,7 @@ export default function Home() {
             {/* <HomePageGallery></HomePageGallery> */}
 
             
-            {imageIds.map(record => <RecordImage id={record['id']} src={`https://ara.directus.app/assets/${record['image']}`}></RecordImage>)}
+            {imageIds.map(record => <RecordImage id={record['id']} src={`https://ara.directus.app/assets/${record['image'] ? record['image'] : 'bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48'}`}></RecordImage>)}
             {/* <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
             <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
             <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
