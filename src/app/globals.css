@@ -432,6 +432,7 @@
   font-size: var(--font-size-m);
   font-style: normal;
   font-weight: 400;
+
 }
 
 .adellesansarm-lightitalic-light-midnight-15px {
@@ -615,4 +616,15 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   font-size: 100%;
   font: inherit;
   vertical-align: baseline
+}
+
+.text-33 {
+  display: inline-block;
+
+}
+
+.text-33-wrapper {
+  top: 3px;
+  position: relative;
+text-align: center;
 }

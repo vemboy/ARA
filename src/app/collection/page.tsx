@@ -11,7 +11,7 @@ export default function Collection() {
 
   useEffect(() => {
     axios
-      .get("https://ara.directus.app/items/record_archive?limit=4")
+      .get("https://ara.directus.app/items/record_archive?limit=12")
       .then((response) => {
         console.log("Hello")
         console.log(response);
@@ -236,11 +236,10 @@ export default function Collection() {
           </div>
         </div>
 
-        <div className="group-65 group">
-        {records.map(record => <RecordCollectionRow genre={record['genre'] ? record['genre'] : 'unknown genre'} year={record['year'] ? record['year'] : 'unknown year'} title={record['title']} author={record['author'].substring(0, 20)} src={`https://ara.directus.app/assets/${record['image'] ? record['image'] : 'bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48'}`}></RecordCollectionRow>)}
-        </div>
-
-        <div className="group-61">
+    <div className="group-65 group" style={{display: "flex", alignItems: "flex-start", gap: "33px", height: "612px", justifyContent: "flex-start", flexDirection: "row", flexWrap: "wrap", minWidth: "1254px", top: "35px", position: "relative"}}> 
+        {records.map(record => <RecordCollectionRow id={record['id']} genre={record['genre'] ? record['genre'] : 'unknown genre'} year={record['year'] ? record['year'] : 'unknown year'} title={record['title']} author={record['author'].substring(0, 20)} src={`https://ara.directus.app/assets/${record['image'] ? record['image'] : 'bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48'}`}></RecordCollectionRow>)}
+</div>
+        {/* <div className="group-61">
           <div className="flex-row-2 flex-row-3">
             <div className="flex-col-3 flex-col-7">
               <div className="airtable-gallery"></div>
@@ -779,8 +778,8 @@ export default function Collection() {
               </span>
             </div>
           </div>
-        </div>
-      </div>
+        </div>*/}
+      </div> 
       
     </div>
     

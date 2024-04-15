@@ -397,6 +397,7 @@
     top: 0;
   }
   
+
   .macbook-pro-81 .airtable-gallery-container-1 {
     width: 289px;
   }
@@ -442,6 +443,7 @@
     background-color: var(--cloud);
     height: 288px;
     width: 288px;
+    display: inline-block;
   }
   
   .macbook-pro-81 .airtable-gallery-1 {

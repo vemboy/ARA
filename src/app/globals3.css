@@ -5,7 +5,7 @@
   background-color: var(--coloursecondarywhite-100-general);
   display: flex;
   flex-direction: column;
-  height: 5800px;
+  height: 2500px;
   overflow: hidden;
   width: 1440px;
 }
@@ -394,10 +394,18 @@
 }
 
 .collection .hello-body-2 {
+  top: 7px;
+  position: relative;
   height: 21px;
   letter-spacing: 0;
   line-height: 0.1px;
   width: 287px;
+  text-align: center;
+    color: var(--logo-color);
+  font-family: 'arm-heavy';
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 400;
 }
 
 .collection .hello-body-3 {

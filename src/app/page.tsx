@@ -372,7 +372,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="footer-container-1-2"></div>
-                  <div className="footer-container-1-3"></div>
+                  <div className="footekr-container-1-3"></div>
                 </div>
                 <div className="footer-container-2">
                   <div className="footer-container-2-title">ARA</div>
