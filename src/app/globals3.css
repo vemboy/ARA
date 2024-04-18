@@ -396,12 +396,11 @@
 .collection .hello-body-2 {
   top: 7px;
   position: relative;
-  height: 21px;
+  height: 31px;
   letter-spacing: 0;
-  line-height: 0.1px;
+  
   width: 287px;
-  text-align: center;
-    color: var(--logo-color);
+  color: var(--logo-color);
   font-family: 'arm-heavy';
   font-size: var(--font-size-m);
   font-style: normal;
@@ -587,7 +586,7 @@
 .collection .flex-col-4 {
   
   margin-left: 13px;
-  min-height: 1427px;
+  
   width: 287px;
 }
 
@@ -596,12 +595,13 @@
   line-height: 16px;
   min-height: 21px;
   width: 287px;
+  margin-top: 17.5px;
 }
 
 .collection .flex-container-110 {
   gap: 16px;
   height: 21px;
-  margin-top: 5px;
+  margin-top: 2.5px;
   position: relative;
   width: 233px;
 }
@@ -609,7 +609,7 @@
 .collection .flex-container-1114 {
   gap: 11px;
   height: 33px;
-  margin-top: 190px;
+  margin-top: 175px;
   position: relative;
   width: 211px;
 }

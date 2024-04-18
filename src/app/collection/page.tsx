@@ -4,9 +4,39 @@ import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import RecordCollectionRow from './record-collection-row'
+import RecordCollectionRowDifferent from './record-collection-row-different'
+import RecordListView from "./record-list-view";
 
 export default function Collection() {
 
+  const nextPage = () => {
+
+    setPage(currentPage + 1)
+
+    axios
+      .get(`https://ara.directus.app/items/record_archive?limit=12&page=${currentPage}`)
+      .then((response) => {
+        console.log("Hello")
+        console.log(response);
+        
+        const records = response.data.data.map((record: any) => {
+          return {
+            author: record.artist_original,
+            title: record.title,
+            image: record.record_image,
+            id: record.id,
+            genre: record.genre,
+            year: record.year,
+            title_armenian: record.title_armenian
+          };
+        });
+
+        setRecords(records);
+        console.log(records)
+      });
+    };
+ 
+  const [currentPage, setPage] = useState(2)
   const [records, setRecords] = useState<any[]>([])
 
   useEffect(() => {
@@ -23,7 +53,8 @@ export default function Collection() {
             image: record.record_image,
             id: record.id,
             genre: record.genre,
-            year: record.year
+            year: record.year,
+            title_armenian: record.title_armenian
           };
         });
 
@@ -35,6 +66,7 @@ export default function Collection() {
       
 
   return (
+    <>
     <div className="container-center-horizontal">
       <div className="collection screen">
         <h1 className="hello valign-text-middle">
@@ -210,36 +242,58 @@ export default function Collection() {
         </div>
 </div>
 
+        
+        
 
-        <div className="overlap-group-container">
-          <div className="flex-row flex">
-            <div className="flex-col flex">
-              <div className="rectangle-3"></div>
-              <div className="rectangle-3-1"></div>
-            </div>
-            <div className="flex-col flex">
-              <div className="rectangle-3"></div>
-              <div className="rectangle-3-1"></div>
-            </div>
-          </div>
-          <div className="flex-row-1 flex-row-3">
-            <div className="flex-col-1 flex-col-7">
-              <div className="rectangle-4"></div>
-              <div className="rectangle-4"></div>
-              <div className="rectangle-4"></div>
-            </div>
-            <div className="flex-col-2 flex-col-7">
-              <div className="rectangle-4-1"></div>
-              <div className="rectangle-4-1"></div>
-              <div className="rectangle-4-1"></div>
-            </div>
-          </div>
-        </div>
 
-    <div className="group-65 group" style={{display: "flex", alignItems: "flex-start", gap: "33px", height: "612px", justifyContent: "flex-start", flexDirection: "row", flexWrap: "wrap", minWidth: "1254px", top: "35px", position: "relative"}}> 
-        {records.map(record => <RecordCollectionRow id={record['id']} genre={record['genre'] ? record['genre'] : 'unknown genre'} year={record['year'] ? record['year'] : 'unknown year'} title={record['title']} author={record['author'].substring(0, 20)} src={`https://ara.directus.app/assets/${record['image'] ? record['image'] : 'bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48'}`}></RecordCollectionRow>)}
-</div>
-        {/* <div className="group-61">
+
+
+
+<>
+
+    {/* <div className="group-65 group" style={{display: "flex", alignItems: "flex-start", gap: "33px", height: "612px", justifyContent: "flex-start", flexDirection: "row", flexWrap: "wrap", minWidth: "1254px", top: "35px", position: "relative"}}> 
+        {records.map(record => <RecordCollectionRow title_armenian={record['title_armenian'] ? record['title_armenian'] : 'No armenian yet'} id={record['id']} genre={record['genre'] ? record['genre'] : 'unknown genre'} year={record['year'] ? record['year'] : 'unknown year'} title={record['title']} author={(record['author'] ?? "Unkown author").substring(0, 20)} src={`https://ara.directus.app/assets/${record['image'] ? record['image'] : 'bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48'}`}></RecordCollectionRow>)}
+    </div> */}
+
+</>
+
+{/* <div className="group-65 group" style={{display: "flex", alignItems: "flex-start", gap: "33px", height: "612px", justifyContent: "flex-start", flexDirection: "row", flexWrap: "wrap", minWidth: "1254px", top: "35px", position: "relative"}}> 
+<RecordCollectionRowDifferent></RecordCollectionRowDifferent>
+</div> */}
+
+      <RecordListView records={records}> </RecordListView>
+    
+        
+      </div> 
+      
+    </div>
+    <button className="next-button" onClick={nextPage}> Next </button>
+
+    
+
+    </>
+  );
+}
+
+
+
+
+
+// 
+
+
+
+
+
+
+
+
+
+
+
+
+
+{/* <div className="group-61">
           <div className="flex-row-2 flex-row-3">
             <div className="flex-col-3 flex-col-7">
               <div className="airtable-gallery"></div>
@@ -779,10 +833,3 @@ export default function Collection() {
             </div>
           </div>
         </div>*/}
-      </div> 
-      
-    </div>
-    
-  );
-}
-

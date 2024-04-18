@@ -628,3 +628,10 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   position: relative;
 text-align: center;
 }
+
+.next-button {
+  height: 50px;
+  width: 100px;
+  margin-left: 45vw;
+  margin-bottom: 50px;
+}
