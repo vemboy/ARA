@@ -3,7 +3,7 @@ function RecordCollectionRow(props: any){
       <>
         <div>
         {/* <div className="airtable-gallery-container"> */}
-          <a href={`/collection-detail/${props.id}`}><img src={`${props.src}`} className="airtable-gallery"></img></a>
+          <a /*href={`/collection-detail/${props.id}`}*/><img src={`${props.src}`} onClick={() => {props.setCurrentSong(`https://ara.directus.app/assets/${props.songId}`), console.log(`https://ara.directus.app/assets/${props.songId}`), console.log(props)}} className="airtable-gallery"></img></a>
 
        {/* </div> */}
 

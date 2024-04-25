@@ -632,6 +632,20 @@ text-align: center;
 .next-button {
   height: 50px;
   width: 100px;
+
+  display: inline-block;
+}
+
+.previous-button {
+  height: 50px;
+  width: 100px;
   margin-left: 45vw;
-  margin-bottom: 50px;
+  margin-bottom: 100px;
+  display: inline-block;
+}
+
+.audio-player {
+  position: sticky;
+  height: 10vh;
+  top: 90vh;
 }

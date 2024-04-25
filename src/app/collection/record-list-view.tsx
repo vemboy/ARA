@@ -35,8 +35,8 @@ function RecordListView(props: any){
             </div>
           </div>
         </div>  <div className="group-65 group" style={{display: "flex", alignItems: "flex-start", gap: "33px", height: "612px", justifyContent: "flex-start", flexDirection: "row", flexWrap: "wrap", minWidth: "1254px", top: "35px", position: "relative"}}> 
-        {props.records.map((record: { [x: string]: any }) => <RecordCollectionRow title_armenian={record['title_armenian'] ? record['title_armenian'] : 'No armenian yet'} id={record['id']} genre={record['genre'] ? record['genre'] : 'unknown genre'} year={record['year'] ? record['year'] : 'unknown year'} title={record['title']} author={(record['author'] ?? "Unkown author").substring(0, 20)} src={`https://ara.directus.app/assets/${record['image'] ? record['image'] : 'bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48'}`}></RecordCollectionRow>)}
-    </div> </>) : (  <>       <div className="overlap-group-container">
+        {props.records.map((record: { [x: string]: any }) => <RecordCollectionRow setCurrentSong={props.setCurrentSong} songId={record['songId']} title_armenian={record['title_armenian'] ? record['title_armenian'] : 'No armenian yet'} id={record['id']} genre={record['genre'] ? record['genre'] : 'unknown genre'} year={record['year'] ? record['year'] : 'unknown year'} title={record['title']} author={(record['author'] ?? "Unkown author").substring(0, 20)} src={`https://ara.directus.app/assets/${record['image'] ? record['image'] : 'bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48'}`}></RecordCollectionRow>)}
+    </div> </>) : (  <> <div className="overlap-group-container">
           <div onClick={() => setView("gridview")} className="flex-row flex">
             <div className="flex-col flex">
               <div style={{backgroundColor: "#091133", border: "1px #091133"}} className="rectangle-3"></div>

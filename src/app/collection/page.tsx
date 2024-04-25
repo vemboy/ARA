@@ -6,13 +6,26 @@ import axios from "axios";
 import RecordCollectionRow from './record-collection-row'
 import RecordCollectionRowDifferent from './record-collection-row-different'
 import RecordListView from "./record-list-view";
+import PageNumbers from "./page-numbers";
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
+
 
 export default function Collection() {
 
+  
+  const Player = () => {
+   return <AudioPlayer
+      autoPlay
+      src={currentSong}
+      onPlay={e => console.log("onPlay")}
+      // other props here
+    />
+    
+  };
+
   const nextPage = () => {
-
     setPage(currentPage + 1)
-
     axios
       .get(`https://ara.directus.app/items/record_archive?limit=12&page=${currentPage}`)
       .then((response) => {
@@ -21,6 +34,7 @@ export default function Collection() {
         
         const records = response.data.data.map((record: any) => {
           return {
+            songId: record.audio,
             author: record.artist_original,
             title: record.title,
             image: record.record_image,
@@ -35,7 +49,39 @@ export default function Collection() {
         console.log(records)
       });
     };
+
+    const previousPage = () => {
+      if(currentPage > 0) {
+        setPage(currentPage - 1)
+      }
+      else {
+        console.log("At start")
+      }
+      axios
+        .get(`https://ara.directus.app/items/record_archive?limit=12&page=${currentPage}`)
+        .then((response) => {
+          console.log("Hello")
+          console.log(response);
+          
+          const records = response.data.data.map((record: any) => {
+            return {
+              songId: record.audio,
+              author: record.artist_original,
+              title: record.title,
+              image: record.record_image,
+              id: record.id,
+              genre: record.genre,
+              year: record.year,
+              title_armenian: record.title_armenian
+            };
+          });
+  
+          setRecords(records);
+          console.log(records)
+        });
+      };
  
+  const [currentSong, setSong] = useState(null)
   const [currentPage, setPage] = useState(2)
   const [records, setRecords] = useState<any[]>([])
 
@@ -44,10 +90,12 @@ export default function Collection() {
       .get("https://ara.directus.app/items/record_archive?limit=12")
       .then((response) => {
         console.log("Hello")
-        console.log(response);
+        console.log(response.data.data);
+        const amountOfPages = response.data.data.length
         
         const records = response.data.data.map((record: any) => {
           return {
+            songId: record.audio,
             author: record.artist_original,
             title: record.title,
             image: record.record_image,
@@ -67,6 +115,14 @@ export default function Collection() {
 
   return (
     <>
+
+
+
+    <AudioPlayer src={currentSong} className="audio-player"></AudioPlayer>
+
+
+
+
     <div className="container-center-horizontal">
       <div className="collection screen">
         <h1 className="hello valign-text-middle">
@@ -261,14 +317,15 @@ export default function Collection() {
 <RecordCollectionRowDifferent></RecordCollectionRowDifferent>
 </div> */}
 
-      <RecordListView records={records}> </RecordListView>
+    <RecordListView setCurrentSong={setSong} records={records}> </RecordListView>
     
         
-      </div> 
+    </div> 
       
     </div>
+    <button className="previous-button" onClick={previousPage}> Previous </button>
+    {/* <PageNumbers amountOfPages={12}></PageNumbers> */}
     <button className="next-button" onClick={nextPage}> Next </button>
-
     
 
     </>
