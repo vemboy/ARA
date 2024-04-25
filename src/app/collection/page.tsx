@@ -15,12 +15,12 @@ export default function Collection() {
 
   
   const Player = () => {
-   return <AudioPlayer
+   return (<AudioPlayer
       autoPlay
       src={currentSong}
       onPlay={e => console.log("onPlay")}
       // other props here
-    />
+    />)
     
   };
 
@@ -81,7 +81,7 @@ export default function Collection() {
         });
       };
  
-  const [currentSong, setSong] = useState(null)
+  const [currentSong, setSong] = useState("")
   const [currentPage, setPage] = useState(2)
   const [records, setRecords] = useState<any[]>([])
 
