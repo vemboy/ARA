@@ -645,7 +645,14 @@ text-align: center;
 }
 
 .audio-player {
-  position: sticky;
+  position: fixed;
+  height: 10vh;
+  top: 90vh;
+}
+
+.audio-player-hidden {
+  display: none;
+  position: fixed;
   height: 10vh;
   top: 90vh;
 }

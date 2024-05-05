@@ -1,3 +1,5 @@
+"use client";
+
 function PageNumbers(props: any){
     
     const myPages = []

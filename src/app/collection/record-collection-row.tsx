@@ -1,3 +1,5 @@
+"use client";
+
 function RecordCollectionRow(props: any){
     return(
       <>

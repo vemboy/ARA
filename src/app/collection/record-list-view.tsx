@@ -1,3 +1,5 @@
+"use client";
+
 import RecordCollectionRow from './record-collection-row'
 import RecordCollectionRowDifferent from './record-collection-row-different'
 import React, { useState, useEffect } from "react";

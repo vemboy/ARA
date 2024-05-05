@@ -9,20 +9,14 @@ import RecordListView from "./record-list-view";
 import PageNumbers from "./page-numbers";
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
-
+import { PageContext } from "../layout";
+import Link from "next/link";
 
 export default function Collection() {
 
-  
-  const Player = () => {
-   return (<AudioPlayer
-      autoPlay
-      src={currentSong}
-      onPlay={e => console.log("onPlay")}
-      // other props here
-    />)
-    
-  };
+  const setSong = React.useContext(PageContext);
+  console.log("INDICATOR",setSong)
+
 
   const nextPage = () => {
     setPage(currentPage + 1)
@@ -51,7 +45,8 @@ export default function Collection() {
     };
 
     const previousPage = () => {
-      if(currentPage > 0) {
+      console.log(currentPage)
+      if(currentPage - 2 > 0) {
         setPage(currentPage - 1)
       }
       else {
@@ -81,7 +76,7 @@ export default function Collection() {
         });
       };
  
-  const [currentSong, setSong] = useState("")
+  // const [currentSong, setSong] = useState("")
   const [currentPage, setPage] = useState(2)
   const [records, setRecords] = useState<any[]>([])
 
@@ -118,11 +113,11 @@ export default function Collection() {
 
 
 
-    <AudioPlayer src={currentSong} className="audio-player"></AudioPlayer>
+    {/* <AudioPlayer src={currentSong} className="audio-player"></AudioPlayer> */}
 
 
 
-
+    <Link href='/'>HOME</Link>
     <div className="container-center-horizontal">
       <div className="collection screen">
         <h1 className="hello valign-text-middle">
