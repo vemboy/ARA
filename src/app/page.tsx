@@ -1,12 +1,11 @@
 "use client";
 
-import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import RecordImage from './record-image'
+import RecordImage from "./record-image";
+import Link from "next/link";
 
 // const HomePageGallery: React.FC<Props> = ({}) => {
-
 
 //   // TODO: use key to request thumbnail instead of full image so it fetches (loads) faster
 
@@ -110,14 +109,13 @@ import RecordImage from './record-image'
 // };
 
 export default function Home() {
-
-    const [imageIds, setImageIds] = useState([]);
+  const [imageIds, setImageIds] = useState([]);
 
   useEffect(() => {
     axios
       .get("https://ara.directus.app/items/record_archive?limit=8")
       .then((response) => {
-        console.log("CORRECT")
+        console.log("CORRECT");
         console.log(response);
         const records = response.data.data.map((record: any) => {
           return {
@@ -126,8 +124,8 @@ export default function Home() {
           };
         });
 
-       setImageIds(records);
-       console.log(records)
+        setImageIds(records);
+        console.log(records);
       });
     // axios
     //   .get(
@@ -212,14 +210,14 @@ export default function Home() {
                 <div className="text-1 valign-text-middle">
                   <span>
                     <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <a href="/collection">COLLECTION</a>
+                      <Link href="/collection">COLLECTION</Link>
                     </span>{" "}
                   </span>
                 </div>
                 <div className="text-1 valign-text-middle">
                   <span>
                     <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <a href="/collection">ՀԱԲԱԿԱԾՈՒ</a>
+                      <Link href="/collection">ՀԱԲԱԿԱԾՈՒ</Link>
                     </span>{" "}
                   </span>
                 </div>
@@ -228,14 +226,14 @@ export default function Home() {
                 <div className="text-1 valign-text-middle">
                   <span>
                     <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <a href="#">CONTRIBUTE</a>
+                      <Link href="#">CONTRIBUTE</Link>
                     </span>{" "}
                   </span>
                 </div>
                 <div className="text-1 valign-text-middle">
                   <span>
                     <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <a href="#">ԱՋԱԿՑԵԼ</a>
+                      <Link href="#">ԱՋԱԿՑԵԼ</Link>
                     </span>{" "}
                   </span>
                 </div>
@@ -244,14 +242,16 @@ export default function Home() {
                 <div className="text-1 valign-text-middle">
                   <span>
                     <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <a href="javascript:scrollTo(AboutUs);">ABOUT US</a>
+                      <Link href="javascript:scrollTo(AboutUs);">ABOUT US</Link>
                     </span>{" "}
                   </span>
                 </div>
                 <div className="text-1 valign-text-middle">
                   <span>
                     <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <a href="javascript:scrollTo(AboutUs);">ՄԵՐ ՄԱՍԻՆ</a>
+                      <Link href="javascript:scrollTo(AboutUs);">
+                        ՄԵՐ ՄԱՍԻՆ
+                      </Link>
                     </span>{" "}
                   </span>
                 </div>
@@ -260,14 +260,14 @@ export default function Home() {
                 <div className="text-1 valign-text-middle">
                   <span>
                     <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <a href="javascript:scrollTo(Footer);">CONTACT</a>
+                      <Link href="javascript:scrollTo(Footer);">CONTACT</Link>
                     </span>{" "}
                   </span>
                 </div>
                 <div className="text-1 valign-text-middle">
                   <span>
                     <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <a href="javascript:scrollTo(Footer);">ԿԱՊ</a>
+                      <Link href="javascript:scrollTo(Footer);">ԿԱՊ</Link>
                     </span>{" "}
                   </span>
                 </div>
@@ -311,13 +311,13 @@ export default function Home() {
               congue.
             </p>
           </div>
-          <a href="/collection">
+          <Link href="/collection">
             <div className="hello-body-1 valign-text-bottom">
               View collection —&gt;
               <br />
               Հավակածուներ
             </div>
-          </a>
+          </Link>
           <div className="overlap-group2">
             <div className="rectangle-16 rectangle">
               <div className="stat-page-container">
@@ -376,22 +376,27 @@ export default function Home() {
                 </div>
                 <div className="footer-container-2">
                   <div className="footer-container-2-title">ARA</div>
-                </div>  
+                </div>
               </div>
             </div>
-          <div className="group-65 group">
+            <div className="group-65 group">
+              {/* <HomePageGallery></HomePageGallery> */}
 
-            {/* <HomePageGallery></HomePageGallery> */}
-
-            
-            {imageIds.map(record => <RecordImage id={record['id']} src={`https://ara.directus.app/assets/${record['image'] ? record['image'] : 'bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48'}`}></RecordImage>)}
-            {/* <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
+              {imageIds.map((record) => (
+                <RecordImage
+                  id={record["id"]}
+                  src={`https://ara.directus.app/assets/${
+                    record["image"]
+                      ? record["image"]
+                      : "bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48"
+                  }`}
+                ></RecordImage>
+              ))}
+              {/* <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
             <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
             <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
             <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage> */}
-            </div>  
-            
-
+            </div>
           </div>
           <div className="overlap-group">`</div>
         </div>

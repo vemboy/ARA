@@ -651,7 +651,7 @@ text-align: center;
 }
 
 .audio-player-hidden {
-  display: none;
+  display: none !important;
   position: fixed;
   height: 10vh;
   top: 90vh;
