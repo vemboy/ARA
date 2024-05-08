@@ -3,29 +3,31 @@
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { usePathname } from 'next/navigation'
+import { usePathname } from "next/navigation";
+import {
+  getDefaultImageDetailUrl,
+  getImageDetailUrl,
+} from "@/utils/assetUtils";
 
 interface Props {}
 
 const Album: React.FC<Props> = ({}) => {
   const [record, setRecord] = useState(null);
-  const pathName = usePathname()
-  const recordId = pathName.split('/').slice(-1)[0]
-  console.log(pathName)
-  console.log(recordId)
+  const pathName = usePathname();
+  const recordId = pathName.split("/").slice(-1)[0];
+  console.log(pathName);
+  console.log(recordId);
 
   useEffect(() => {
     axios
-      .get(
-        `https://ara.directus.app/items/record_archive/${recordId}`
-      )
+      .get(`https://ara.directus.app/items/record_archive/${recordId}`)
       .then((response) => {
         console.log(response);
         setRecord(response.data.data);
       });
   }, []);
 
-  console.log(recordId)
+  console.log(recordId);
   if (record === null) {
     return null;
   }
@@ -36,9 +38,9 @@ const Album: React.FC<Props> = ({}) => {
         <img
           className="r-11379693-1515454010-2972-3"
           src={
-            record['record_image']
-              ? `https://ara.directus.app/assets/${record['record_image']}`
-              : "https://ara.directus.app/assets/bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48"
+            record["record_image"]
+              ? getImageDetailUrl(record["record_image"])
+              : getDefaultImageDetailUrl()
           }
           alt="R-11379693-1515454010-2972 3"
         />
@@ -77,25 +79,28 @@ const Album: React.FC<Props> = ({}) => {
               </span>
             </div>
           </div>
-          <div style={{marginTop: "70px"}} className="flex-container-1232 flex-container adellesansarm-semi-bold-black-33px">
-            <div className="text-1 text-6">
-              <span className="adellesansarm-semi-bold-black-33px">Origin: Canada</span>
-            </div>
+          <div
+            style={{ marginTop: "70px" }}
+            className="flex-container-1232 flex-container adellesansarm-semi-bold-black-33px"
+          >
             <div className="text-1 text-6">
               <span className="adellesansarm-semi-bold-black-33px">
-                {record['genre'] ?? "Genre: Unkown"}
+                Origin: Canada
               </span>
             </div>
             <div className="text-1 text-6">
               <span className="adellesansarm-semi-bold-black-33px">
-                {record['record_original_recording_date'] ?? "Date: Unkown"}
+                {record["genre"] ?? "Genre: Unkown"}
+              </span>
+            </div>
+            <div className="text-1 text-6">
+              <span className="adellesansarm-semi-bold-black-33px">
+                {record["record_original_recording_date"] ?? "Date: Unkown"}
               </span>
             </div>
           </div>
-      
 
           <div className="rectangle-90"></div>
-         
         </div>
       </div>
       <div className="flex-container-1225 flex-container adellesansarm-regular-normal-midnight-52px">
@@ -104,16 +109,24 @@ const Album: React.FC<Props> = ({}) => {
             ԱՒՕ
           </span>
         </div>
-        <div style={{marginTop: "40px", width: "35vw"}} className="text-2 text-6">
-          <span style={{fontSize: "35px", lineHeight: "normal"}}  className="adellesansarm-regular-normal-midnight-52px">
-            Artist(s): {record['artist_original']}
+        <div
+          style={{ marginTop: "40px", width: "35vw" }}
+          className="text-2 text-6"
+        >
+          <span
+            style={{ fontSize: "35px", lineHeight: "normal" }}
+            className="adellesansarm-regular-normal-midnight-52px"
+          >
+            Artist(s): {record["artist_original"]}
           </span>
         </div>
-        <div style={{top: "0px"}} className="text-2 text-6">
-          <span style={{fontSize: "30px", color: "black !important"}} className="adellesansarm-regular-normal-midnight-52px">
-            Grouping: {record['title']}
+        <div style={{ top: "0px" }} className="text-2 text-6">
+          <span
+            style={{ fontSize: "30px", color: "black !important" }}
+            className="adellesansarm-regular-normal-midnight-52px"
+          >
+            Grouping: {record["title"]}
           </span>
-          
         </div>
       </div>
     </div>
@@ -124,11 +137,10 @@ export default function CollectionDetail() {
   return (
     <div className="container-center-horizontal">
       <div className="collection-detail screen">
-        <div className="group-9">
-        </div>
-        
+        <div className="group-9"></div>
+
         <Album></Album>
-       
+
         <div className="flex-container-1229 flex-container fitvariable-regular-normal-midnight-222px">
           <div className="text-3 valign-text-middle text-6">
             <span>

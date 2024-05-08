@@ -389,7 +389,7 @@ export default function Home() {
                     record["image"]
                       ? record["image"]
                       : "bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48"
-                  }`}
+                  }?key=thumbnail`}
                 ></RecordImage>
               ))}
               {/* <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
