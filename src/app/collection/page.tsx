@@ -14,33 +14,35 @@ import Link from "next/link";
 
 export default function Collection() {
   const setSong = React.useContext(AudioContext);
+  const updateSearchString = (e: any) => {
+    console.log("Searching...:", e.target.value);
+    setSearchString(e.target.value);
+  };
 
+  // TODO Need to fix search + pagination
   const nextPage = () => {
     setPage(currentPage + 1);
-    axios
-      .get(
-        `https://ara.directus.app/items/record_archive?limit=12&page=${currentPage}`
-      )
-      .then((response) => {
-        console.log("Hello");
-        console.log(response);
+    const url = getUrlWithFilters();
+    axios.get(`${url}&page=${currentPage}`).then((response) => {
+      console.log("Hello");
+      console.log(response);
 
-        const records = response.data.data.map((record: any) => {
-          return {
-            songId: record.audio,
-            author: record.artist_original,
-            title: record.title,
-            image: record.record_image,
-            id: record.id,
-            genre: record.genre,
-            year: record.year,
-            title_armenian: record.title_armenian,
-          };
-        });
-
-        setRecords(records);
-        console.log(records);
+      const records = response.data.data.map((record: any) => {
+        return {
+          songId: record.audio,
+          author: record.artist_original,
+          title: record.title,
+          image: record.record_image,
+          id: record.id,
+          genre: record.genre,
+          year: record.year,
+          title_armenian: record.title_armenian,
+        };
       });
+
+      setRecords(records);
+      console.log(records);
+    });
   };
 
   const previousPage = () => {
@@ -50,61 +52,75 @@ export default function Collection() {
     } else {
       console.log("At start");
     }
-    axios
-      .get(
-        `https://ara.directus.app/items/record_archive?limit=12&page=${currentPage}`
-      )
-      .then((response) => {
-        console.log("Hello");
-        console.log(response);
 
-        const records = response.data.data.map((record: any) => {
-          return {
-            songId: record.audio,
-            author: record.artist_original,
-            title: record.title,
-            image: record.record_image,
-            id: record.id,
-            genre: record.genre,
-            year: record.year,
-            title_armenian: record.title_armenian,
-          };
-        });
+    const url = getUrlWithFilters();
+    axios.get(`${url}&page=${currentPage}`).then((response) => {
+      console.log("Hello");
+      console.log(response);
 
-        setRecords(records);
-        console.log(records);
+      const records = response.data.data.map((record: any) => {
+        return {
+          songId: record.audio,
+          author: record.artist_original,
+          title: record.title,
+          image: record.record_image,
+          id: record.id,
+          genre: record.genre,
+          year: record.year,
+          title_armenian: record.title_armenian,
+        };
       });
+
+      setRecords(records);
+      console.log(records);
+    });
   };
+
+  function getUrlWithFilters() {
+    const filterObj = {
+      _or: [
+        { title: { _icontains: searchString } },
+        { title_armenian: { _icontains: searchString } },
+        { title_armenian: { _icontains: searchString } },
+        { artist_original: { _icontains: searchString } },
+      ],
+    };
+    const stringifiedFilterObj = JSON.stringify(filterObj);
+    console.log("stringifiedFilter", stringifiedFilterObj);
+    return searchString.length === 0
+      ? "https://ara.directus.app/items/record_archive?limit=12"
+      : `https://ara.directus.app/items/record_archive?limit=12&filter=${stringifiedFilterObj}`;
+  }
 
   // const [currentSong, setSong] = useState("")
   const [currentPage, setPage] = useState(2);
   const [records, setRecords] = useState<any[]>([]);
+  const [searchString, setSearchString] = useState<string>("");
 
   useEffect(() => {
-    axios
-      .get("https://ara.directus.app/items/record_archive?limit=12")
-      .then((response) => {
-        console.log("Hello");
-        console.log(response.data.data);
-        const amountOfPages = response.data.data.length;
+    const url = getUrlWithFilters();
+    axios.get(url).then((response) => {
+      console.log("Hello");
+      console.log(response.data.data);
+      const amountOfPages = response.data.data.length;
 
-        const records = response.data.data.map((record: any) => {
-          return {
-            songId: record.audio,
-            author: record.artist_original,
-            title: record.title,
-            image: record.record_image,
-            id: record.id,
-            genre: record.genre,
-            year: record.year,
-            title_armenian: record.title_armenian,
-          };
-        });
-
-        setRecords(records);
-        console.log(records);
+      const records = response.data.data.map((record: any) => {
+        return {
+          songId: record.audio,
+          author: record.artist_original,
+          title: record.title,
+          image: record.record_image,
+          id: record.id,
+          genre: record.genre,
+          year: record.year,
+          title_armenian: record.title_armenian,
+        };
       });
-  }, []);
+
+      setRecords(records);
+      console.log(records);
+    });
+  }, [searchString]);
 
   return (
     <>
@@ -118,6 +134,7 @@ export default function Collection() {
           </h1>
           <div>
             <div className="overlap-group11">
+              <input onChange={updateSearchString}></input>
               <div className="flex-container-1169 flex-container adellesansarm-extra-extra-bold-midnight-34px">
                 <div className="text valign-text-middle text-4">
                   <span>
