@@ -639,8 +639,9 @@ text-align: center;
 .previous-button {
   height: 50px;
   width: 100px;
-  margin-left: 45vw;
+  margin-left: 250px;
   margin-bottom: 100px;
+  overflow: hidden;
   display: inline-block;
 }
 

@@ -5,7 +5,7 @@
   background-color: var(--coloursecondarywhite-100-general);
   display: flex;
   flex-direction: column;
-  height: 2500px;
+  height: 2250px;
   overflow: hidden;
   width: 1440px;
 }
@@ -315,16 +315,61 @@
 }
 
 .collection .airtable-gallery {
-  background-color: var(--cloud);
-  height: 292px;
-  width: 291px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the image covers the entire area of the hole */
+  display: block; /* Remove any extra space below the image */
+  border: 0; /* Ensure there's no border on the image */
+}
+.div-container-container {
+  width: 300px;
+  height: 315px;
+  position: relative;
+
+    display: flex;
+  flex-direction: column;
+
 }
 
+.ARA_TITLE {
+  font-family: 'Fit-variable';
+  margin-left: 7.5px;
+  margin-top: 2.5px;
+  font-size: 3.5vw;
+  color: #091133;
+}
+.div-container {
+  flex: 1;
+  background-color: white; /* Match this with the body's background color */
+  width: 185px;
+  height: 185px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%; /* Makes the inner div circular */
+    overflow: hidden; /* Ensures only the circular part of the image is visible */
+  border: 0; /* Ensure there's no border */
+  padding: 0; /* Ensure there's no padding */}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+  margin-bottom: 2.5vh;
+  text-align: center;
+    color: var(--logo-color);
+  font-family: 'arm-heavy';
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 400;
+}
+  
 .collection .airtable-gallery-1 {
   background-color: var(--cloud);
   height: 292px;
-  margin-left: 19px;
-  width: 292px;
+  width: 291px;
+  
 }
 
 .collection .airtable-gallery-2 {

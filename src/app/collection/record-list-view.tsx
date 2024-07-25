@@ -48,7 +48,7 @@ function RecordListView(props: any) {
             style={{
               display: "flex",
               alignItems: "flex-start",
-              gap: "33px",
+              gap: "5px",
               height: "612px",
               justifyContent: "flex-start",
               flexDirection: "row",
@@ -57,7 +57,7 @@ function RecordListView(props: any) {
               top: "35px",
               position: "relative",
             }}
-          >
+          > 
             {props.records.map((record: { [x: string]: any }) => (
               <RecordCollectionRow
                 setCurrentSong={props.setCurrentSong}
@@ -71,6 +71,8 @@ function RecordListView(props: any) {
                 genre={record["genre"] ? record["genre"] : "unknown genre"}
                 year={record["year"] ? record["year"] : "unknown year"}
                 title={record["title"]}
+                color={record["color"]}
+                display_title={record["display_title"] ? record["display_title"] : "No title yet"}
                 author={(record["author"] ?? "Unkown author").substring(0, 20)}
                 src={
                   record["image"]
@@ -167,6 +169,8 @@ function RecordListView(props: any) {
                 genre={record["genre"] ? record["genre"] : "unknown genre"}
                 year={record["year"] ? record["year"] : "unknown year"}
                 title={record["title"]}
+                color={record["color"]}
+                display_title={record["display_title"]}
                 author={(record["author"] ?? "Unkown author").substring(0, 20)}
                 src={
                   record["image"]

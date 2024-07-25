@@ -4,6 +4,7 @@ function RecordCollectionRowDifferent(props: any){
     return(
       <>
         <div>
+          
               <img src={`${props.src}`} className="airtable-gallery"></img>
   
             </div>
