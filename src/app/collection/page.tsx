@@ -117,6 +117,8 @@ export default function Collection() {
   return (
     <>
 
+    
+
    <div className="frame-1 screen">
           <div className="overlap-group3">
             <div className="rectangle-137"></div>
@@ -150,7 +152,7 @@ export default function Collection() {
                 <div className="text-1 valign-text-middle">
                   <span>
                     <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="#">CONTRIBUTE</Link>
+                      <Link href="">CONTRIBUTE</Link>
                     </span>{" "}
                   </span>
                 </div>
@@ -222,14 +224,7 @@ export default function Collection() {
                 <div className="text-1 valign-text-middle text-4">
                   <span>
                     <span className="adellesansarm-extra-extra-bold-midnight-45px">
-                      Filters
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text-1 valign-text-middle text-4">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-midnight-45px">
-                      Ֆիլտերներ
+                      Filters / Ֆիլտերներ
                     </span>{" "}
                   </span>
                 </div>

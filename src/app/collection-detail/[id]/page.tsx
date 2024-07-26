@@ -8,6 +8,7 @@ import {
   getDefaultImageDetailUrl,
   getImageDetailUrl,
 } from "@/utils/assetUtils";
+import Link from "next/link";
 
 interface Props {}
 
@@ -33,6 +34,12 @@ const Album: React.FC<Props> = ({}) => {
   }
 
   return (
+
+        <>
+
+
+
+    
     <div className="overlap-group6">
       <div className="overlap-group8">
         <img
@@ -130,13 +137,103 @@ const Album: React.FC<Props> = ({}) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
 export default function CollectionDetail() {
   return (
+
+    <>
+ <div className="frame-1 screen">
+          <div className="overlap-group3">
+            <div className="rectangle-137"></div>
+            <div className="group-79">
+              <div className="overlap-group2">
+                <div className="ellipse-1"></div>
+              </div>
+              <div className="group-81">
+                
+
+              </div>
+            </div>
+            <div className="group-80 adellesansarm-extra-extra-bold-white-16-3px">
+              <div className="flex-container-58 flex-container">
+                <div className="text-1 valign-text-middle">
+                  <span>
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                      <Link href="/">HOMEPAGE</Link>
+                    </span>{" "}
+                  </span>
+                </div>
+                <div className="text-1 valign-text-middle">
+                  <span>
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                      <Link href="/">ՏՆԷՋ</Link>
+                    </span>{" "}
+                  </span>
+                </div>
+              </div>
+              <div className="flex-container-59 flex-container">
+                <div className="text-1 valign-text-middle">
+                  <span>
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                      <Link href="">CONTRIBUTE</Link>
+                    </span>{" "}
+                  </span>
+                </div>
+                <div className="text-1 valign-text-middle">
+                  <span>
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                      <Link href="#">ԱՋԱԿՑԵԼ</Link>
+                    </span>{" "}
+                  </span>
+                </div>
+              </div>
+              <div className="flex-container-57 flex-container">
+                <div className="text-1 valign-text-middle">
+                  <span>
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                      <Link href="javascript:scrollTo(AboutUs);">ABOUT US</Link>
+                    </span>{" "}
+                  </span>
+                </div>
+                <div className="text-1 valign-text-middle">
+                  <span>
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                      <Link href="javascript:scrollTo(AboutUs);">
+                        ՄԵՐ ՄԱՍԻՆ
+                      </Link>
+                    </span>{" "}
+                  </span>
+                </div>
+              </div>
+              <div className="flex-container-56 flex-container">
+                <div className="text-1 valign-text-middle">
+                  <span>
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                      <Link href="javascript:scrollTo(Footer);">CONTACT</Link>
+                    </span>{" "}
+                  </span>
+                </div>
+                <div className="text-1 valign-text-middle">
+                  <span>
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                      <Link href="javascript:scrollTo(Footer);">ԿԱՊ</Link>
+                    </span>{" "}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <h1 className="full-page-armenian valign-text-middle">
+              Armenian Record Archive
+            </h1>
+          </div>
+        </div>
     <div className="container-center-horizontal">
       <div className="collection-detail screen">
+        
+        
         <div className="group-9"></div>
 
         <Album></Album>
@@ -521,5 +618,7 @@ export default function CollectionDetail() {
         </div>
       </div>
     </div>
+
+    </>
   );
 }

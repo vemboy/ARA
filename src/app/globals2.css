@@ -447,7 +447,7 @@
   align-items: flex-start;
   display: flex;
   height: 60px;
-  margin-left: 150px;
+  margin-left: 200px;
   min-width: 533px;
   position: absolute;
   top: 243px;
@@ -459,7 +459,7 @@
   font-size: 94.4px;
   font-weight: 400;
   height: 494px;
-  margin-left: 175px;
+  margin-left: 200px;
   letter-spacing: 0.68px;
   line-height: 78.4px;
   position: absolute;
@@ -484,7 +484,7 @@
   display: flex;
   flex-direction: column;
   gap: 85px;
-  margin-left: 100px;
+  margin-left: 200px;
   min-height: 608px;
   position: absolute;
   top: 175px;
