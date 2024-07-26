@@ -178,14 +178,14 @@ export default function CollectionDetail() {
                 <div className="text-1 valign-text-middle">
                   <span>
                     <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="">CONTRIBUTE</Link>
+                      <Link href="">COLLECTION</Link>
                     </span>{" "}
                   </span>
                 </div>
                 <div className="text-1 valign-text-middle">
                   <span>
                     <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="#">ԱՋԱԿՑԵԼ</Link>
+                      <Link href="#">ՀԱԲԱԿԱԾՈՒ</Link>
                     </span>{" "}
                   </span>
                 </div>

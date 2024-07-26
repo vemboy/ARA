@@ -1,5 +1,6 @@
 "use client";
 
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import RecordImage from "./record-image";
@@ -31,12 +32,12 @@ export default function Home() {
     <div>
       <input type="hidden" id="anPageName" name="page" value="frame-1" />
       <div className="container-center-horizontal">
-        <div className="frame-1 screen">
+        <div style={{height: "700px"}} className="frame-1 screen">
           <div className="overlap-group3">
-            <div className="rectangle-137"></div>
-            <div className="group-79">
-              <div className="overlap-group2">
-                <div className="ellipse-1"></div>
+            <div className="rectangle-137-2"></div>
+            <div className="group-79-2">
+              <div className="overlap-group2-2">
+                <div className="ellipse-1-2"></div>
               </div>
               <div className="group-81">
                 <div className="overlap-group">
@@ -95,18 +96,18 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="group-80 adellesansarm-extra-extra-bold-white-16-3px">
-              <div className="flex-container-58 flex-container">
+            <div className="group-80-2 adellesansarm-extra-extra-bold-white-16-3px-2">
+              <div className="flex-container-58-2 flex-container">
                 <div className="text-1 valign-text-middle">
                   <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
                       <Link href="/collection">COLLECTION</Link>
                     </span>{" "}
                   </span>
                 </div>
                 <div className="text-1 valign-text-middle">
                   <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
                       <Link href="/collection">ՀԱԲԱԿԱԾՈՒ</Link>
                     </span>{" "}
                   </span>
@@ -115,14 +116,14 @@ export default function Home() {
               <div className="flex-container-59 flex-container">
                 <div className="text-1 valign-text-middle">
                   <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
                       <Link href="#">CONTRIBUTE</Link>
                     </span>{" "}
                   </span>
                 </div>
                 <div className="text-1 valign-text-middle">
                   <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
                       <Link href="#">ԱՋԱԿՑԵԼ</Link>
                     </span>{" "}
                   </span>
@@ -131,14 +132,14 @@ export default function Home() {
               <div className="flex-container-57 flex-container">
                 <div className="text-1 valign-text-middle">
                   <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
                       <Link href="javascript:scrollTo(AboutUs);">ABOUT US</Link>
                     </span>{" "}
                   </span>
                 </div>
                 <div className="text-1 valign-text-middle">
                   <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
                       <Link href="javascript:scrollTo(AboutUs);">
                         ՄԵՐ ՄԱՍԻՆ
                       </Link>
@@ -149,21 +150,21 @@ export default function Home() {
               <div className="flex-container-56 flex-container">
                 <div className="text-1 valign-text-middle">
                   <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
                       <Link href="javascript:scrollTo(Footer);">CONTACT</Link>
                     </span>{" "}
                   </span>
                 </div>
                 <div className="text-1 valign-text-middle">
                   <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
                       <Link href="javascript:scrollTo(Footer);">ԿԱՊ</Link>
                     </span>{" "}
                   </span>
                 </div>
               </div>
             </div>
-            <h1 className="full-page-armenian valign-text-middle">
+            <h1 className="full-page-armenian-2 valign-text-middle">
               Armenian Record Archive
             </h1>
           </div>

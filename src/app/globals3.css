@@ -367,17 +367,19 @@
 
 .div-container {
   flex: 1;
-  background-color: white; /* Match this with the body's background color */
+  background-color: white;
   width: 185px;
   height: 185px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 50%; /* Makes the inner div circular */
-    overflow: hidden; /* Ensures only the circular part of the image is visible */
-  border: 0; /* Ensure there's no border */
-  padding: 0; /* Ensure there's no padding */}
+  border-radius: 50%;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  /* Adjust color and size as necessary */
+  }
 
 .text-container {
   display: flex;
@@ -848,7 +850,7 @@
   height: 1276px;
   left: 0;
   position: absolute;
-
+  top: 60px;
   width: 1283px;
 }
 
