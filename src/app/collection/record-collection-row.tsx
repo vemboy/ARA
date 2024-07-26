@@ -24,9 +24,13 @@ function RecordCollectionRow(props: any) {
             <div className="play-button"></div>
           )}
 
-          <div style={{boxShadow: `0 0 0 -1px ${props.color}`}}  className="div-container">
+          <div
+            style={{ boxShadow: `0 0 0 -1px ${props.color}` }}
+            className="div-container"
+          >
             <a>
               <img
+                style={{ mixBlendMode: "multiply" }}
                 src={`${props.src}`}
                 onClick={() => {
                   if (isPlaying && currentSongId === songId) {
@@ -48,8 +52,10 @@ function RecordCollectionRow(props: any) {
             </a>
           </div>
           <div className="text-container">
-            <a href={`https://ara-jet.vercel.app/collection-detail/${props.id}`}>
-          {props.display_title}
+            <a
+              href={`https://ara-jet.vercel.app/collection-detail/${props.id}`}
+            >
+              {props.display_title}
             </a>
           </div>
         </div>
