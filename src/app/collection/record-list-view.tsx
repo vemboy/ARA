@@ -10,6 +10,7 @@ import React, { useState, useEffect } from "react";
 
 function RecordListView(props: any) {
   const [currentView, setView] = useState("gridview");
+  const [currentSongId, setCurrentSongId] = useState<string | null>(null);
 
   return (
     <>
@@ -61,6 +62,9 @@ function RecordListView(props: any) {
             {props.records.map((record: { [x: string]: any }) => (
               <RecordCollectionRow
                 setCurrentSong={props.setCurrentSong}
+                audioPlayerRef={props.audioPlayerRef}
+                currentSongId={currentSongId}
+                setCurrentSongId={setCurrentSongId}
                 songId={record["songId"]}
                 title_armenian={
                   record["title_armenian"]

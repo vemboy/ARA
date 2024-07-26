@@ -13,7 +13,9 @@ import { AudioContext } from "../audioLayout";
 import Link from "next/link";
 
 export default function Collection() {
-  const setSong = React.useContext(AudioContext);
+  const setSong = React.useContext(AudioContext)?.setSong;
+  const audioPlayerRef = React.useContext(AudioContext)?.audioPlayerRef;
+  console.log("PAGE:", audioPlayerRef);
 
   const nextPage = () => {
     setPage(currentPage + 1);
@@ -80,7 +82,6 @@ export default function Collection() {
       });
   };
 
-  // const [currentSong, setSong] = useState("")
   const [currentPage, setPage] = useState(2);
   const [records, setRecords] = useState<any[]>([]);
 
@@ -360,6 +361,7 @@ export default function Collection() {
 
           <RecordListView
             setCurrentSong={setSong}
+            audioPlayerRef={audioPlayerRef}
             records={records}
           ></RecordListView>
         </div>

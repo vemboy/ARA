@@ -353,15 +353,16 @@
 }
 
 .pause {
-    width: 0;
-    height: 0;
-    position: absolute;
-    margin-left: 270px;
-    margin-top: 15px;
-    width: 4px;
-    height: 16px;
-    border-right: 6px solid #000;
-    border-left: 6px solid #000;
+  position: absolute;
+  height: 20px;
+  border-color: transparent transparent transparent #ffffff;
+  cursor: pointer;
+  border-style: solid;
+  border-width: 10px 0 37px 10px;
+  border-style: double;
+  border-width: 0px 0 0px 20px;
+  margin-left: 265px;
+  margin-top: 15px;
 }
 
 .div-container {
