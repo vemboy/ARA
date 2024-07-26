@@ -24,7 +24,7 @@ export default function Collection() {
       .then((response) => {
         console.log("Hello");
         console.log(response);
-        
+
         const records = response.data.data.map((record: any) => {
           return {
             songId: record.audio,
@@ -37,7 +37,6 @@ export default function Collection() {
             title_armenian: record.title_armenian,
             color: record.hex_color,
             display_title: record.display_title,
-
           };
         });
 
@@ -105,7 +104,6 @@ export default function Collection() {
             title_armenian: record.title_armenian,
             color: record.hex_color,
             display_title: record.display_title,
-
           };
         });
 
@@ -116,108 +114,98 @@ export default function Collection() {
 
   return (
     <>
-
-    
-
-   <div className="frame-1 screen">
-          <div className="overlap-group3">
-            <div className="rectangle-137"></div>
-            <div className="group-79">
-              <div className="overlap-group2">
-                <div className="ellipse-1"></div>
-              </div>
-              <div className="group-81">
-                
-
-              </div>
+      <div className="frame-1 screen">
+        <div className="overlap-group3">
+          <div className="rectangle-137"></div>
+          <div className="group-79">
+            <div className="overlap-group2">
+              <div className="ellipse-1"></div>
             </div>
-            <div className="group-80 adellesansarm-extra-extra-bold-white-16-3px">
-              <div className="flex-container-58 flex-container">
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="/">HOMEPAGE</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="/">ՏՆԷՋ</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-              <div className="flex-container-59 flex-container">
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="">CONTRIBUTE</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="#">ԱՋԱԿՑԵԼ</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-              <div className="flex-container-57 flex-container">
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="javascript:scrollTo(AboutUs);">ABOUT US</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="javascript:scrollTo(AboutUs);">
-                        ՄԵՐ ՄԱՍԻՆ
-                      </Link>
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-              <div className="flex-container-56 flex-container">
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="javascript:scrollTo(Footer);">CONTACT</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="javascript:scrollTo(Footer);">ԿԱՊ</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <h1 className="full-page-armenian valign-text-middle">
-              Armenian Record Archive
-            </h1>
+            <div className="group-81"></div>
           </div>
+          <div className="group-80 adellesansarm-extra-extra-bold-white-16-3px">
+            <div className="flex-container-58 flex-container">
+              <div className="text-1 valign-text-middle">
+                <span>
+                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <Link href="/">HOMEPAGE</Link>
+                  </span>{" "}
+                </span>
+              </div>
+              <div className="text-1 valign-text-middle">
+                <span>
+                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <Link href="/">ՏՆԷՋ</Link>
+                  </span>{" "}
+                </span>
+              </div>
+            </div>
+            <div className="flex-container-59 flex-container">
+              <div className="text-1 valign-text-middle">
+                <span>
+                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <Link href="">CONTRIBUTE</Link>
+                  </span>{" "}
+                </span>
+              </div>
+              <div className="text-1 valign-text-middle">
+                <span>
+                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <Link href="#">ԱՋԱԿՑԵԼ</Link>
+                  </span>{" "}
+                </span>
+              </div>
+            </div>
+            <div className="flex-container-57 flex-container">
+              <div className="text-1 valign-text-middle">
+                <span>
+                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <Link href="javascript:scrollTo(AboutUs);">ABOUT US</Link>
+                  </span>{" "}
+                </span>
+              </div>
+              <div className="text-1 valign-text-middle">
+                <span>
+                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <Link href="javascript:scrollTo(AboutUs);">ՄԵՐ ՄԱՍԻՆ</Link>
+                  </span>{" "}
+                </span>
+              </div>
+            </div>
+            <div className="flex-container-56 flex-container">
+              <div className="text-1 valign-text-middle">
+                <span>
+                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <Link href="javascript:scrollTo(Footer);">CONTACT</Link>
+                  </span>{" "}
+                </span>
+              </div>
+              <div className="text-1 valign-text-middle">
+                <span>
+                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
+                    <Link href="javascript:scrollTo(Footer);">ԿԱՊ</Link>
+                  </span>{" "}
+                </span>
+              </div>
+            </div>
+          </div>
+          <h1 className="full-page-armenian valign-text-middle">
+            Armenian Record Archive
+          </h1>
         </div>
+      </div>
 
-<div className="line"></div>
-      
+      <div className="line"></div>
+
       <div className="container-center-horizontal">
         <div className="collection screen">
           <h1 className="hello valign-text-middle">
             Collection <br></br> ՀԱԲԱԿԱԾՈՒ
           </h1>
           <div>
-
-
-    <form >
-      <input className="search_bar" name="query" />
-    </form>
+            <form>
+              <input className="search_bar" name="query" />
+            </form>
 
             <div className="group-34">
               <div className="flex-container-1171 flex-container adellesansarm-extra-extra-bold-midnight-45px">
@@ -370,11 +358,10 @@ export default function Collection() {
             </div>
           </div>
 
-
-
-          <RecordListView setCurrentSong={setSong} records={records}>
-            {" "}
-          </RecordListView>
+          <RecordListView
+            setCurrentSong={setSong}
+            records={records}
+          ></RecordListView>
         </div>
       </div>
       <button className="previous-button" onClick={previousPage}>
@@ -386,12 +373,6 @@ export default function Collection() {
         {" "}
         Next{" "}
       </button>
-
-
-      
     </>
-
-    
   );
 }
-
