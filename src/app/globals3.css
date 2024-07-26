@@ -337,7 +337,33 @@
   margin-top: 2.5px;
   font-size: 3.5vw;
   color: #091133;
+  display: inline-block;
 }
+
+.play-button {
+    width: 0;
+    height: 0;
+    position: absolute;
+    margin-left: 270px;
+    margin-top: 15px;
+    border-top: 12px solid transparent;
+    border-left: 18px solid #ffffff;
+    border-bottom: 12px solid transparent;
+    border-radius: 2.5px;
+}
+
+.pause {
+    width: 0;
+    height: 0;
+    position: absolute;
+    margin-left: 270px;
+    margin-top: 15px;
+    width: 4px;
+    height: 16px;
+    border-right: 6px solid #000;
+    border-left: 6px solid #000;
+}
+
 .div-container {
   flex: 1;
   background-color: white; /* Match this with the body's background color */

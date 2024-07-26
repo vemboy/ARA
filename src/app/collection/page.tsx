@@ -116,7 +116,6 @@ export default function Collection() {
 
   return (
     <>
-      {/* <AudioPlayer src={currentSong} className="audio-player"></AudioPlayer> */}
 
    <div className="frame-1 screen">
           <div className="overlap-group3">
@@ -389,15 +388,7 @@ export default function Collection() {
             </div>
           </div>
 
-          <>
-            {/* <div className="group-65 group" style={{display: "flex", alignItems: "flex-start", gap: "33px", height: "612px", justifyContent: "flex-start", flexDirection: "row", flexWrap: "wrap", minWidth: "1254px", top: "35px", position: "relative"}}> 
-        {records.map(record => <RecordCollectionRow title_armenian={record['title_armenian'] ? record['title_armenian'] : 'No armenian yet'} id={record['id']} genre={record['genre'] ? record['genre'] : 'unknown genre'} year={record['year'] ? record['year'] : 'unknown year'} title={record['title']} author={(record['author'] ?? "Unkown author").substring(0, 20)} src={`https://ara.directus.app/assets/${record['image'] ? record['image'] : 'bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48'}`}></RecordCollectionRow>)}
-    </div> */}
-          </>
 
-          {/* <div className="group-65 group" style={{display: "flex", alignItems: "flex-start", gap: "33px", height: "612px", justifyContent: "flex-start", flexDirection: "row", flexWrap: "wrap", minWidth: "1254px", top: "35px", position: "relative"}}> 
-<RecordCollectionRowDifferent></RecordCollectionRowDifferent>
-</div> */}
 
           <RecordListView setCurrentSong={setSong} records={records}>
             {" "}

@@ -16,6 +16,7 @@ export function AudioLayout({
   const [currentSong, setSong] = useState("");
 
   return (
+<>
     <html lang="en">
       <AudioContext.Provider value={setSong}>
         <body className={inter.className}>
@@ -34,5 +35,6 @@ export function AudioLayout({
         </body>
       </AudioContext.Provider>
     </html>
+    </>
   );
 }

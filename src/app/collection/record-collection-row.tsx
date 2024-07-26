@@ -8,6 +8,7 @@ function RecordCollectionRow(props: any) {
         {/* <div className="airtable-gallery-container"> */}
         <div style={{backgroundColor: `${props.color}`}} className="div-container-container"> 
           <div className="ARA_TITLE">ARA</div>
+          <div className="play-button"></div>
         <div className="div-container">
         <a>
           <img
