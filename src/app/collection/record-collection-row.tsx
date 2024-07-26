@@ -16,7 +16,6 @@ function RecordCollectionRow(props: any) {
           className="div-container-container"
         >
           <div className="ARA_TITLE">ARA</div>
-<<<<<<< HEAD
 
           {/* Display play button if not playing and pause button if playing */}
           {isPlaying && songId === currentSongId ? (
@@ -50,32 +49,6 @@ function RecordCollectionRow(props: any) {
           </div>
           <div className="text-container">
             <div>{props.display_title}</div>
-=======
-          <div className="play-button"></div>
-        <div style={{boxShadow: `0 0 0 -1px ${props.color}`}} className="div-container">
-        <a>
-          <img
-            src={`${props.src}`}
-            onClick={() => {
-              props.setCurrentSong(
-                `https://ara.directus.app/assets/${props.songId}`
-              ),
-                console.log(`https://ara.directus.app/assets/${props.songId}`),
-                console.log(props);
-            }}
-            className="airtable-gallery"
-          ></img>
-        </a>
-</div>
-
-        <div className="text-container">
-
-
-          <div>
-            <a href={`https://ara-jet.vercel.app/collection-detail/${props.id}`}>
-          {props.display_title}
-            </a>
->>>>>>> 91fed6c (changes)
           </div>
         </div>
       </div>
