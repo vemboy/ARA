@@ -5,108 +5,6 @@ import axios from "axios";
 import RecordImage from "./record-image";
 import Link from "next/link";
 
-// const HomePageGallery: React.FC<Props> = ({}) => {
-
-//   // TODO: use key to request thumbnail instead of full image so it fetches (loads) faster
-
-//   if (imageIds.length > 0) {
-//     return (
-//       <div className="group-65 group">
-//         <div className="airtable-gallery-container-1 airtable-gallery-container-3">
-//           <div className="airtable-gallery-2">
-//             <img
-//               style={{width: "300px", height: "300px"}}
-//               src={`https://ara.directus.app/assets/${imageIds[0]}`}
-//               alt=""
-//             />
-//           </div>
-//           <div className="airtable-gallery-2">
-//             <img
-//               style={{ width: "300px", height: "300px" }}
-//               src={`https://ara.directus.app/assets/${imageIds[1]}`}
-//               alt=""
-//             />
-//           </div>
-//         </div>
-//         <div className="airtable-gallery-container-2 airtable-gallery-container-3">
-//           <div className="airtable-gallery-4">
-//             {" "}
-//             <img
-//               style={{ width: "300px", height: "300px" }}
-//               src={`https://ara.directus.app/assets/${imageIds[2]}`}
-//               alt=""
-//             />
-//           </div>
-//           <div className="airtable-gallery-2">
-//             {" "}
-//             <img
-//               style={{ width: "300px", height: "300px" }}
-//               src={`https://ara.directus.app/assets/${imageIds[3]}`}
-//               alt=""
-//             />
-//           </div>
-//         </div>
-//         <div className="airtable-gallery-container 2">
-//           <div className="airtable-gallery">
-//             {" "}
-//             <img
-//               style={{ width: "300px", height: "300px" }}
-//               src={`https://ara.directus.app/assets/${imageIds[4]}`}
-//               alt=""
-//             />
-//           </div>
-//           <div className="airtable-gallery-2">
-//             {" "}
-//             <img
-//               style={{ width: "300px", height: "300px" }}
-//               src={`https://ara.directus.app/assets/${imageIds[5]}`}
-//               alt=""
-//             />
-//           </div>
-//         </div>
-//         <div className="airtable-gallery-container-2">
-//           <div className="airtable-gallery">
-//             {" "}
-//             <img
-//               style={{ width: "300px", height: "300px" }}
-//               src={`https://ara.directus.app/assets/${imageIds[6]}`}
-//               alt=""
-//             />
-//           </div>
-//           <div className="airtable-gallery-2">
-//             {" "}
-//             <img
-//               style={{ width: "300px", height: "300px" }}
-//               src={`https://ara.directus.app/assets/${imageIds[7]}`}
-//               alt=""
-//             />
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   } else {
-//     return (
-//       <div className="group-65 group">
-//         <div className="airtable-gallery-container-1 airtable-gallery-container-3">
-//           <div className="airtable-gallery-2"></div>
-//           <div className="airtable-gallery-3"></div>
-//         </div>
-//         <div className="airtable-gallery-container-2 airtable-gallery-container-3">
-//           <div className="airtable-gallery-4"></div>
-//           <div className="airtable-gallery-5"></div>
-//         </div>
-//         <div className="airtable-gallery-container">
-//           <div className="airtable-gallery"></div>
-//           <div className="airtable-gallery-1"></div>
-//         </div>
-//         <div className="airtable-gallery-container">
-//           <div className="airtable-gallery"></div>
-//           <div className="airtable-gallery-1"></div>
-//         </div>
-//       </div>
-//     );
-//   }
-// };
 
 export default function Home() {
   const [imageIds, setImageIds] = useState([]);
@@ -127,15 +25,7 @@ export default function Home() {
         setImageIds(records);
         console.log(records);
       });
-    // axios
-    //   .get(
-    //     "https://ara.directus.app/files/?limit=8&filter[folder][_in]=cc7dc79e-f5dc-4fae-bee1-44a925851d4e"
-    //   )
-    //   .then((response) => {
-    //     console.log(response);
-    //     const ids = response.data.data.slice(0,8).map((image: any) => image.id);
-    //     setImageIds(ids);
-    //   });
+
   }, []);
   return (
     <div>
@@ -380,7 +270,6 @@ export default function Home() {
               </div>
             </div>
             <div className="group-65 group">
-              {/* <HomePageGallery></HomePageGallery> */}
 
               {imageIds.map((record) => (
                 <RecordImage
@@ -392,10 +281,7 @@ export default function Home() {
                   }?key=thumbnail`}
                 ></RecordImage>
               ))}
-              {/* <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
-            <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
-            <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage>
-            <RecordImage src={`https://ara.directus.app/assets/${imageIds[0]}`}></RecordImage> */}
+          
             </div>
           </div>
           <div className="overlap-group">`</div>

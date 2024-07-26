@@ -211,25 +211,12 @@ export default function Collection() {
             Collection <br></br> ՀԱԲԱԿԱԾՈՒ
           </h1>
           <div>
-            <div className="overlap-group11">
-              <div className="flex-container-1169 flex-container adellesansarm-extra-extra-bold-midnight-34px">
-                <div className="text valign-text-middle text-4">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-midnight-34px">
-                      SEARCH
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text valign-text-middle text-4">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-midnight-34px">
-                      ՊՆԴՐԻ
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-              <div className="rectangle-104"></div>
-            </div>
+
+
+    <form >
+      <input className="search_bar" name="query" />
+    </form>
+
             <div className="group-34">
               <div className="flex-container-1171 flex-container adellesansarm-extra-extra-bold-midnight-45px">
                 <div className="text-1 valign-text-middle text-4">
