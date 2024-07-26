@@ -47,7 +47,7 @@ function RecordCollectionRow(props: any) {
               ></img>
             </a>
           </div>
-          <div>
+          <div className="text-container">
             <a href={`https://ara-jet.vercel.app/collection-detail/${props.id}`}>
           {props.display_title}
             </a>
