@@ -57,7 +57,7 @@ function RecordListView(props: any) {
               top: "35px",
               position: "relative",
             }}
-          > 
+          >
             {props.records.map((record: { [x: string]: any }) => (
               <RecordCollectionRow
                 setCurrentSong={props.setCurrentSong}
@@ -72,7 +72,11 @@ function RecordListView(props: any) {
                 year={record["year"] ? record["year"] : "unknown year"}
                 title={record["title"]}
                 color={record["color"]}
-                display_title={record["display_title"] ? record["display_title"] : "No title yet"}
+                display_title={
+                  record["display_title"]
+                    ? record["display_title"]
+                    : "No title yet"
+                }
                 author={(record["author"] ?? "Unkown author").substring(0, 20)}
                 src={
                   record["image"]
