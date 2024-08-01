@@ -17,24 +17,35 @@ export default function Collection() {
   const audioPlayerRef = React.useContext(AudioContext)?.audioPlayerRef;
   console.log("PAGE:", audioPlayerRef);
 
-<<<<<<< HEAD
+  const countries = [
+    "Argentina",
+    "Armenia",
+    "Brazil",
+    "Canada",
+    "Denmark",
+    "England UK",
+    "France",
+    "Germany",
+    "Holland",
+    "Italy",
+    "Jordan",
+    "Lebanon",
+    "Qatar",
+    "Russia",
+    "United States",
+    "USSR",
+    "Uruguay",
+    "Venezuela",
+  ];
 
-const countries = [
-  'Argentina', 'Armenia', 'Brazil', 'Canada', 'Denmark', 'England UK',
-  'France', 'Germany', 'Holland', 'Italy', 'Jordan', 'Lebanon', 'Qatar',
-  'Russia', 'United States', 'USSR', 'Uruguay', 'Venezuela'
-];
+  const FilterComponent = () => {
+    const [artist, setArtist] = useState("");
+    const [genre, setGenre] = useState("");
+    const [country, setCountry] = useState("");
+    const [year, setYear] = useState("");
+    const [instrument, setInstrument] = useState("");
+  };
 
-const FilterComponent = () => {
-  const [artist, setArtist] = useState('');
-  const [genre, setGenre] = useState('');
-  const [country, setCountry] = useState('');
-  const [year, setYear] = useState('');
-  const [instrument, setInstrument] = useState('');
-}
-
-
-=======
   const updateSearchString = (e: any) => {
     console.log("Searching...:", e.target.value);
     setSearchString(e.target.value);
@@ -55,7 +66,6 @@ const FilterComponent = () => {
       ? "https://ara.directus.app/items/record_archive?limit=12"
       : `https://ara.directus.app/items/record_archive?limit=12&filter=${stringifiedFilterObj}`;
   }
->>>>>>> 63e8281127b213e4fc49faf2d08dd17c766f390b
 
   const nextPage = () => {
     setPage(currentPage + 1);
@@ -234,16 +244,11 @@ const FilterComponent = () => {
 
       <div className="container-center-horizontal">
         <div className="collection screen">
-          
           {/* <div className="divider">
             <div className="divider_1">
           <h1 className="hello valign-text-middle">
             Collection <br></br> ՀԱԲԱԿԱԾՈՒ
           </h1>
-<<<<<<< HEAD
-          </div>
-          <div  className="divider_2">
-=======
           <div>
             <form>
               <input
@@ -252,24 +257,21 @@ const FilterComponent = () => {
                 name="query"
               />
             </form>
->>>>>>> 63e8281127b213e4fc49faf2d08dd17c766f390b
 
             </div>
             </div> */}
-    <div className="divider3">
-                <form className="search-form">
-      <input
-        className="search_bar"
-        name="query"
-        placeholder="Search..."
-      />
-      <span className="search-icon">🔍</span>
-    </form>
-    </div>
+          <div className="divider3">
+            <form className="search-form">
+              <input
+                className="search_bar"
+                name="query"
+                placeholder="Search..."
+              />
+              <span className="search-icon">🔍</span>
+            </form>
+          </div>
 
-
-
-            {/* <div className="group-34">
+          {/* <div className="group-34">
               <div className="flex-container-1171 flex-container adellesansarm-extra-extra-bold-midnight-45px">
                 <div className="text-1 valign-text-middle text-4">
                   <span>
@@ -280,7 +282,7 @@ const FilterComponent = () => {
                 </div>
               </div>
             </div> */}
-            {/* <div className="group-35 adellesansarm-extra-extra-bold-midnight-34px">
+          {/* <div className="group-35 adellesansarm-extra-extra-bold-midnight-34px">
               <div className="artist valign-text-middle">Artist +</div>
               <div className="genre valign-text-middle">Genre +</div>
               <div className="country valign-text-middle">Country –</div>
@@ -289,8 +291,8 @@ const FilterComponent = () => {
                 Instruments +
               </div>
             </div> */}
-            {/* <div className="rectangle-54"></div> */}
-            {/* <div className="group-container">
+          {/* <div className="rectangle-54"></div> */}
+          {/* <div className="group-container">
               <div className="group-47">
                 <div className="ellipse-container">
                   <div className="ellipse-1"></div>
@@ -418,66 +420,107 @@ const FilterComponent = () => {
                 </div>
               </div>
             </div> */}
-        <div className="record_divider">
-          <div className="record_divider_1">
-          <RecordListView
-            setCurrentSong={setSong}
-            audioPlayerRef={audioPlayerRef}
-            records={records}
-          ></RecordListView>
-        </div>
-        </div>
-      </div>
-      <div className="record_divider_2">
-        <div>
-      <div className="brutalist-container">
-        <form className="brutalist-form">
-          <div className="brutalist-filter-group">
-            <label className="brutalist-label">Artist / Ֆիլտերներ</label>
-            <input type="text" name="artist" className="brutalist-input" />
-          </div>
-          <div className="brutalist-filter-group">
-            <label className="brutalist-label">Country –</label>
-            <input type="text" name="country" className="brutalist-input" />
-          </div>
-          <div className="brutalist-filter-group">
-            <label className="brutalist-label">Year +</label>
-            <input type="text" name="year" className="brutalist-input" />
-          </div>
-          <div className="brutalist-filter-group">
-            <label className="brutalist-label">Genre +</label>
-            <div className="brutalist-button-group">
-              {['Pop', 'Rock', 'Jazz', 'Classical', 'Hip-Hop', 'Electronic'].map(genre => (
-                <button type="button" className="brutalist-button" key={genre}>
-                  {genre}
-                </button>
-              ))}
+          <div className="record_divider">
+            <div className="record_divider_1">
+              <RecordListView
+                setCurrentSong={setSong}
+                audioPlayerRef={audioPlayerRef}
+                records={records}
+              ></RecordListView>
             </div>
           </div>
-          <div className="brutalist-filter-group">
-            <label className="brutalist-label">Instruments +</label>
-            <div className="brutalist-button-group">
-              {['Guitar', 'Piano', 'Drums', 'Violin', 'Bass', 'Saxophone'].map(instrument => (
-                <button type="button" className="brutalist-button" key={instrument}>
-                  {instrument}
-                </button>
-              ))}
+        </div>
+        <div className="record_divider_2">
+          <div>
+            <div className="brutalist-container">
+              <form className="brutalist-form">
+                <div className="brutalist-filter-group">
+                  <label className="brutalist-label">Artist / Ֆիլտերներ</label>
+                  <input
+                    type="text"
+                    name="artist"
+                    className="brutalist-input"
+                  />
+                </div>
+                <div className="brutalist-filter-group">
+                  <label className="brutalist-label">Country –</label>
+                  <input
+                    type="text"
+                    name="country"
+                    className="brutalist-input"
+                  />
+                </div>
+                <div className="brutalist-filter-group">
+                  <label className="brutalist-label">Year +</label>
+                  <input type="text" name="year" className="brutalist-input" />
+                </div>
+                <div className="brutalist-filter-group">
+                  <label className="brutalist-label">Genre +</label>
+                  <div className="brutalist-button-group">
+                    {[
+                      "Pop",
+                      "Rock",
+                      "Jazz",
+                      "Classical",
+                      "Hip-Hop",
+                      "Electronic",
+                    ].map((genre) => (
+                      <button
+                        type="button"
+                        className="brutalist-button"
+                        key={genre}
+                      >
+                        {genre}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="brutalist-filter-group">
+                  <label className="brutalist-label">Instruments +</label>
+                  <div className="brutalist-button-group">
+                    {[
+                      "Guitar",
+                      "Piano",
+                      "Drums",
+                      "Violin",
+                      "Bass",
+                      "Saxophone",
+                    ].map((instrument) => (
+                      <button
+                        type="button"
+                        className="brutalist-button"
+                        key={instrument}
+                      >
+                        {instrument}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="brutalist-footer">
+                  <button type="submit" className="brutalist-submit-btn">
+                    Apply Filters
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div className="brutalist-nav-buttons">
+              <button
+                type="button"
+                className="brutalist-nav-btn"
+                onClick={previousPage}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="brutalist-nav-btn"
+                onClick={nextPage}
+              >
+                Next
+              </button>
             </div>
           </div>
-          <div className="brutalist-footer">
-            <button type="submit" className="brutalist-submit-btn">Apply Filters</button>
-          </div>
-        </form>
-      </div>
-      <div className="brutalist-nav-buttons">
-        <button type="button" className="brutalist-nav-btn" onClick={previousPage}>Previous</button>
-        <button type="button" className="brutalist-nav-btn" onClick={nextPage}>Next</button>
-      </div>
-    </div>
-
-
-
-      </div>
+        </div>
       </div>
     </>
   );
