@@ -55,7 +55,7 @@ function RecordListView(props: any) {
               flexDirection: "row",
               flexWrap: "wrap",
               minWidth: "1254px",
-              top: "47.5vh",
+              top: "10vh",
               position: "absolute",
               marginLeft: "2.5vw",
               width: "50vw",

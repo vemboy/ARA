@@ -1,4 +1,118 @@
-/* screen - collection */
+/* Top Container */
+.top-container {
+  display: flex;
+  height: 100px; /* Adjust this to match your menu height */
+  width: 100vw;
+}
+
+/* Left Side (Adjust as needed) */
+.left-side {
+  flex: 1; /* Takes up remaining space on the left */
+  background-color: red; /* Example background color */
+  height: 50vh;
+  position: relative;
+}
+
+/* Right Side with Menu */
+.right-side {
+  width: 300px; /* Adjust this to your menu width */
+  background-color: #fff; /* Background color for menu area */
+  border-left: 1px solid #000; /* Border to separate from left side */
+  position: relative;
+  height: 50vh;
+
+}
+
+/* Menu Container */
+.menu-container {
+  position: absolute;
+  top: 0;
+  right: 30px;
+  height: 100%; /* Full height of the right-side container */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* General Menu Styles */
+.plumbus-container {
+  position: relative; /* Relative positioning for internal elements */
+  width: 100%; /* Full width of the menu container */
+  height: 100%; /* Full height of the menu container */
+  padding: 25px; /* Padding around the menu */
+  border: 5px solid #000; /* Border for the menu */
+  box-shadow: 10px 10px 0px 0px #000; /* Shadow for the menu */
+  font-family: 'arm-heavy', sans-serif; /* Font family */
+  color: #000; /* Text color */
+  box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+/* Additional Styles */
+.flibber-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Gap between items */
+}
+
+.xenon-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zog-box {
+  /* Rectangle specific styles */
+}
+
+.xenon-item-a .quark-circle {
+  border: 1px solid;
+  border-color: var(--logo-color);
+  border-radius: 6.23px;
+  height: 12px;
+  width: 12px;
+}
+
+.xenon-item-b {
+  /* Styles for xenon-item-b if needed */
+}
+
+/* Menu Categories */
+.blorptastic-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Gap between menu categories */
+}
+
+.tangy-category {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Gap between links within a category */
+}
+
+.link-blop {
+  letter-spacing: 1px;
+  line-height: 27px;
+}
+
+.link-blop a {
+  font-family: 'arm-heavy';
+  font-size: 16px;
+  color: #000;
+  text-decoration: none; /* Remove underline from links */
+}
+
+.link-blop a:hover {
+  color: #f00; /* Change color on hover */
+}
+
+/* Header Title */
+.gorgon-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #000;
+  text-align: center;
+  margin-top: 20px;
+}
+
 
 @font-face {
   font-family: 'arm-reg';
@@ -8,10 +122,11 @@
 .collection {
   align-items: center;
   background-color: var(--coloursecondarywhite-100-general);
-  display: flex;
+  
   flex-direction: column;
   height: 2250px;
   overflow: hidden;
+  
   
 }
 
@@ -331,8 +446,6 @@
   
 }
 
-
-
 .collection .airtable-gallery-spinning {
   width: 100%;
   height: 100%;
@@ -363,7 +476,7 @@
   font-family: 'arm-heavy', sans-serif; /* Apply local font-family */
   color: #000; /* Default text color */
   margin-bottom: 20px; /* Adjusted space below the menu for separation */
-  margin-top: 37.5vh; /* Adjusted margin for top positioning */
+  margin-top: 8.5vh; /* Adjusted margin for top positioning */
   margin-left: 19vw;
 }
 
@@ -1466,3 +1579,4 @@
     transform: rotate(360deg);
   }
 }
+

@@ -176,86 +176,60 @@ export default function Collection() {
 
   return (
     <>
-      <div className="frame-1 screen">
-        <div className="overlap-group3">
-          <div className="rectangle-137"></div>
-          <div className="group-79">
-            <div className="overlap-group2">
-              <div className="ellipse-1"></div>
-            </div>
-            <div className="group-81"></div>
+<div className="top-container">
+  <div className="left-side">
+    {/* Place any content you want here */}
+  </div>
+  <div className="right-side">
+    <div className="menu-container">
+      <div className="plumbus-container">
+        <div className="zog-box"></div>
+        <div className="flibber-group">
+          <div className="xenon-item xenon-item-a">
+            <div className="quark-circle"></div>
           </div>
-          <div className="group-80 adellesansarm-extra-extra-bold-white-16-3px">
-            <div className="flex-container-58 flex-container">
-              <div className="text-1 valign-text-middle">
-                <span>
-                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                    <Link href="/">HOMEPAGE</Link>
-                  </span>{" "}
-                </span>
-              </div>
-              <div className="text-1 valign-text-middle">
-                <span>
-                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                    <Link href="/">ՏՆԷՋ</Link>
-                  </span>{" "}
-                </span>
-              </div>
-            </div>
-            <div className="flex-container-59 flex-container">
-              <div className="text-1 valign-text-middle">
-                <span>
-                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                    <Link href="">CONTRIBUTE</Link>
-                  </span>{" "}
-                </span>
-              </div>
-              <div className="text-1 valign-text-middle">
-                <span>
-                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                    <Link href="#">ԱՋԱԿՑԵԼ</Link>
-                  </span>{" "}
-                </span>
-              </div>
-            </div>
-            <div className="flex-container-57 flex-container">
-              <div className="text-1 valign-text-middle">
-                <span>
-                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                    <Link href="javascript:scrollTo(AboutUs);">ABOUT US</Link>
-                  </span>{" "}
-                </span>
-              </div>
-              <div className="text-1 valign-text-middle">
-                <span>
-                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                    <Link href="javascript:scrollTo(AboutUs);">ՄԵՐ ՄԱՍԻՆ</Link>
-                  </span>{" "}
-                </span>
-              </div>
-            </div>
-            <div className="flex-container-56 flex-container">
-              <div className="text-1 valign-text-middle">
-                <span>
-                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                    <Link href="javascript:scrollTo(Footer);">CONTACT</Link>
-                  </span>{" "}
-                </span>
-              </div>
-              <div className="text-1 valign-text-middle">
-                <span>
-                  <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                    <Link href="javascript:scrollTo(Footer);">ԿԱՊ</Link>
-                  </span>{" "}
-                </span>
-              </div>
-            </div>
-          </div>
-          <h1 className="full-page-armenian valign-text-middle">
-            Armenian Record Archive
-          </h1>
+          <div className="xenon-item xenon-item-b"></div>
         </div>
+        <div className="blorptastic-items">
+          <div className="tangy-category tangy-cat-a">
+            <div className="link-blop">
+              <Link href="/">HOMEPAGE</Link>
+            </div>
+            <div className="link-blop">
+              <Link href="/">ՏՆԷՋ</Link>
+            </div>
+          </div>
+          <div className="tangy-category tangy-cat-b">
+            <div className="link-blop">
+              <Link href="">CONTRIBUTE</Link>
+            </div>
+            <div className="link-blop">
+              <Link href="#">ԱՋԱԿՑԵԼ</Link>
+            </div>
+          </div>
+          <div className="tangy-category tangy-cat-c">
+            <div className="link-blop">
+              <Link href="javascript:scrollTo(AboutUs);">ABOUT US</Link>
+            </div>
+            <div className="link-blop">
+              <Link href="javascript:scrollTo(AboutUs);">ՄԵՐ ՄԱՍԻՆ</Link>
+            </div>
+          </div>
+          <div className="tangy-category tangy-cat-d">
+            <div className="link-blop">
+              <Link href="javascript:scrollTo(Footer);">CONTACT</Link>
+            </div>
+            <div className="link-blop">
+              <Link href="javascript:scrollTo(Footer);">ԿԱՊ</Link>
+            </div>
+          </div>
+        </div>
+        <h1 className="gorgon-title">Armenian Record Archive</h1>
       </div>
+    </div>
+  </div>
+</div>
+
 
       {/* <div className="line"></div> */}
 
@@ -271,7 +245,7 @@ export default function Collection() {
 
             </div>
             </div> */}
-          <div className="divider3">
+          <div>
             <form className="search-form">
               <input
                 className="search_bar"
