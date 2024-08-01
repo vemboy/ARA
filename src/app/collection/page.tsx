@@ -17,6 +17,7 @@ export default function Collection() {
   const audioPlayerRef = React.useContext(AudioContext)?.audioPlayerRef;
   console.log("PAGE:", audioPlayerRef);
 
+<<<<<<< HEAD
 
 const countries = [
   'Argentina', 'Armenia', 'Brazil', 'Canada', 'Denmark', 'England UK',
@@ -33,35 +34,54 @@ const FilterComponent = () => {
 }
 
 
+=======
+  const updateSearchString = (e: any) => {
+    console.log("Searching...:", e.target.value);
+    setSearchString(e.target.value);
+  };
+
+  function getUrlWithFilters() {
+    const filterObj = {
+      _or: [
+        { title: { _icontains: searchString } },
+        { title_armenian: { _icontains: searchString } },
+        { artist_armenian: { _icontains: searchString } },
+        { artist_original: { _icontains: searchString } },
+      ],
+    };
+    const stringifiedFilterObj = JSON.stringify(filterObj);
+    console.log("stringifiedFilter", stringifiedFilterObj);
+    return searchString.length === 0
+      ? "https://ara.directus.app/items/record_archive?limit=12"
+      : `https://ara.directus.app/items/record_archive?limit=12&filter=${stringifiedFilterObj}`;
+  }
+>>>>>>> 63e8281127b213e4fc49faf2d08dd17c766f390b
 
   const nextPage = () => {
     setPage(currentPage + 1);
-    axios
-      .get(
-        `https://ara.directus.app/items/record_archive?limit=12&page=${currentPage}`
-      )
-      .then((response) => {
-        console.log("Hello");
-        console.log(response);
+    const url = getUrlWithFilters();
+    axios.get(`${url}&page=${currentPage}`).then((response) => {
+      console.log("Hello");
+      console.log(response);
 
-        const records = response.data.data.map((record: any) => {
-          return {
-            songId: record.audio,
-            author: record.artist_original,
-            title: record.title,
-            image: record.record_image,
-            id: record.id,
-            genre: record.genre,
-            year: record.year,
-            title_armenian: record.title_armenian,
-            color: record.hex_color,
-            display_title: record.display_title,
-          };
-        });
-
-        setRecords(records);
-        console.log(records);
+      const records = response.data.data.map((record: any) => {
+        return {
+          songId: record.audio,
+          author: record.artist_original,
+          title: record.title,
+          image: record.record_image,
+          id: record.id,
+          genre: record.genre,
+          year: record.year,
+          title_armenian: record.title_armenian,
+          color: record.hex_color,
+          display_title: record.display_title,
+        };
       });
+
+      setRecords(records);
+      console.log(records);
+    });
   };
 
   const previousPage = () => {
@@ -71,64 +91,61 @@ const FilterComponent = () => {
     } else {
       console.log("At start");
     }
-    axios
-      .get(
-        `https://ara.directus.app/items/record_archive?limit=12&page=${currentPage}`
-      )
-      .then((response) => {
-        console.log("Hello");
-        console.log(response);
+    const url = getUrlWithFilters();
+    axios.get(`${url}&page=${currentPage}`).then((response) => {
+      console.log("Hello");
+      console.log(response);
 
-        const records = response.data.data.map((record: any) => {
-          return {
-            songId: record.audio,
-            author: record.artist_original,
-            title: record.title,
-            image: record.record_image,
-            id: record.id,
-            genre: record.genre,
-            year: record.year,
-            title_armenian: record.title_armenian,
-            color: record.hex_color,
-            display_title: record.display_title,
-          };
-        });
-
-        setRecords(records);
-        console.log(records);
+      const records = response.data.data.map((record: any) => {
+        return {
+          songId: record.audio,
+          author: record.artist_original,
+          title: record.title,
+          image: record.record_image,
+          id: record.id,
+          genre: record.genre,
+          year: record.year,
+          title_armenian: record.title_armenian,
+          color: record.hex_color,
+          display_title: record.display_title,
+        };
       });
+
+      setRecords(records);
+      console.log(records);
+    });
   };
 
   const [currentPage, setPage] = useState(2);
   const [records, setRecords] = useState<any[]>([]);
+  const [searchString, setSearchString] = useState<string>("");
 
   useEffect(() => {
-    axios
-      .get("https://ara.directus.app/items/record_archive?limit=12")
-      .then((response) => {
-        console.log("Hello");
-        console.log(response.data.data);
-        const amountOfPages = response.data.data.length;
+    const url = getUrlWithFilters();
+    axios.get(url).then((response) => {
+      console.log("Hello");
+      console.log(response.data.data);
+      const amountOfPages = response.data.data.length;
 
-        const records = response.data.data.map((record: any) => {
-          return {
-            songId: record.audio,
-            author: record.artist_original,
-            title: record.title,
-            image: record.record_image,
-            id: record.id,
-            genre: record.genre,
-            year: record.year,
-            title_armenian: record.title_armenian,
-            color: record.hex_color,
-            display_title: record.display_title,
-          };
-        });
-
-        setRecords(records);
-        console.log(records);
+      const records = response.data.data.map((record: any) => {
+        return {
+          songId: record.audio,
+          author: record.artist_original,
+          title: record.title,
+          image: record.record_image,
+          id: record.id,
+          genre: record.genre,
+          year: record.year,
+          title_armenian: record.title_armenian,
+          color: record.hex_color,
+          display_title: record.display_title,
+        };
       });
-  }, []);
+
+      setRecords(records);
+      console.log(records);
+    });
+  }, [searchString]);
 
   return (
     <>
@@ -223,8 +240,19 @@ const FilterComponent = () => {
           <h1 className="hello valign-text-middle">
             Collection <br></br> ՀԱԲԱԿԱԾՈՒ
           </h1>
+<<<<<<< HEAD
           </div>
           <div  className="divider_2">
+=======
+          <div>
+            <form>
+              <input
+                onChange={updateSearchString}
+                className="search_bar"
+                name="query"
+              />
+            </form>
+>>>>>>> 63e8281127b213e4fc49faf2d08dd17c766f390b
 
             </div>
             </div> */}

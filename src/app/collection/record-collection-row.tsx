@@ -30,6 +30,7 @@ function RecordCollectionRow(props: any) {
           <div className="rebellious-photo-frame">
             <a>
               <img
+                style={{ mixBlendMode: "multiply" }}
                 src={`${props.src}`}
                 onClick={() => {
                   if (isPlaying && currentSongId === songId) {
