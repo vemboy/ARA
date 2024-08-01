@@ -39,7 +39,8 @@ export function AudioLayout({
               <AudioPlayer
                 ref={audioPlayerRef}
                 src={currentSong}
-                className="audio-player-hidden"
+                className="audio-player"
+                // className="audio-player-hidden"
               ></AudioPlayer>
             ) : (
               <AudioPlayer

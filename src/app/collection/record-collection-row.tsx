@@ -1,55 +1,66 @@
 "use client";
 
 import { useState } from "react";
+import useResponsiveFontSize from "./useResponsiveFontSize"; // Adjust path as needed
 
 function RecordCollectionRow(props: any) {
   const [isPlaying, setIsPlaying] = useState(false);
   const songId = props.songId;
   const currentSongId = props.currentSongId;
+  const [isToggled, setIsToggled] = useState(false);
+
+  const { fontSize, containerRef } = useResponsiveFontSize(props.display_title);
 
   return (
     <>
       <div>
-        {/* <div className="airtable-gallery-container"> */}
         <div
           style={{ backgroundColor: `${props.color}` }}
-          className="div-container-container"
+          className="revolutionary-box"
         >
-          <div className="ARA_TITLE">ARA</div>
+          <div className="daring-header">ARA</div>
 
           {/* Display play button if not playing and pause button if playing */}
           {isPlaying && songId === currentSongId ? (
-            <div className="pause"></div>
+            <div className="pioneering-pause-icon"></div>
           ) : (
-            <div className="play-button"></div>
+            <div className="adventurous-play-icon"></div>
           )}
 
-          <div style={{boxShadow: `0 0 0 -1px ${props.color}`}}  className="div-container">
+          <div className="rebellious-photo-frame">
             <a>
               <img
                 src={`${props.src}`}
                 onClick={() => {
                   if (isPlaying && currentSongId === songId) {
                     props.audioPlayerRef.current.audio.current.pause();
+                    setIsToggled(false);
                     setIsPlaying(false);
                   } else if (!isPlaying && currentSongId === songId) {
                     props.audioPlayerRef.current.audio.current.play();
+                    setIsToggled(true);
                     setIsPlaying(true);
                   } else {
                     props.setCurrentSong(
                       `https://ara.directus.app/assets/${props.songId}`
                     );
                     props.setCurrentSongId(songId);
+                    setIsToggled(true);
                     setIsPlaying(true);
                   }
                 }}
-                className="airtable-gallery"
-              ></img>
+                className={isToggled ? 'daring-photo-rotating' : 'daring-photo'}
+                style={{ mixBlendMode: "multiply" }}
+              />
             </a>
           </div>
-          <div className="text-container">
+          <div
+            className="maverick-caption"
+            ref={containerRef}
+            style={{ fontSize }}
+          >
             <a href={`https://ara-jet.vercel.app/collection-detail/${props.id}`}>
-          {props.display_title}
+              {props.display_title}
             </a>
           </div>
         </div>

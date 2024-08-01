@@ -1,5 +1,10 @@
 /* screen - collection */
 
+@font-face {
+  font-family: 'arm-reg';
+  src: url('../../public/fonts/AdelleSansARM-Regular.otf');
+}
+
 .collection {
   align-items: center;
   background-color: var(--coloursecondarywhite-100-general);
@@ -7,7 +12,7 @@
   flex-direction: column;
   height: 2250px;
   overflow: hidden;
-  width: 1440px;
+  
 }
 
 .collection .hello {
@@ -21,7 +26,7 @@
   margin-top: 50px;
   letter-spacing: 1.00px;
   line-height: 175px;
-  margin-right: -215px;
+  margin-left: 15vw;
   
   width: 1579px;
 }
@@ -237,8 +242,9 @@
   align-self: flex-end;
   display: flex;
   gap: 9px;
-  margin-right: 136px;
-  margin-top: px;
+  margin-right: -75px;
+  position: absolute;
+  margin-top: 53.5vh;
   min-width: 107px;
 }
 
@@ -250,6 +256,7 @@
   justify-content: flex-end;
   min-width: 49px;
   padding: 0 8px;
+  
 }
 
 .collection .flex-col {
@@ -257,6 +264,7 @@
   flex-direction: column;
   min-height: 33px;
   width: 13px;
+  
 }
 
 .collection .rectangle-3 {
@@ -320,7 +328,147 @@
   object-fit: cover; /* Ensures the image covers the entire area of the hole */
   display: block; /* Remove any extra space below the image */
   border: 0; /* Ensure there's no border on the image */
+  
 }
+
+
+
+.collection .airtable-gallery-spinning {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the image covers the entire area of the hole */
+  display: block; /* Remove any extra space below the image */
+  border: 0; /* Ensure there's no border on the image */
+  animation: spin 5s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* Container for the menu */
+.brutalist-container {
+  max-width: 500px; /* Adjusted width */
+  background-color: #fff; /* Background color */
+  padding: 25px; /* Reduced padding for smaller height */
+  border: 5px solid #000;
+  box-shadow: 10px 10px 0px 0px #000;
+  box-sizing: border-box;
+  font-family: 'arm-heavy', sans-serif; /* Apply local font-family */
+  color: #000; /* Default text color */
+  margin-bottom: 20px; /* Adjusted space below the menu for separation */
+  margin-top: 37.5vh; /* Adjusted margin for top positioning */
+  margin-left: 19vw;
+}
+
+.brutalist-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Adjusted gap between form elements */
+}
+
+.brutalist-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Reduced gap between filter items */
+}
+
+.brutalist-label {
+  font-size: 18px; /* Reduced font size for labels */
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #000; /* Text color for labels */
+}
+
+.brutalist-input {
+  padding: 10px; /* Reduced padding for inputs */
+  border: 3px solid #000; /* Border color */
+  font-size: 14px; /* Reduced font size */
+  background-color: #f0f0f0; /* Input background color */
+  transition: background-color 0.3s, border-color 0.3s;
+  color: #000; /* Text color inside input */
+}
+
+.brutalist-input:focus {
+  background-color: #fff;
+  border-color: #000;
+  color: #000; /* Text color on focus */
+  outline: none;
+}
+
+.brutalist-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px; /* Reduced gap between buttons */
+}
+
+.brutalist-button {
+  padding: 8px 16px; /* Reduced padding for buttons */
+  border: 3px solid #000; /* Border color */
+  background-color: #f0f0f0; /* Button background color */
+  font-size: 14px; /* Reduced font size */
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+  color: #000; /* Text color inside button */
+}
+
+.brutalist-button:hover {
+  background-color: #000;
+  color: #fff; /* Text color on hover */
+}
+
+.brutalist-footer {
+  display: flex;
+  justify-content: flex-start; /* Align the footer items to the start */
+  margin-top: 15px; /* Adjusted margin for footer */
+}
+
+.brutalist-nav-buttons {
+  display: flex;
+  gap: 8px; /* Reduced gap between navigation buttons */
+  justify-content: center;
+  margin-top: 15px; /* Space above the buttons */
+}
+
+.brutalist-nav-btn, .brutalist-submit-btn {
+  padding: 12px 24px; /* Reduced padding for navigation and submit buttons */
+  border: 3px solid #000; /* Border color */
+  background-color: #f0f0f0; /* Button background color */
+  font-size: 16px; /* Reduced font size */
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 3.5vh;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.brutalist-nav-btn {
+  color: #000; /* Text color for navigation buttons */
+}
+
+.brutalist-nav-btn:hover {
+  background-color: #000;
+  color: #fff; /* Text color on hover */
+}
+
+.brutalist-submit-btn {
+  background-color: #000;
+  color: #fff;
+}
+
+.brutalist-submit-btn:hover {
+  background-color: #fff;
+  color: #000;
+}
+
 .div-container-container {
   width: 300px;
   height: 315px;
@@ -1200,4 +1348,115 @@
 .collection .text-4 {
   align-self: stretch;
   position: relative;
+}
+
+.revolutionary-box {
+  width: 300px; /* Adjust width to fit theme */
+  height: 315px; /* Adjust height to fit theme */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #091133; /* Dark background for contrast */
+  border: 5px solid #000; /* Bold border for brutalist effect */
+  box-shadow: 10px 10px 0px 0px #000; /* Strong shadow for brutalist effect */
+  padding: 10px; /* Padding for spacing */
+}
+
+.daring-header {
+  font-family: 'fit-variable'; /* Match the font style */
+  font-size: 50px; /* Adjust font size */
+  color: #fff; /* White color for contrast */
+  text-transform: uppercase; /* Make text uppercase */
+  margin-bottom: 10px; /* Space below the title */
+  font-stretch: 100%;
+  margin-left: 3.5px;
+  margin-top: -5px;
+}
+
+.adventurous-play-icon {
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 17.5px;
+  right: 15px;
+  border-top: 10px solid transparent;
+  border-left: 15px solid #fff; /* White triangle for play button */
+  border-bottom: 10px solid transparent;
+}
+
+.pioneering-pause-icon {
+  position: absolute;
+  top: 17.5px;
+  right: 15px;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pioneering-pause-icon::before,
+.pioneering-pause-icon::after {
+  content: "";
+  width: 5px;
+  height: 20px;
+  background-color: #fff; /* White color for pause button bars */
+}
+
+.rebellious-photo-frame {
+  flex: 1;
+  background-color: #fff; /* White background for the image area */
+  width: 185px;
+  height: 185px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%; /* Circular image container */
+  overflow: hidden;
+  border: 3px solid #000; /* Bold border */
+}
+
+.maverick-caption {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+  margin-bottom: 5px;
+  text-align: center;
+  color: #fff; /* White text color */
+  font-family: 'arm-reg', sans-serif; /* Match the font style */
+  font-weight: 400;
+
+  /* Responsive font size with clamp */
+  font-size: clamp(12px, 4vw, 16px); /* Adjust min, preferred, and max sizes */
+  
+  /* Prevent text from wrapping and add ellipsis for overflow */
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}
+
+.daring-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border: 0;
+}
+
+.daring-photo-rotating {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border: 0;
+  animation: rotate 5s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

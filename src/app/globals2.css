@@ -131,25 +131,32 @@
     margin-left: 115px;
   }
 
-  .search_bar {
-    margin-top: 5vh;
-    margin-left: 2.5vw;
-    width: 50vw;
-    color: #091133;
-    font-size: 25px;
-    font-family: 'arm-bold';
-    font-stretch: 300%;
-    outline: none;
-    outline-style: none;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-    border-bottom: solid #091133 7.5px;
-    padding: 3px 10px;
-  }
 
+
+
+  .divider {
+
+    width: 100vw;
+    height: 60vh;
+    overflow: hidden;
+  }
   
+  .divider_1 {
+    width: 50vw;
+    float: left;
+    
+    
+    height: 60vh;
+  }
   
+  .divider_2 {
+    width: 50vw;
+    float: left;
+    
+    
+    
+    height: 60vh;
+  }
   
   .about-us-page-1 {
     height: 500px;
@@ -496,7 +503,7 @@
     gap: 33px;
     height: 612px;
     left: 93px;
-      display: flex;
+      /* display: flex; */
   flex-wrap: wrap;
     min-width: 1254px;
     top: 0;

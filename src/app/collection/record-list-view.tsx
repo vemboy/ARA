@@ -17,7 +17,7 @@ function RecordListView(props: any) {
       {currentView == "gridview" ? (
         <>
           {" "}
-          <div className="overlap-group-container">
+          {/* <div className="overlap-group-container">
             <div onClick={() => setView("gridview")} className="flex-row flex">
               <div className="flex-col flex">
                 <div className="rectangle-3"></div>
@@ -43,20 +43,22 @@ function RecordListView(props: any) {
                 <div className="rectangle-4-1"></div>
               </div>
             </div>
-          </div>{" "}
+          </div>{" "} */}
           <div
             className="group-65 group"
             style={{
               display: "flex",
               alignItems: "flex-start",
-              gap: "5px",
+              gap: "15px",
               height: "612px",
               justifyContent: "flex-start",
               flexDirection: "row",
               flexWrap: "wrap",
               minWidth: "1254px",
-              top: "35px",
-              position: "relative",
+              top: "47.5vh",
+              position: "absolute",
+              marginLeft: "2.5vw",
+              width: "50vw",
             }}
           >
             {props.records.map((record: { [x: string]: any }) => (
@@ -94,7 +96,7 @@ function RecordListView(props: any) {
       ) : (
         <>
           {" "}
-          <div className="overlap-group-container">
+          {/* <div className="overlap-group-container">
             <div onClick={() => setView("gridview")} className="flex-row flex">
               <div className="flex-col flex">
                 <div
@@ -106,6 +108,7 @@ function RecordListView(props: any) {
                   className="rectangle-3-1"
                 ></div>
               </div>
+              <br></br>
               <div className="flex-col flex">
                 <div
                   style={{ backgroundColor: "#091133", border: "1px #091133" }}
@@ -150,7 +153,7 @@ function RecordListView(props: any) {
                 ></div>
               </div>
             </div>
-          </div>
+          </div> */}
           <div
             className="group-65 group"
             style={{
