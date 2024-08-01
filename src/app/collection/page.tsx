@@ -69,19 +69,34 @@ export default function Collection() {
   const [filters, setFilter] = useState<{ [key: string]: Set<string> }>({});
 
   function getUrlWithFilters() {
-    const filterObj = {
-      _or: [
+    const filterObj: { _or: object[]; _and: object[] } = {
+      _or: [],
+      _and: [],
+    };
+    // Text search
+    if (searchString.length > 0) {
+      filterObj._or = [
         { title: { _icontains: searchString } },
         { title_armenian: { _icontains: searchString } },
         { artist_armenian: { _icontains: searchString } },
         { artist_original: { _icontains: searchString } },
-      ],
-    };
+      ];
+    }
+    // Filters
+    Object.entries(filters).forEach(([filterName, filtersSet]) => {
+      const filterArray = Array.from(filtersSet);
+      if (filterArray.length > 0) {
+        const tagFilter = { [filterName]: { _nin: filterArray } };
+        filterObj._and.push(tagFilter);
+      }
+    });
+
+    console.log("filterObj:", filterObj);
+
     const stringifiedFilterObj = JSON.stringify(filterObj);
     console.log("stringifiedFilter", stringifiedFilterObj);
-    return searchString.length === 0
-      ? "https://ara.directus.app/items/record_archive?limit=12"
-      : `https://ara.directus.app/items/record_archive?limit=12&filter=${stringifiedFilterObj}`;
+
+    return `https://ara.directus.app/items/record_archive?limit=12&filter=${stringifiedFilterObj}`;
   }
 
   const nextPage = () => {
@@ -148,9 +163,9 @@ export default function Collection() {
   const [searchString, setSearchString] = useState<string>("");
 
   useEffect(() => {
+    console.log("RENDER");
     const url = getUrlWithFilters();
     axios.get(url).then((response) => {
-      console.log("Hello");
       console.log(response.data.data);
       const amountOfPages = response.data.data.length;
 
@@ -172,7 +187,7 @@ export default function Collection() {
       setRecords(records);
       console.log(records);
     });
-  }, [searchString]);
+  }, [searchString, filters]);
 
   return (
     <>
@@ -449,10 +464,11 @@ export default function Collection() {
                       "Classical",
                       "Hip-Hop",
                       "Electronic",
-                    ].map((genre) => (
+                      "Religious",
+                    ].map((genres) => (
                       <FilterButton
-                        filterName={"genre"}
-                        buttonName={genre}
+                        filterName={"genres"}
+                        buttonName={genres}
                         filters={filters}
                         setFilter={setFilter}
                       ></FilterButton>
@@ -469,10 +485,10 @@ export default function Collection() {
                       "Violin",
                       "Bass",
                       "Saxophone",
-                    ].map((instrument) => (
+                    ].map((instruments) => (
                       <FilterButton
-                        filterName={"instrument"}
-                        buttonName={instrument}
+                        filterName={"instruments"}
+                        buttonName={instruments}
                         filters={filters}
                         setFilter={setFilter}
                       ></FilterButton>
