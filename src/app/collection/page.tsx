@@ -17,24 +17,6 @@ export default function Collection() {
   const audioPlayerRef = React.useContext(AudioContext)?.audioPlayerRef;
   console.log("PAGE:", audioPlayerRef);
 
-<<<<<<< HEAD
-
-const countries = [
-  'Argentina', 'Armenia', 'Brazil', 'Canada', 'Denmark', 'England UK',
-  'France', 'Germany', 'Holland', 'Italy', 'Jordan', 'Lebanon', 'Qatar',
-  'Russia', 'United States', 'USSR', 'Uruguay', 'Venezuela'
-];
-
-const FilterComponent = () => {
-  const [artist, setArtist] = useState('');
-  const [genre, setGenre] = useState('');
-  const [country, setCountry] = useState('');
-  const [year, setYear] = useState('');
-  const [instrument, setInstrument] = useState('');
-}
-
-
-=======
   const updateSearchString = (e: any) => {
     console.log("Searching...:", e.target.value);
     setSearchString(e.target.value);
@@ -55,7 +37,6 @@ const FilterComponent = () => {
       ? "https://ara.directus.app/items/record_archive?limit=12"
       : `https://ara.directus.app/items/record_archive?limit=12&filter=${stringifiedFilterObj}`;
   }
->>>>>>> 63e8281127b213e4fc49faf2d08dd17c766f390b
 
   const nextPage = () => {
     setPage(currentPage + 1);
@@ -240,19 +221,8 @@ const FilterComponent = () => {
           <h1 className="hello valign-text-middle">
             Collection <br></br> ՀԱԲԱԿԱԾՈՒ
           </h1>
-<<<<<<< HEAD
           </div>
           <div  className="divider_2">
-=======
-          <div>
-            <form>
-              <input
-                onChange={updateSearchString}
-                className="search_bar"
-                name="query"
-              />
-            </form>
->>>>>>> 63e8281127b213e4fc49faf2d08dd17c766f390b
 
             </div>
             </div> */}
