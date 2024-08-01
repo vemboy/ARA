@@ -425,6 +425,12 @@
   color: #fff; /* Text color on hover */
 }
 
+.brutalist-button.clicked {
+  background-color: #000;
+  color: #fff;
+  /* Text color on hover */
+}
+
 .brutalist-footer {
   display: flex;
   justify-content: flex-start; /* Align the footer items to the start */

@@ -12,6 +12,50 @@ import "react-h5-audio-player/lib/styles.css";
 import { AudioContext } from "../audioLayout";
 import Link from "next/link";
 
+interface FilterProp {
+  buttonName: string;
+  filterName: string;
+  filters: { [key: string]: Set<string> };
+  setFilter: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: Set<string>;
+    }>
+  >;
+}
+
+function FilterButton(filterProp: FilterProp) {
+  const [selected, setSelected] = useState(false);
+
+  const selectFilter = () => {
+    const newFilters = structuredClone(filterProp.filters);
+    newFilters[filterProp.filterName] ??= new Set();
+    if (!selected) {
+      newFilters[filterProp.filterName].add(filterProp.buttonName);
+    } else {
+      newFilters[filterProp.filterName].delete(filterProp.buttonName);
+    }
+    console.log("New Filters:", newFilters);
+
+    setSelected(!selected);
+    filterProp.setFilter(newFilters);
+  };
+
+  const buttonClass = selected
+    ? "brutalist-button clicked"
+    : "brutalist-button";
+
+  return (
+    <button
+      type="button"
+      className={buttonClass}
+      key={filterProp.buttonName}
+      onClick={selectFilter}
+    >
+      {filterProp.buttonName}
+    </button>
+  );
+}
+
 export default function Collection() {
   const setSong = React.useContext(AudioContext)?.setSong;
   const audioPlayerRef = React.useContext(AudioContext)?.audioPlayerRef;
@@ -21,6 +65,8 @@ export default function Collection() {
     console.log("Searching...:", e.target.value);
     setSearchString(e.target.value);
   };
+
+  const [filters, setFilter] = useState<{ [key: string]: Set<string> }>({});
 
   function getUrlWithFilters() {
     const filterObj = {
@@ -430,13 +476,12 @@ export default function Collection() {
                       "Hip-Hop",
                       "Electronic",
                     ].map((genre) => (
-                      <button
-                        type="button"
-                        className="brutalist-button"
-                        key={genre}
-                      >
-                        {genre}
-                      </button>
+                      <FilterButton
+                        filterName={"genre"}
+                        buttonName={genre}
+                        filters={filters}
+                        setFilter={setFilter}
+                      ></FilterButton>
                     ))}
                   </div>
                 </div>
@@ -451,13 +496,12 @@ export default function Collection() {
                       "Bass",
                       "Saxophone",
                     ].map((instrument) => (
-                      <button
-                        type="button"
-                        className="brutalist-button"
-                        key={instrument}
-                      >
-                        {instrument}
-                      </button>
+                      <FilterButton
+                        filterName={"instrument"}
+                        buttonName={instrument}
+                        filters={filters}
+                        setFilter={setFilter}
+                      ></FilterButton>
                     ))}
                   </div>
                 </div>
