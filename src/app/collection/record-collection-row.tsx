@@ -51,7 +51,6 @@ function RecordCollectionRow(props: any) {
                   }
                 }}
                 className={isToggled ? 'daring-photo-rotating' : 'daring-photo'}
-                style={{ mixBlendMode: "multiply" }}
               />
             </a>
           </div>
