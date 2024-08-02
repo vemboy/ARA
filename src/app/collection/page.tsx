@@ -71,6 +71,11 @@ export default function Collection() {
     setSearchYear(e.target.value);
   };
 
+  const updateSearchArtist = (e: any) => {
+    console.log("Searching artist...:", e.target.value);
+    setSearchArtist(e.target.value);
+  };
+
   const [filters, setFilter] = useState<{ [key: string]: Set<string> }>({});
 
   function getUrlWithFilters() {
@@ -92,6 +97,17 @@ export default function Collection() {
     // Year search
     if (searchYear.length > 0) {
       filterObj._and.push({ "year(year)": { _eq: searchYear } });
+    }
+
+    // Artist search
+    if (searchArtist.length > 0) {
+      filterObj._and.push({
+        _or: [
+          { artist_english: { _icontains: searchArtist } },
+          { artist_armenian: { _icontains: searchArtist } },
+          { artist_original: { _icontains: searchArtist } },
+        ],
+      });
     }
 
     // Filters
@@ -175,6 +191,7 @@ export default function Collection() {
   const [records, setRecords] = useState<any[]>([]);
   const [searchString, setSearchString] = useState<string>("");
   const [searchYear, setSearchYear] = useState<string>("");
+  const [searchArtist, setSearchArtist] = useState<string>("");
 
   useEffect(() => {
     console.log("RENDER");
@@ -201,7 +218,7 @@ export default function Collection() {
       setRecords(records);
       console.log(records);
     });
-  }, [searchString, searchYear, filters]);
+  }, [searchString, searchYear, filters, searchArtist]);
 
   return (
     <>
@@ -452,6 +469,7 @@ export default function Collection() {
                     type="text"
                     name="artist"
                     className="brutalist-input"
+                    onChange={updateSearchArtist}
                   />
                 </div>
                 <div className="brutalist-filter-group">
