@@ -266,6 +266,7 @@ export default function Collection() {
                 className="search_bar"
                 name="query"
                 placeholder="Search..."
+                onChange={updateSearchString}
               />
               <span className="search-icon">🔍</span>
             </form>
