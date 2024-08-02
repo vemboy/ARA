@@ -73,6 +73,7 @@ export default function Collection() {
       _or: [],
       _and: [],
     };
+
     // Text search
     if (searchString.length > 0) {
       filterObj._or = [
@@ -82,12 +83,14 @@ export default function Collection() {
         { artist_original: { _icontains: searchString } },
       ];
     }
+
     // Filters
     Object.entries(filters).forEach(([filterName, filtersSet]) => {
       const filterArray = Array.from(filtersSet);
       if (filterArray.length > 0) {
-        const tagFilter = { [filterName]: { _nin: filterArray } };
-        filterObj._and.push(tagFilter);
+        filterArray.forEach((filter) => {
+          filterObj._and.push({ [filterName]: { _contains: filter } });
+        });
       }
     });
 
@@ -191,60 +194,57 @@ export default function Collection() {
 
   return (
     <>
-<div className="top-container">
-  <div className="left-side">
-    {/* Place any content you want here */}
-  </div>
-  <div className="right-side">
-    <div className="menu-container">
-      <div className="plumbus-container">
-        <div className="zog-box"></div>
-        <div className="flibber-group">
-          <div className="xenon-item xenon-item-a">
-            <div className="quark-circle"></div>
+      <div className="top-container">
+        <div className="left-side">{/* Place any content you want here */}</div>
+        <div className="right-side">
+          <div className="menu-container">
+            <div className="plumbus-container">
+              <div className="zog-box"></div>
+              <div className="flibber-group">
+                <div className="xenon-item xenon-item-a">
+                  <div className="quark-circle"></div>
+                </div>
+                <div className="xenon-item xenon-item-b"></div>
+              </div>
+              <div className="blorptastic-items">
+                <div className="tangy-category tangy-cat-a">
+                  <div className="link-blop">
+                    <Link href="/">HOMEPAGE</Link>
+                  </div>
+                  <div className="link-blop">
+                    <Link href="/">ՏՆԷՋ</Link>
+                  </div>
+                </div>
+                <div className="tangy-category tangy-cat-b">
+                  <div className="link-blop">
+                    <Link href="">CONTRIBUTE</Link>
+                  </div>
+                  <div className="link-blop">
+                    <Link href="#">ԱՋԱԿՑԵԼ</Link>
+                  </div>
+                </div>
+                <div className="tangy-category tangy-cat-c">
+                  <div className="link-blop">
+                    <Link href="javascript:scrollTo(AboutUs);">ABOUT US</Link>
+                  </div>
+                  <div className="link-blop">
+                    <Link href="javascript:scrollTo(AboutUs);">ՄԵՐ ՄԱՍԻՆ</Link>
+                  </div>
+                </div>
+                <div className="tangy-category tangy-cat-d">
+                  <div className="link-blop">
+                    <Link href="javascript:scrollTo(Footer);">CONTACT</Link>
+                  </div>
+                  <div className="link-blop">
+                    <Link href="javascript:scrollTo(Footer);">ԿԱՊ</Link>
+                  </div>
+                </div>
+              </div>
+              <h1 className="gorgon-title">Armenian Record Archive</h1>
+            </div>
           </div>
-          <div className="xenon-item xenon-item-b"></div>
         </div>
-        <div className="blorptastic-items">
-          <div className="tangy-category tangy-cat-a">
-            <div className="link-blop">
-              <Link href="/">HOMEPAGE</Link>
-            </div>
-            <div className="link-blop">
-              <Link href="/">ՏՆԷՋ</Link>
-            </div>
-          </div>
-          <div className="tangy-category tangy-cat-b">
-            <div className="link-blop">
-              <Link href="">CONTRIBUTE</Link>
-            </div>
-            <div className="link-blop">
-              <Link href="#">ԱՋԱԿՑԵԼ</Link>
-            </div>
-          </div>
-          <div className="tangy-category tangy-cat-c">
-            <div className="link-blop">
-              <Link href="javascript:scrollTo(AboutUs);">ABOUT US</Link>
-            </div>
-            <div className="link-blop">
-              <Link href="javascript:scrollTo(AboutUs);">ՄԵՐ ՄԱՍԻՆ</Link>
-            </div>
-          </div>
-          <div className="tangy-category tangy-cat-d">
-            <div className="link-blop">
-              <Link href="javascript:scrollTo(Footer);">CONTACT</Link>
-            </div>
-            <div className="link-blop">
-              <Link href="javascript:scrollTo(Footer);">ԿԱՊ</Link>
-            </div>
-          </div>
-        </div>
-        <h1 className="gorgon-title">Armenian Record Archive</h1>
       </div>
-    </div>
-  </div>
-</div>
-
 
       {/* <div className="line"></div> */}
 
@@ -458,13 +458,14 @@ export default function Collection() {
                   <label className="brutalist-label">Genre +</label>
                   <div className="brutalist-button-group">
                     {[
-                      "Pop",
-                      "Rock",
-                      "Jazz",
-                      "Classical",
-                      "Hip-Hop",
-                      "Electronic",
-                      "Religious",
+                      "pop",
+                      "rock",
+                      "jazz",
+                      "classical",
+                      "hip-hop",
+                      "electronic",
+                      "religious",
+                      "vocal",
                     ].map((genres) => (
                       <FilterButton
                         filterName={"genres"}
@@ -479,12 +480,14 @@ export default function Collection() {
                   <label className="brutalist-label">Instruments +</label>
                   <div className="brutalist-button-group">
                     {[
-                      "Guitar",
-                      "Piano",
-                      "Drums",
-                      "Violin",
-                      "Bass",
-                      "Saxophone",
+                      "guitar",
+                      "piano",
+                      "drums",
+                      "violin",
+                      "bass",
+                      "saxophone",
+                      "oud",
+                      "darabuka",
                     ].map((instruments) => (
                       <FilterButton
                         filterName={"instruments"}
@@ -495,11 +498,11 @@ export default function Collection() {
                     ))}
                   </div>
                 </div>
-                <div className="brutalist-footer">
+                {/* <div className="brutalist-footer">
                   <button type="submit" className="brutalist-submit-btn">
                     Apply Filters
                   </button>
-                </div>
+                </div> */}
               </form>
             </div>
             <div className="brutalist-nav-buttons">
