@@ -12,6 +12,7 @@ import "react-h5-audio-player/lib/styles.css";
 import { AudioContext } from "../audioLayout";
 import Link from "next/link";
 import SingleRecordView from "./record-single";
+import _ from "lodash";
 
 interface FilterProp {
   buttonName: string;
@@ -193,11 +194,73 @@ export default function Collection() {
   const [searchString, setSearchString] = useState<string>("");
   const [searchYear, setSearchYear] = useState<string>("");
   const [searchArtist, setSearchArtist] = useState<string>("");
-  const [selectedRecord, setSelectedRecord] = useState<any[]>([]);
 
   useEffect(() => {
     console.log("RENDER");
     const url = getUrlWithFilters();
+
+    // Get instruments set
+    axios
+      .get(
+        "https://ara.directus.app/items/record_archive?groupBy[]=instruments"
+      )
+      .then((response) => {
+        const uniqueInstruments: Set<string> = new Set();
+        _.forEach(response.data.data, (instrumentsArray: any) => {
+          if (instrumentsArray.instruments) {
+            _.forEach(instrumentsArray.instruments, (instrument: string) =>
+              uniqueInstruments.add(instrument as string)
+            );
+          }
+        });
+        setInstruments(Array.from(uniqueInstruments));
+      })
+      .catch((error) => {
+        console.log("Error fetching instruments:", error);
+        setInstruments(
+          Array.from([
+            "guitar",
+            "piano",
+            "drums",
+            "violin",
+            "bass",
+            "saxophone",
+            "oud",
+            "darabuka",
+          ])
+        );
+      });
+
+    // Get genres set
+    axios
+      .get("https://ara.directus.app/items/record_archive?groupBy[]=genres")
+      .then((response) => {
+        const uniqueGenres: Set<string> = new Set();
+        _.forEach(response.data.data, (genresArray: any) => {
+          if (genresArray.genres) {
+            _.forEach(genresArray.genres, (genre: string) =>
+              uniqueGenres.add(genre as string)
+            );
+          }
+        });
+        setGenres(Array.from(uniqueGenres));
+      })
+      .catch((error) => {
+        console.log("Error fetching genres:", error);
+        setGenres(
+          Array.from([
+            "pop",
+            "rock",
+            "jazz",
+            "classical",
+            "hip-hop",
+            "electronic",
+            "religious",
+            "vocal",
+          ])
+        );
+      });
+
     axios.get(url).then((response) => {
       console.log(response.data.data);
       const amountOfPages = response.data.data.length;
@@ -444,16 +507,7 @@ export default function Collection() {
                 <div className="brutalist-filter-group">
                   <label className="brutalist-label">Genre +</label>
                   <div className="brutalist-button-group">
-                    {[
-                      "pop",
-                      "rock",
-                      "jazz",
-                      "classical",
-                      "hip-hop",
-                      "electronic",
-                      "religious",
-                      "vocal",
-                    ].map((genres) => (
+                    {genres.map((genres) => (
                       <FilterButton
                         filterName={"genres"}
                         buttonName={genres}
@@ -466,16 +520,7 @@ export default function Collection() {
                 <div className="brutalist-filter-group">
                   <label className="brutalist-label">Instruments +</label>
                   <div className="brutalist-button-group">
-                    {[
-                      "guitar",
-                      "piano",
-                      "drums",
-                      "violin",
-                      "bass",
-                      "saxophone",
-                      "oud",
-                      "darabuka",
-                    ].map((instruments) => (
+                    {instruments.map((instruments) => (
                       <FilterButton
                         filterName={"instruments"}
                         buttonName={instruments}
