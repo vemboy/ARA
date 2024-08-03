@@ -1,119 +1,3 @@
-/* Top Container */
-.top-container {
-  display: flex;
-  height: 100px; /* Adjust this to match your menu height */
-  width: 100vw;
-}
-
-/* Left Side (Adjust as needed) */
-.left-side {
-  flex: 1; /* Takes up remaining space on the left */
-  background-color: red; /* Example background color */
-  height: 50vh;
-  position: relative;
-}
-
-/* Right Side with Menu */
-.right-side {
-  width: 300px; /* Adjust this to your menu width */
-  background-color: #fff; /* Background color for menu area */
-  border-left: 1px solid #000; /* Border to separate from left side */
-  position: relative;
-  height: 50vh;
-
-}
-
-/* Menu Container */
-.menu-container {
-  position: absolute;
-  top: 0;
-  right: 30px;
-  height: 100%; /* Full height of the right-side container */
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* General Menu Styles */
-.plumbus-container {
-  position: relative; /* Relative positioning for internal elements */
-  width: 100%; /* Full width of the menu container */
-  height: 100%; /* Full height of the menu container */
-  padding: 25px; /* Padding around the menu */
-  border: 5px solid #000; /* Border for the menu */
-  box-shadow: 10px 10px 0px 0px #000; /* Shadow for the menu */
-  font-family: 'arm-heavy', sans-serif; /* Font family */
-  color: #000; /* Text color */
-  box-sizing: border-box; /* Include padding and border in element's total width and height */
-}
-
-/* Additional Styles */
-.flibber-group {
-  display: flex;
-  flex-direction: column;
-  gap: 16px; /* Gap between items */
-}
-
-.xenon-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.zog-box {
-  /* Rectangle specific styles */
-}
-
-.xenon-item-a .quark-circle {
-  border: 1px solid;
-  border-color: var(--logo-color);
-  border-radius: 6.23px;
-  height: 12px;
-  width: 12px;
-}
-
-.xenon-item-b {
-  /* Styles for xenon-item-b if needed */
-}
-
-/* Menu Categories */
-.blorptastic-items {
-  display: flex;
-  flex-direction: column;
-  gap: 12px; /* Gap between menu categories */
-}
-
-.tangy-category {
-  display: flex;
-  flex-direction: column;
-  gap: 8px; /* Gap between links within a category */
-}
-
-.link-blop {
-  letter-spacing: 1px;
-  line-height: 27px;
-}
-
-.link-blop a {
-  font-family: 'arm-heavy';
-  font-size: 16px;
-  color: #000;
-  text-decoration: none; /* Remove underline from links */
-}
-
-.link-blop a:hover {
-  color: #f00; /* Change color on hover */
-}
-
-/* Header Title */
-.gorgon-title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #000;
-  text-align: center;
-  margin-top: 20px;
-}
-
-
 @font-face {
   font-family: 'arm-reg';
   src: url('../../public/fonts/AdelleSansARM-Regular.otf');
@@ -122,12 +6,9 @@
 .collection {
   align-items: center;
   background-color: var(--coloursecondarywhite-100-general);
-  
   flex-direction: column;
-  height: 2250px;
+  height: 1200px;
   overflow: hidden;
-  
-  
 }
 
 .collection .hello {
@@ -144,6 +25,10 @@
   margin-left: 15vw;
   
   width: 1579px;
+}
+
+.hight {
+
 }
 
 .collection .overlap-group11 {
@@ -416,11 +301,38 @@
   width: 8px;
 }
 
+
 .collection .flex-col-2 {
   gap: 5px;
   min-height: 33px;
   width: 19px;
 }
+
+
+.two-sections {
+  display: flex;
+  height: 100vh; /* Full viewport height */
+}
+
+.section {
+  flex: 1; /* Each section takes up equal space */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.section-left {
+  
+}
+
+.section-right {
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
 
 .collection .rectangle-4-1 {
   background-color: var(--logo-color);
@@ -1580,3 +1492,191 @@
   }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* App.css */
+
+.outer-container {
+  padding: 50px;
+  background-color: #fff; /* Optional: Add a background color for the outer container */
+  border: 5px solid #000;
+  box-shadow: 10px 10px 0px 0px #000;
+}
+
+.two-sections {
+  display: flex;
+  height: 80vh; /* Adjusted height to 80vh */
+  width: 100%;
+}
+
+.section {
+  flex: 1; /* Each section takes up equal space */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.section-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.section-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Vinyl Info Container styles */
+
+.vinyl-info-container {
+  width: 80%; /* 80% width of the left section */
+  height: 80%; /* 80% height of the left section */
+  background-color: #fff;
+  border: 5px solid #000;
+  box-shadow: 10px 10px 0px 0px #000;
+  padding: 20px;
+  font-family: 'arm-heavy', sans-serif;
+  color: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  margin-left: 15vw;
+}
+
+.vinyl-title {
+  font-size: 30px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 30px;
+}
+
+.vinyl-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.vinyl-info-item {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Add gap between label and text */
+}
+
+.vinyl-label {
+  font-size: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #000;
+  flex: 1;
+  text-align: right;
+}
+
+.vinyl-text {
+  font-size: 18px;
+  background-color: #f0f0f0;
+  padding: 10px;
+  border: 3px solid #000;
+  flex: 2;
+  display: block;
+  width: 100%; /* Ensure text boxes scale properly */
+}
+
+/* BrutalistContainer styles for Vinyl Collection */
+
+.xzy-container {
+  width: 405px; /* 1.35 times 300px */
+  height: 425.25px; /* 1.35 times 315px */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #091133;
+  border: 5px solid #000;
+  box-shadow: 13.5px 13.5px 0px 0px #000; /* 1.35 times 10px */
+  padding: 13.5px; /* 1.35 times 10px */
+  margin-right: 5vw;
+}
+
+.xzy-title {
+  font-family: 'arm-heavy', sans-serif;
+  font-size: 27px; /* 1.35 times 20px */
+  color: #fff;
+  text-transform: uppercase;
+  margin-bottom: 13.5px; /* 1.35 times 10px */
+  text-align: center;
+}
+
+.xzy-play-button {
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 20.25px; /* 1.35 times 15px */
+  right: 20.25px; /* 1.35 times 15px */
+  border-top: 20.25px solid transparent; /* 1.35 times 15px */
+  border-left: 27px solid #fff; /* 1.35 times 20px */
+  border-bottom: 20.25px solid transparent; /* 1.35 times 15px */
+}
+
+.xzy-pause {
+  position: absolute;
+  top: 20.25px; /* 1.35 times 15px */
+  right: 20.25px; /* 1.35 times 15px */
+  width: 33.75px; /* 1.35 times 25px */
+  height: 33.75px; /* 1.35 times 25px */
+  border: solid 6.75px #fff; /* 1.35 times 5px */
+  border-width: 6.75px 0 6.75px 13.5px; /* 1.35 times 5px and 10px */
+  border-radius: 4.05px; /* 1.35 times 3px */
+}
+
+.xzy-image-container {
+  flex: 1;
+  background-color: #fff;
+  width: 249.75px; /* 1.35 times 185px */
+  height: 249.75px; /* 1.35 times 185px */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4.05px solid #000; /* 1.35 times 3px */
+}
+
+.xzy-text-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+  margin-bottom: 13.5px; /* 1.35 times 10px */
+  text-align: center;
+  color: #fff;
+  font-family: 'arm-heavy', sans-serif;
+  font-size: 21.6px; /* 1.35 times 16px */
+  font-weight: 400;
+}
+
+.xzy-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border: 0;
+}

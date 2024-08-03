@@ -578,6 +578,7 @@
   text-decoration: none;
   decoration: none;
   color:inherit;
+  
 }
 
 .container-center-horizontal {
@@ -589,6 +590,8 @@
   width: 100%;
   
 }
+
+
 
 .container-center-horizontal > * {
   flex-shrink: 0;
@@ -650,7 +653,7 @@ text-align: center;
   position: absolute;
   bottom: 20px; /* Adjust the distance from the bottom */
   left: 68.25vw;
-  top: 56.85vh;
+  top: 47.5vh;
   height: 10vh;
 
 }

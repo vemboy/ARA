@@ -11,6 +11,7 @@ import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import { AudioContext } from "../audioLayout";
 import Link from "next/link";
+import SingleRecordView from "./record-single";
 
 interface FilterProp {
   buttonName: string;
@@ -60,7 +61,7 @@ export default function Collection() {
   const setSong = React.useContext(AudioContext)?.setSong;
   const audioPlayerRef = React.useContext(AudioContext)?.audioPlayerRef;
   console.log("PAGE:", audioPlayerRef);
-
+  
   const updateSearchString = (e: any) => {
     console.log("Searching...:", e.target.value);
     setSearchString(e.target.value);
@@ -192,6 +193,7 @@ export default function Collection() {
   const [searchString, setSearchString] = useState<string>("");
   const [searchYear, setSearchYear] = useState<string>("");
   const [searchArtist, setSearchArtist] = useState<string>("");
+  const [selectedRecord, setSelectedRecord] = useState<any[]>([]);
 
   useEffect(() => {
     console.log("RENDER");
@@ -222,57 +224,7 @@ export default function Collection() {
 
   return (
     <>
-      <div className="top-container">
-        <div className="left-side">{/* Place any content you want here */}</div>
-        <div className="right-side">
-          <div className="menu-container">
-            <div className="plumbus-container">
-              <div className="zog-box"></div>
-              <div className="flibber-group">
-                <div className="xenon-item xenon-item-a">
-                  <div className="quark-circle"></div>
-                </div>
-                <div className="xenon-item xenon-item-b"></div>
-              </div>
-              <div className="blorptastic-items">
-                <div className="tangy-category tangy-cat-a">
-                  <div className="link-blop">
-                    <Link href="/">HOMEPAGE</Link>
-                  </div>
-                  <div className="link-blop">
-                    <Link href="/">ՏՆԷՋ</Link>
-                  </div>
-                </div>
-                <div className="tangy-category tangy-cat-b">
-                  <div className="link-blop">
-                    <Link href="">CONTRIBUTE</Link>
-                  </div>
-                  <div className="link-blop">
-                    <Link href="#">ԱՋԱԿՑԵԼ</Link>
-                  </div>
-                </div>
-                <div className="tangy-category tangy-cat-c">
-                  <div className="link-blop">
-                    <Link href="javascript:scrollTo(AboutUs);">ABOUT US</Link>
-                  </div>
-                  <div className="link-blop">
-                    <Link href="javascript:scrollTo(AboutUs);">ՄԵՐ ՄԱՍԻՆ</Link>
-                  </div>
-                </div>
-                <div className="tangy-category tangy-cat-d">
-                  <div className="link-blop">
-                    <Link href="javascript:scrollTo(Footer);">CONTACT</Link>
-                  </div>
-                  <div className="link-blop">
-                    <Link href="javascript:scrollTo(Footer);">ԿԱՊ</Link>
-                  </div>
-                </div>
-              </div>
-              <h1 className="gorgon-title">Armenian Record Archive</h1>
-            </div>
-          </div>
-        </div>
-      </div>
+
 
       {/* <div className="line"></div> */}
 
@@ -558,7 +510,51 @@ export default function Collection() {
             </div>
           </div>
         </div>
+
       </div>
+
+    <div className="two-sections">
+      <div className="section section-left">
+        <div className="inner-container">
+          <div className="vinyl-info-container">
+            <h1 className="vinyl-title">Vinyl Information</h1>
+            <div className="vinyl-info">
+              <div className="vinyl-info-item">
+                <span className="vinyl-label">Artist:</span>
+                <span className="vinyl-text">{selectedRecord?.author || "N/A"}</span>
+              </div>
+              <div className="vinyl-info-item">
+                <span className="vinyl-label">Album:</span>
+                <span className="vinyl-text">{selectedRecord?.title || "N/A"}</span>
+              </div>
+              <div className="vinyl-info-item">
+                <span className="vinyl-label">Release Date:</span>
+                <span className="vinyl-text">{selectedRecord?.year || "N/A"}</span>
+              </div>
+              <div className="vinyl-info-item">
+                <span className="vinyl-label">Genre:</span>
+                <span className="vinyl-text">{selectedRecord?.genre || "N/A"}</span>
+              </div>
+              <div className="vinyl-info-item">
+                <span className="vinyl-label">Description:</span>
+                <span className="vinyl-text">
+                  Description of the album goes here. This can be a brief overview of the album, its significance, and any interesting facts.
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="section section-right">
+        <SingleRecordView
+          setCurrentSong={setSong}
+          audioPlayerRef={audioPlayerRef}
+          records={records}
+          setSelectedRecord={setSelectedRecord}
+        ></SingleRecordView>
+      </div>
+    </div>
+
     </>
   );
 }
