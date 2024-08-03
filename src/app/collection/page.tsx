@@ -569,19 +569,19 @@ export default function Collection() {
             <div className="vinyl-info">
               <div className="vinyl-info-item">
                 <span className="vinyl-label">Artist:</span>
-                <span className="vinyl-text">{selectedRecord[0]?.author || "N/A"}</span>
+                <span className="vinyl-text">{selectedRecord?.author || "N/A"}</span>
               </div>
               <div className="vinyl-info-item">
                 <span className="vinyl-label">Album:</span>
-                <span className="vinyl-text">{selectedRecord[0]?.title || "N/A"}</span>
+                <span className="vinyl-text">{selectedRecord?.title || "N/A"}</span>
               </div>
               <div className="vinyl-info-item">
                 <span className="vinyl-label">Release Date:</span>
-                <span className="vinyl-text">{selectedRecord[0]?.year || "N/A"}</span>
+                <span className="vinyl-text">{selectedRecord?.year || "N/A"}</span>
               </div>
               <div className="vinyl-info-item">
                 <span className="vinyl-label">Genre:</span>
-                <span className="vinyl-text">{selectedRecord[0]?.genre || "N/A"}</span>
+                <span className="vinyl-text">{selectedRecord?.genre || "N/A"}</span>
               </div>
               <div className="vinyl-info-item">
                 <span className="vinyl-label">Description:</span>
