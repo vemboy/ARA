@@ -194,6 +194,9 @@ export default function Collection() {
   const [searchString, setSearchString] = useState<string>("");
   const [searchYear, setSearchYear] = useState<string>("");
   const [searchArtist, setSearchArtist] = useState<string>("");
+  const [selectedRecord, setSelectedRecord] = useState<any[]>([]);
+  const [instruments, setInstruments] = useState<string[]>([]);
+  const [genres, setGenres] = useState<string[]>([]);
 
   useEffect(() => {
     console.log("RENDER");
