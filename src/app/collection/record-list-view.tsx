@@ -25,7 +25,7 @@ function RecordListView(props: any) {
   const layouts = { lg: layout, md: layout, sm: layout, xs: layout, xxs: layout };
 
   return (
-    <div style={{ marginLeft: "280px", padding: "20px", overflowY: "auto", height: "100vh" }}>
+    <div style={{ marginLeft: "280px", marginTop: "-25px", padding: "20px", overflowY: "auto", height: "100vh" }}>
       <ResponsiveGridLayout
         className="layout"
         layouts={layouts}
