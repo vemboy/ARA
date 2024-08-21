@@ -11,13 +11,19 @@ const GridLayout = WidthProvider(Responsive);
 
 function RecordListView(props: any) {
   const [currentSongId, setCurrentSongId] = useState<string | null>(null);
-  const [availableWidth, setAvailableWidth] = useState(window.innerWidth - 300);
+  const [availableWidth, setAvailableWidth] = useState(1200); // Set a default width
 
-  // Update available width on resize
+  // Update available width on resize (browser-side only)
   useEffect(() => {
-    const handleResize = () => setAvailableWidth(window.innerWidth - 300);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    // Check if window is defined to ensure we're in the browser
+    if (typeof window !== "undefined") {
+      const handleResize = () => setAvailableWidth(window.innerWidth - 300);
+      setAvailableWidth(window.innerWidth - 300); // Initial set on mount
+
+      window.addEventListener('resize', handleResize);
+
+      return () => window.removeEventListener('resize', handleResize);
+    }
   }, []);
 
   const cols = 5; // Assuming 5 columns for large screens, adjust as needed
