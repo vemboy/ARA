@@ -23,6 +23,7 @@
     background-color: #091133;
     margin-top: 650px;
     position: absolute;
+    pointer-events:none;
   }
   
   .about-us-container {
