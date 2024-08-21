@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import RecordCollectionRow from "./record-collection-row";
 import "react-grid-layout/css/styles.css";
@@ -7,39 +7,46 @@ import {
   getImageThumbnailUrl,
 } from "@/utils/assetUtils";
 
-const ResponsiveGridLayout = WidthProvider(Responsive);
+const GridLayout = WidthProvider(Responsive);
 
 function RecordListView(props: any) {
   const [currentSongId, setCurrentSongId] = useState<string | null>(null);
+  const [availableWidth, setAvailableWidth] = useState(window.innerWidth - 300);
 
-  // Configure the layout for the grid
+  // Update available width on resize
+  useEffect(() => {
+    const handleResize = () => setAvailableWidth(window.innerWidth - 300);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const cols = 5; // Assuming 5 columns for large screens, adjust as needed
+  const itemWidth = availableWidth / cols; // Dynamic width for each item
+
   const layout = props.records.map((record: any, index: number) => ({
     i: record.id.toString(),
-    x: (index % 5), // 5 columns per row
-    y: Math.floor(index / 5),
-    w: 1, // Each item takes up 1 column space
-    h: 1, // Set height dynamically
-    minW: 2, // Ensure minimum width
+    x: (index % cols),
+    y: Math.floor(index / cols),
+    w: 1, // Fixed to 1 column width per item
+    h: 1, // Let height be dynamic based on content
   }));
 
-  const layouts = { lg: layout, md: layout, sm: layout, xs: layout, xxs: layout };
-
   return (
-    <div style={{ marginLeft: "280px", marginTop: "-25px", padding: "20px", overflowY: "auto", height: "100vh" }}>
-      <ResponsiveGridLayout
+    <div style={{ marginLeft: "280px", padding: "20px", overflowY: "auto", height: "100vh" }}>
+      <GridLayout
         className="layout"
-        layouts={layouts}
-        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-        cols={{ lg: 5, md: 4, sm: 3, xs: 2, xxs: 1 }} // Maintain consistent number of columns
-        rowHeight={330} // Dynamic row height based on content
-        isDraggable={false} // Disable dragging
-        isResizable={false} // Disable resizing
-        margin={[15, 15]} // Margin between grid items
-        preventCollision={true} // Prevent overlapping
-        compactType={null} // Disable grid compaction
+        layouts={{ lg: layout }}
+        cols={{ lg: cols, md: 4, sm: 3, xs: 2, xxs: 1 }} // Adjust columns based on screen size
+        rowHeight={330}
+        width={availableWidth} // Set dynamic width based on available space
+        isDraggable={false}
+        isResizable={false}
+        margin={[15, 15]} // Gap between grid items
+        preventCollision={true}
+        compactType={null} // Disable compacting
       >
         {props.records.map((record: any) => (
-          <div key={record.id} className="grid-item" style={{ minWidth: "300px", maxWidth: "300px" }}>
+          <div key={record.id} className="grid-item" style={{ width: itemWidth }}>
             <RecordCollectionRow
               setCurrentSong={props.setCurrentSong}
               audioPlayerRef={props.audioPlayerRef}
@@ -66,7 +73,7 @@ function RecordListView(props: any) {
             />
           </div>
         ))}
-      </ResponsiveGridLayout>
+      </GridLayout>
     </div>
   );
 }

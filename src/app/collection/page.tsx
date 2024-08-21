@@ -197,6 +197,11 @@ export default function Collection() {
   const [selectedRecord, setSelectedRecord] = useState<any | null>(null);
   const [instruments, setInstruments] = useState<string[]>([]);
   const [genres, setGenres] = useState<string[]>([]);
+  const [isMenuExpanded, setMenuExpanded] = useState(false); // State to track menu expansion
+
+  const toggleMenu = () => {
+  setMenuExpanded(!isMenuExpanded);
+};
 
   useEffect(() => {
     console.log("RENDER");
