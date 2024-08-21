@@ -227,6 +227,11 @@
   src: url('../../public/fonts/AdelleSansARM-Light.otf');
 }
 
+        @font-face {
+            font-family: 'FitFit';
+            src: url('../../src/app/collection/Fit[wdth].ttf') format('truetype'); 
+        }
+
 @font-face {
   font-family: 'arm-extra-b';
   src: url('../../public/fonts/AdelleSansARM-Extrabold.otf');
@@ -582,7 +587,7 @@
 }
 
 .container-center-horizontal {
-  margin-top: 50vh;
+  margin-top: 9vh;
   display: flex;
   flex-direction: row;
   position: relative;
@@ -590,6 +595,7 @@
   width: 100%;
   
 }
+
 
 
 
@@ -653,7 +659,7 @@ text-align: center;
   position: absolute;
   bottom: 20px; /* Adjust the distance from the bottom */
   left: 68.25vw;
-  top: 47.5vh;
+  top: 56.5vh;
   height: 10vh;
 
 }
@@ -805,3 +811,8 @@ text-align: center;
   font-size: 25px; /* Adjust size of the icon */
   color: #000; /* Color to match the brutalist theme */
 }
+
+
+
+
+

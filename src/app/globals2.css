@@ -732,3 +732,11 @@
   width: 137px;
 }
 
+
+
+.collection_footer_title_continue {
+    font-family: "Fit-variable";
+  font-size: 109.5px;
+  font-stretch: 200%;
+  text-align: center;
+}

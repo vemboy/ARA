@@ -1,199 +1,73 @@
-"use client";
-
+import React, { useState } from "react";
+import { Responsive, WidthProvider } from "react-grid-layout";
+import RecordCollectionRow from "./record-collection-row";
+import "react-grid-layout/css/styles.css";
 import {
   getDefaultImageThumbnailUrl,
   getImageThumbnailUrl,
 } from "@/utils/assetUtils";
-import RecordCollectionRow from "./record-collection-row";
-import RecordCollectionRowDifferent from "./record-collection-row-different";
-import React, { useState, useEffect } from "react";
+
+const ResponsiveGridLayout = WidthProvider(Responsive);
 
 function RecordListView(props: any) {
-  const [currentView, setView] = useState("gridview");
   const [currentSongId, setCurrentSongId] = useState<string | null>(null);
 
+  // Configure the layout for the grid
+  const layout = props.records.map((record: any, index: number) => ({
+    i: record.id.toString(),
+    x: (index % 5), // 5 columns per row
+    y: Math.floor(index / 5),
+    w: 1, // Each item takes up 1 column space
+    h: 1, // Set height dynamically
+    minW: 2, // Ensure minimum width
+  }));
+
+  const layouts = { lg: layout, md: layout, sm: layout, xs: layout, xxs: layout };
+
   return (
-    <>
-      {currentView == "gridview" ? (
-        <>
-          {" "}
-          {/* <div className="overlap-group-container">
-            <div onClick={() => setView("gridview")} className="flex-row flex">
-              <div className="flex-col flex">
-                <div className="rectangle-3"></div>
-                <div className="rectangle-3-1"></div>
-              </div>
-              <div className="flex-col flex">
-                <div className="rectangle-3"></div>
-                <div className="rectangle-3-1"></div>
-              </div>
-            </div>
-            <div
-              onClick={() => setView("listview")}
-              className="flex-row-1 flex-row-3"
-            >
-              <div className="flex-col-1 flex-col-7">
-                <div className="rectangle-4"></div>
-                <div className="rectangle-4"></div>
-                <div className="rectangle-4"></div>
-              </div>
-              <div className="flex-col-2 flex-col-7">
-                <div className="rectangle-4-1"></div>
-                <div className="rectangle-4-1"></div>
-                <div className="rectangle-4-1"></div>
-              </div>
-            </div>
-          </div>{" "} */}
-          <div
-            className="group-65 group"
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: "15px",
-              height: "612px",
-              justifyContent: "flex-start",
-              flexDirection: "row",
-              flexWrap: "wrap",
-              minWidth: "1254px",
-              top: "10vh",
-              position: "absolute",
-              marginLeft: "2.5vw",
-              width: "50vw",
-            }}
-          >
-            {props.records.map((record: { [x: string]: any }) => (
-              <RecordCollectionRow
-                setCurrentSong={props.setCurrentSong}
-                audioPlayerRef={props.audioPlayerRef}
-                currentSongId={currentSongId}
-                setCurrentSongId={setCurrentSongId}
-                songId={record["songId"]}
-                title_armenian={
-                  record["title_armenian"]
-                    ? record["title_armenian"]
-                    : "No armenian yet"
-                }
-                id={record["id"]}
-                genre={record["genre"] ? record["genre"] : "unknown genre"}
-                year={record["year"] ? record["year"] : "unknown year"}
-                title={record["title"]}
-                color={record["color"]}
-                display_title={
-                  record["display_title"]
-                    ? record["display_title"]
-                    : "No title yet"
-                }
-                author={(record["author"] ?? "Unkown author").substring(0, 20)}
-                src={
-                  record["image"]
-                    ? getImageThumbnailUrl(record.image)
-                    : getDefaultImageThumbnailUrl()
-                }
-              ></RecordCollectionRow>
-            ))}
-          </div>{" "}
-        </>
-      ) : (
-        <>
-          {" "}
-          {/* <div className="overlap-group-container">
-            <div onClick={() => setView("gridview")} className="flex-row flex">
-              <div className="flex-col flex">
-                <div
-                  style={{ backgroundColor: "#091133", border: "1px #091133" }}
-                  className="rectangle-3"
-                ></div>
-                <div
-                  style={{ backgroundColor: "#091133", border: "1px #091133" }}
-                  className="rectangle-3-1"
-                ></div>
-              </div>
-              <br></br>
-              <div className="flex-col flex">
-                <div
-                  style={{ backgroundColor: "#091133", border: "1px #091133" }}
-                  className="rectangle-3"
-                ></div>
-                <div
-                  style={{ backgroundColor: "#091133", border: "1px #091133" }}
-                  className="rectangle-3-1"
-                ></div>
-              </div>
-            </div>
-            <div
-              onClick={() => setView("listview")}
-              className="flex-row-1 flex-row-3"
-            >
-              <div className="flex-col-1 flex-col-7">
-                <div
-                  style={{ backgroundColor: "#cd2032", border: "1px #cd2032" }}
-                  className="rectangle-4"
-                ></div>
-                <div
-                  style={{ backgroundColor: "#cd2032", border: "1px #cd2032" }}
-                  className="rectangle-4"
-                ></div>
-                <div
-                  style={{ backgroundColor: "#cd2032", border: "1px #cd2032" }}
-                  className="rectangle-4"
-                ></div>
-              </div>
-              <div className="flex-col-2 flex-col-7">
-                <div
-                  style={{ backgroundColor: "#cd2032", border: "1px #cd2032" }}
-                  className="rectangle-4-1"
-                ></div>
-                <div
-                  style={{ backgroundColor: "#cd2032", border: "1px #cd2032" }}
-                  className="rectangle-4-1"
-                ></div>
-                <div
-                  style={{ backgroundColor: "#cd2032", border: "1px #cd2032" }}
-                  className="rectangle-4-1"
-                ></div>
-              </div>
-            </div>
-          </div> */}
-          <div
-            className="group-65 group"
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: "33px",
-              height: "612px",
-              justifyContent: "flex-start",
-              flexDirection: "row",
-              flexWrap: "wrap",
-              minWidth: "1254px",
-              top: "35px",
-              position: "relative",
-            }}
-          >
-            {props.records.map((record: { [x: string]: any }) => (
-              <RecordCollectionRowDifferent
-                title_armenian={
-                  record["title_armenian"]
-                    ? record["title_armenian"]
-                    : "No armenian yet"
-                }
-                id={record["id"]}
-                genre={record["genre"] ? record["genre"] : "unknown genre"}
-                year={record["year"] ? record["year"] : "unknown year"}
-                title={record["title"]}
-                color={record["color"]}
-                display_title={record["display_title"]}
-                author={(record["author"] ?? "Unkown author").substring(0, 20)}
-                src={
-                  record["image"]
-                    ? getImageThumbnailUrl(record.image)
-                    : getDefaultImageThumbnailUrl()
-                }
-              ></RecordCollectionRowDifferent>
-            ))}
-          </div>{" "}
-        </>
-      )}
-    </>
+    <div style={{ marginLeft: "280px", padding: "20px", overflowY: "auto", height: "100vh" }}>
+      <ResponsiveGridLayout
+        className="layout"
+        layouts={layouts}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+        cols={{ lg: 5, md: 4, sm: 3, xs: 2, xxs: 1 }} // Maintain consistent number of columns
+        rowHeight={330} // Dynamic row height based on content
+        isDraggable={false} // Disable dragging
+        isResizable={false} // Disable resizing
+        margin={[15, 15]} // Margin between grid items
+        preventCollision={true} // Prevent overlapping
+        compactType={null} // Disable grid compaction
+      >
+        {props.records.map((record: any) => (
+          <div key={record.id} className="grid-item" style={{ minWidth: "300px", maxWidth: "300px" }}>
+            <RecordCollectionRow
+              setCurrentSong={props.setCurrentSong}
+              audioPlayerRef={props.audioPlayerRef}
+              currentSongId={currentSongId}
+              setCurrentSongId={setCurrentSongId}
+              songId={record.songId}
+              title_armenian={
+                record.title_armenian ? record.title_armenian : "No armenian yet"
+              }
+              id={record.id}
+              genre={record.genre ? record.genre : "unknown genre"}
+              year={record.year ? record.year : "unknown year"}
+              title={record.title}
+              color={record.color}
+              display_title={
+                record.display_title ? record.display_title : "No title yet"
+              }
+              author={(record.author ?? "Unknown author").substring(0, 20)}
+              src={
+                record.image
+                  ? getImageThumbnailUrl(record.image)
+                  : getDefaultImageThumbnailUrl()
+              }
+            />
+          </div>
+        ))}
+      </ResponsiveGridLayout>
+    </div>
   );
 }
 

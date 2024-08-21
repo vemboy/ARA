@@ -292,20 +292,14 @@ export default function Collection() {
     <>
 
 
-      {/* <div className="line"></div> */}
+ 
 
-      <div className="container-center-horizontal">
+      
+      {/* <div className="container-center-horizontal">
+        
         <div className="collection screen">
-          {/* <div className="divider">
-            <div className="divider_1">
-          <h1 className="hello valign-text-middle">
-            Collection <br></br> ՀԱԲԱԿԱԾՈՒ
-          </h1>
-          </div>
-          <div  className="divider_2">
 
-            </div>
-            </div> */}
+            
           <div>
             <form className="search-form">
               <input
@@ -316,229 +310,103 @@ export default function Collection() {
               />
               <span className="search-icon">🔍</span>
             </form>
-          </div>
+          </div> */}
 
-          {/* <div className="group-34">
-              <div className="flex-container-1171 flex-container adellesansarm-extra-extra-bold-midnight-45px">
-                <div className="text-1 valign-text-middle text-4">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-midnight-45px">
-                      Filters / Ֆիլտերներ
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-            </div> */}
-          {/* <div className="group-35 adellesansarm-extra-extra-bold-midnight-34px">
-              <div className="artist valign-text-middle">Artist +</div>
-              <div className="genre valign-text-middle">Genre +</div>
-              <div className="country valign-text-middle">Country –</div>
-              <div className="year valign-text-middle">Year +</div>
-              <div className="instruments valign-text-middle">
-                Instruments +
-              </div>
-            </div> */}
-          {/* <div className="rectangle-54"></div> */}
-          {/* <div className="group-container">
-              <div className="group-47">
-                <div className="ellipse-container">
-                  <div className="ellipse-1"></div>
-                  <div className="ellipse-1"></div>
-                  <div className="ellipse-1"></div>
-                  <div className="ellipse-15"></div>
-                  <div className="ellipse-1"></div>
-                  <div className="ellipse-1"></div>
-                </div>
-                <div className="flex-container-1 flex-container adellesansarm-light-midnight-45px">
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      Argentina
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      Armenia
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      Brazil
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      Canada
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      Denmark
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      England UK
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="group-48">
-                <div className="ellipse-container">
-                  <div className="ellipse-1"></div>
-                  <div className="ellipse-1"></div>
-                  <div className="ellipse-1"></div>
-                  <div className="ellipse-15"></div>
-                  <div className="ellipse-1"></div>
-                  <div className="ellipse-1"></div>
-                </div>
-                <div className="flex-container-1 flex-container adellesansarm-light-midnight-45px">
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      France
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      Germany
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      Holland
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      Italy
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      Jordan
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      Lebanon
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="group-49">
-                <div className="ellipse-container">
-                  <div className="ellipse-1"></div>
-                  <div className="ellipse-1"></div>
-                  <div className="ellipse-1"></div>
-                  <div className="ellipse-15"></div>
-                  <div className="ellipse-1"></div>
-                  <div className="ellipse-1"></div>
-                </div>
-                <div className="flex-container-1 flex-container adellesansarm-light-midnight-45px">
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      Qatar
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      Russia
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      United States
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      USSR
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      Uraguay
-                    </span>
-                  </div>
-                  <div className="text-2 text-4">
-                    <span className="adellesansarm-light-midnight-45px">
-                      Venezuela
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div> */}
-          <div className="record_divider">
-            <div className="record_divider_1">
+<div className="page-container">
+
+
+        <div className="side-bar">
+            <div className="logo-section">
+    <h1 className="logo-text">ARA</h1>
+  </div>
+  <div className="brutalist-container">
+    <form className="brutalist-form">
+      <div className="brutalist-filter-group">
+        <label className="brutalist-label">Artist / Ֆիլտերներ</label>
+        <input
+          type="text"
+          name="artist"
+          className="brutalist-input"
+          onChange={updateSearchArtist}
+        />
+      </div>
+      <div className="brutalist-filter-group">
+        <label className="brutalist-label">Country –</label>
+        <input
+          type="text"
+          name="country"
+          className="brutalist-input"
+        />
+      </div>
+      <div className="brutalist-filter-group">
+        <label className="brutalist-label">Year +</label>
+        <input
+          type="text"
+          name="year"
+          className="brutalist-input"
+          onChange={updateSearchYear}
+        />
+      </div>
+      <div className="brutalist-filter-group">
+        <label className="brutalist-label">Genre +</label>
+        <div className="brutalist-button-group">
+          {genres.map((genres) => (
+            <FilterButton
+              filterName={"genres"}
+              buttonName={genres}
+              filters={filters}
+              setFilter={setFilter}
+            />
+          ))}
+        </div>
+      </div>
+      <div className="brutalist-filter-group">
+        <label className="brutalist-label">Instruments +</label>
+        <div className="brutalist-button-group">
+          {instruments.map((instruments) => (
+            <FilterButton
+              filterName={"instruments"}
+              buttonName={instruments}
+              filters={filters}
+              setFilter={setFilter}
+            />
+          ))}
+        </div>
+      </div>
+    </form>
+  </div>
+  <div className="mini-footer">
+    <div className="language-selector">
+      <label className="footer-label">Language:</label>
+      <div className="footer-language-toggle">
+        <button className="brutalist-toggle-button selected">EN</button>
+        <button className="brutalist-toggle-button">HY</button>
+      </div>
+    </div>
+    <div className="subscribe-section">
+      <label className="footer-label">Subscribe for updates:</label>
+      <input
+        type="email"
+        name="email"
+        className="footer-input"
+        placeholder="Enter your email"
+      />
+      <button className="subscribe-button">Subscribe</button>
+    </div>
+    <div className="footer-copyright">
+      <p>© 2024 ARA. All rights reserved. Fueled by Costco 🍗</p>
+    </div>
+  </div>
+</div>
+
               <RecordListView
                 setCurrentSong={setSong}
                 audioPlayerRef={audioPlayerRef}
                 records={records}
               ></RecordListView>
-            </div>
-          </div>
-        </div>
-        <div className="record_divider_2">
-          <div>
-            <div className="brutalist-container">
-              <form className="brutalist-form">
-                <div className="brutalist-filter-group">
-                  <label className="brutalist-label">Artist / Ֆիլտերներ</label>
-                  <input
-                    type="text"
-                    name="artist"
-                    className="brutalist-input"
-                    onChange={updateSearchArtist}
-                  />
-                </div>
-                <div className="brutalist-filter-group">
-                  <label className="brutalist-label">Country –</label>
-                  <input
-                    type="text"
-                    name="country"
-                    className="brutalist-input"
-                  />
-                </div>
-                <div className="brutalist-filter-group">
-                  <label className="brutalist-label">Year +</label>
-                  <input
-                    type="text"
-                    name="year"
-                    className="brutalist-input"
-                    onChange={updateSearchYear}
-                  />
-                </div>
-                <div className="brutalist-filter-group">
-                  <label className="brutalist-label">Genre +</label>
-                  <div className="brutalist-button-group">
-                    {genres.map((genres) => (
-                      <FilterButton
-                        filterName={"genres"}
-                        buttonName={genres}
-                        filters={filters}
-                        setFilter={setFilter}
-                      ></FilterButton>
-                    ))}
-                  </div>
-                </div>
-                <div className="brutalist-filter-group">
-                  <label className="brutalist-label">Instruments +</label>
-                  <div className="brutalist-button-group">
-                    {instruments.map((instruments) => (
-                      <FilterButton
-                        filterName={"instruments"}
-                        buttonName={instruments}
-                        filters={filters}
-                        setFilter={setFilter}
-                      ></FilterButton>
-                    ))}
-                  </div>
-                </div>
-                {/* <div className="brutalist-footer">
-                  <button type="submit" className="brutalist-submit-btn">
-                    Apply Filters
-                  </button>
-                </div> */}
-              </form>
+              
+</div>
+{/*
             </div>
             <div className="brutalist-nav-buttons">
               <button
@@ -565,7 +433,7 @@ export default function Collection() {
       <div className="section section-left">
         <div className="inner-container">
           <div className="vinyl-info-container">
-            <h1 className="vinyl-title">Vinyl Information</h1>
+            <h1 className="vinyl-title">Record of the week</h1>
             <div className="vinyl-info">
               <div className="vinyl-info-item">
                 <span className="vinyl-label">Artist:</span>
@@ -601,7 +469,9 @@ export default function Collection() {
           setSelectedRecord={setSelectedRecord}
         ></SingleRecordView>
       </div>
-    </div>
+    </div> */}
+
+                  
 
     </>
   );
