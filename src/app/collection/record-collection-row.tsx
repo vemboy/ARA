@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useRef  } from "react";
 import useResponsiveFontSize from "./useResponsiveFontSize"; // Adjust path as needed
+import axios from "axios";
 
 function RecordCollectionRow(props: any) {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -10,6 +11,37 @@ function RecordCollectionRow(props: any) {
   const [isToggled, setIsToggled] = useState(false);
 
   const { fontSize, containerRef } = useResponsiveFontSize(props.display_title);
+
+  const [ImageZoom, setImageZoom] = useState(1.0); // Default font size
+
+  useEffect(() => {
+    // Fetch the font size from Directus API
+    async function fetchZoomAmount() {
+      try {
+        console.log("%c--- Fetching RecordZoomAmount ---", "border: 2px solid green; padding: 2px; color: green;");
+        const response = await axios.get(`https://ara.directus.app/items/website_variables/${props.id}`);
+
+        const fetchedZoomAmount = response?.data?.data?.RecordZoomAmount;
+        
+        console.log("%c--- Directus Response ---", "border: 2px solid blue; padding: 2px; color: blue;");
+        console.log(response);
+
+        if (fetchedZoomAmount) {
+                    console.log("%c--- Fetched RecordZoomAmount ---", "border: 2px solid red; padding: 2px; color: red;");
+
+          setImageZoom(fetchedZoomAmount); // Update the zoom amount from Directus
+        } else {
+          console.warn("RecordZoomAmount not found in Directus response.");
+        }
+      } catch (error) {
+        console.error("Error fetching RecordZoomAmount:", error);
+      }
+    }
+
+    fetchZoomAmount();
+  }, [props.id]); // Fetch the font size when component mounts or `props.id` changes
+
+  
 
   return (
     <>
