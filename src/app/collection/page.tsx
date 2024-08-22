@@ -63,6 +63,7 @@ export default function Collection() {
   const audioPlayerRef = React.useContext(AudioContext)?.audioPlayerRef;
   console.log("PAGE:", audioPlayerRef);
   
+  
   const updateSearchString = (e: any) => {
     console.log("Searching...:", e.target.value);
     setSearchString(e.target.value);

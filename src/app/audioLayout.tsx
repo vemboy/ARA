@@ -36,20 +36,23 @@ export function AudioLayout({
           <body className={inter.className}>
             {children}
             {currentSong.length == 0 ? (
-              // <AudioPlayer
-              //   ref={audioPlayerRef}
-              //   src={currentSong}
-              //   className="audio-player"
-              //   // className="audio-player-hidden"
-              // ></AudioPlayer>
-              <></>
+              <div className="audio-player-wrapper">
+              <AudioPlayer
+                ref={audioPlayerRef}
+                src={currentSong}
+                //className="audio-player"
+                className="audio-player-hidden"
+              ></AudioPlayer>
+              </div>
+
             ) : (
-              // <AudioPlayer
-              //   ref={audioPlayerRef}
-              //   src={currentSong}
-              //   className="audio-player"
-              // ></AudioPlayer>
-              <></>
+              <div className="audio-player-wrapper">
+              <AudioPlayer
+                ref={audioPlayerRef}
+                src={currentSong}
+                className="audio-player"
+              ></AudioPlayer>
+</div>
             )}
           </body>
         </AudioContext.Provider>
