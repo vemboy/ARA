@@ -18,7 +18,7 @@ function RecordCollectionRow(props: any) {
           style={{ backgroundColor: `${props.color}` }}
           className="revolutionary-box"
         >
-          <div className="daring-header">ARA</div>
+          {/* <div className="daring-header">ARA</div> */}
 
           {/* Display play button if not playing and pause button if playing */}
           {isPlaying && songId === currentSongId ? (
@@ -59,9 +59,15 @@ function RecordCollectionRow(props: any) {
             ref={containerRef}
             style={{ fontSize }}
           >
-            <a href={`https://ara-jet.vercel.app/collection-detail/${props.id}`}>
-              {props.display_title}
+            <a className="Armenian" href={`https://ara-jet.vercel.app/collection-detail/${props.id}`}>
+              {props.title_armenian} 
+                          <br />
             </a>
+            <a className="English" href={`https://ara-jet.vercel.app/collection-detail/${props.id}`}>
+              {props.title} 
+            </a>
+
+
           </div>
         </div>
       </div>

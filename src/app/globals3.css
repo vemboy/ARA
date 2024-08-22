@@ -381,47 +381,40 @@
 }
 
 .side-bar {
-  width: 25%; /* Use a percentage for flexibility */
-  max-width: 300px; /* Limit to 300px on larger screens */
+  width: 25%; /* Flexibility: 25% of screen width */
+  max-width: 300px; /* Limit to 300px max on larger screens */
   position: fixed;
   top: 0;
   left: 0;
-  height: 100vh;
+  height: 100vh; /* Full height of viewport */
   padding: 15px;
   background-color: #fff;
   border-right: 5px solid #000;
   box-shadow: 5px 0 0 0 #000;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: space-between; /* Ensures content is distributed */
 }
 
-@media (max-width: 768px) {
-  .side-bar {
-    width: 35%; /* Increase width for smaller screens */
-    padding: 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .side-bar {
-    width: 50%; /* Sidebar takes more space on very small screens */
-    padding: 8px;
-  }
-}
 .logo-section {
   text-align: center;
   margin-bottom: 15px;
 }
 
 .logo-text {
-  font-size: 150px;
+  font-size: 120px; /* Adjust font size to make it more responsive */
   font-stretch: 200%;
   color: #000;
   margin: 0;
   padding: 5px 0;
   font-family: 'Fit-variable';
+}
+
+.brutalist-container {
+  flex: 1; /* Allow this section to expand and fill remaining space */
+  overflow-y: auto; /* Allow scrolling for long forms */
+  display: flex;
+  flex-direction: column;
 }
 
 .brutalist-form {
@@ -474,17 +467,48 @@
   color: #fff;
 }
 
-.brutalist-footer {
-  display: flex;
-  justify-content: flex-start; /* Align the footer items to the start */
-  margin-top: 15px; /* Adjusted margin for footer */
-}
-
 .mini-footer {
-  margin-top: auto;
   width: 100%;
   padding-top: 10px;
   padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.language-selector {
+  display: flex;
+  gap: 10px;
+}
+
+.footer-language-toggle {
+  display: flex;
+  gap: 5px;
+}
+
+.footer-label {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.footer-input {
+  padding: 8px;
+  width: 100%;
+  border: 2px solid #000;
+  margin-bottom: 10px;
+}
+
+.subscribe-button {
+  padding: 8px 16px;
+  background-color: #000;
+  color: #fff;
+  border: 2px solid #000;
+  cursor: pointer;
+}
+
+.footer-copyright {
+  font-size: 10px;
+  text-align: center;
+  color: #333;
 }
 
 .language-selector {
@@ -1473,11 +1497,12 @@
   display: flex;
   flex-direction: column;
   background-color: #091133;
-  border: 5px solid #000; 
-  box-shadow: 10px 10px 0px 0px #000;
+  /* border: 5px solid #000; 
+  box-shadow: 10px 10px 0px 0px #000; */
   padding: 10px;
   box-sizing: border-box;
   margin: 15px; /* Consistent margin for spacing */
+  aspect-ratio: 1;
 }
 
 /* Other styles stay the same */
@@ -1498,26 +1523,17 @@
 .rebellious-photo-frame {
   flex: 1;
   background-color: #fff;
-  width: 185px;
-  height: 185px;
+
+  width: 225px; /* Increase the width */
+  height: 225px; /* Increase the height */
+  
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 50%;
+  border-radius: 50%; /* Keep it circular */
   overflow: hidden;
-  border: 3px solid #000;
-}
-
-.maverick-caption {
-  margin-top: auto;
-  margin-bottom: 5px;
-  text-align: center;
-  color: #fff;
-  font-size: clamp(12px, 4vw, 16px);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  border: 3px solid #000; /* You can adjust the border if needed */
 }
 
 .daring-photo {
@@ -1526,7 +1542,10 @@
   object-fit: cover;
   display: block;
   border: 0;
+  transition: transform 0.3s ease;
+  transform: scale(1.0); 
 }
+
 
 .daring-photo-rotating {
   width: 100%;
@@ -1546,8 +1565,37 @@
   }
 }
 
+.maverick-caption {
+  margin-top: auto;
 
+  text-align: center;
+  color: #fff;
+  font-size: clamp(12px, 4vw, 16px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
+   
+  
+}
+
+.maverick-caption a {
+  text-decoration: none;
+  color: black; /* Set a specific color */
+}
+
+.maverick-caption .Armenian {
+  font-family: 'arm-bold';
+  font-size: 14px;
+  
+}
+
+.maverick-caption .English {
+  font-family: 'arm-reg';
+  font-size: 12px;
+  font-style: italic;
+  
+}
 
 
 

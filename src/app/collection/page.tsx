@@ -318,99 +318,97 @@ export default function Collection() {
           </div> */}
 
 <div className="page-container">
-
-
-        <div className="side-bar">
-            <div className="logo-section">
-    <h1 className="logo-text">ARA</h1>
-  </div>
-  <div className="brutalist-container">
-    <form className="brutalist-form">
-      <div className="brutalist-filter-group">
-        <label className="brutalist-label">Artist / Ֆիլտերներ</label>
-        <input
-          type="text"
-          name="artist"
-          className="brutalist-input"
-          onChange={updateSearchArtist}
-        />
-      </div>
-      <div className="brutalist-filter-group">
-        <label className="brutalist-label">Country –</label>
-        <input
-          type="text"
-          name="country"
-          className="brutalist-input"
-        />
-      </div>
-      <div className="brutalist-filter-group">
-        <label className="brutalist-label">Year +</label>
-        <input
-          type="text"
-          name="year"
-          className="brutalist-input"
-          onChange={updateSearchYear}
-        />
-      </div>
-      <div className="brutalist-filter-group">
-        <label className="brutalist-label">Genre +</label>
-        <div className="brutalist-button-group">
-          {genres.map((genres) => (
-            <FilterButton
-              filterName={"genres"}
-              buttonName={genres}
-              filters={filters}
-              setFilter={setFilter}
-            />
-          ))}
+  <div className="side-bar">
+    <div className="logo-section">
+      <h1 className="logo-text">ARA</h1>
+    </div>
+    <div className="brutalist-container">
+      <form className="brutalist-form">
+        <div className="brutalist-filter-group">
+          <label className="brutalist-label">Artist / Ֆիլտերներ</label>
+          <input
+            type="text"
+            name="artist"
+            className="brutalist-input"
+            onChange={updateSearchArtist}
+          />
+        </div>
+        <div className="brutalist-filter-group">
+          <label className="brutalist-label">Country –</label>
+          <input
+            type="text"
+            name="country"
+            className="brutalist-input"
+          />
+        </div>
+        <div className="brutalist-filter-group">
+          <label className="brutalist-label">Year +</label>
+          <input
+            type="text"
+            name="year"
+            className="brutalist-input"
+            onChange={updateSearchYear}
+          />
+        </div>
+        <div className="brutalist-filter-group">
+          <label className="brutalist-label">Genre +</label>
+          <div className="brutalist-button-group">
+            {genres.map((genres) => (
+              <FilterButton
+                filterName={"genres"}
+                buttonName={genres}
+                filters={filters}
+                setFilter={setFilter}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="brutalist-filter-group">
+          <label className="brutalist-label">Instruments +</label>
+          <div className="brutalist-button-group">
+            {instruments.map((instruments) => (
+              <FilterButton
+                filterName={"instruments"}
+                buttonName={instruments}
+                filters={filters}
+                setFilter={setFilter}
+              />
+            ))}
+          </div>
+        </div>
+      </form>
+    </div>
+    <div className="mini-footer">
+      <div className="language-selector">
+        <label className="footer-label">Language:</label>
+        <div className="footer-language-toggle">
+          <button className="brutalist-toggle-button selected">EN</button>
+          <button className="brutalist-toggle-button">HY</button>
         </div>
       </div>
-      <div className="brutalist-filter-group">
-        <label className="brutalist-label">Instruments +</label>
-        <div className="brutalist-button-group">
-          {instruments.map((instruments) => (
-            <FilterButton
-              filterName={"instruments"}
-              buttonName={instruments}
-              filters={filters}
-              setFilter={setFilter}
-            />
-          ))}
-        </div>
+      <div className="subscribe-section">
+        <label className="footer-label">Subscribe for updates:</label>
+        <input
+          type="email"
+          name="email"
+          className="footer-input"
+          placeholder="Enter your email"
+        />
+        <button className="subscribe-button">Subscribe</button>
       </div>
-    </form>
-  </div>
-  <div className="mini-footer">
-    <div className="language-selector">
-      <label className="footer-label">Language:</label>
-      <div className="footer-language-toggle">
-        <button className="brutalist-toggle-button selected">EN</button>
-        <button className="brutalist-toggle-button">HY</button>
+      <div className="footer-copyright">
+        <p>© 2024 ARA. All rights reserved. Fueled by Costco 🍗</p>
       </div>
     </div>
-    <div className="subscribe-section">
-      <label className="footer-label">Subscribe for updates:</label>
-      <input
-        type="email"
-        name="email"
-        className="footer-input"
-        placeholder="Enter your email"
-      />
-      <button className="subscribe-button">Subscribe</button>
-    </div>
-    <div className="footer-copyright">
-      <p>© 2024 ARA. All rights reserved. Fueled by Costco 🍗</p>
-    </div>
   </div>
+
+  <RecordListView
+    setCurrentSong={setSong}
+    audioPlayerRef={audioPlayerRef}
+    records={records}
+  />
 </div>
 
-              <RecordListView
-                setCurrentSong={setSong}
-                audioPlayerRef={audioPlayerRef}
-                records={records}
-              ></RecordListView>
-              
-</div>
 {/*
             </div>
             <div className="brutalist-nav-buttons">
