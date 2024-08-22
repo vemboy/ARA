@@ -1492,7 +1492,7 @@
 .revolutionary-box {
   width: 100%; /* Ensure it takes up full available space */
   min-width: 300px; /* Max width for grid items */
-  height: 315px;
+  
   position: relative;
   display: flex;
   flex-direction: column;
