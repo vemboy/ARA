@@ -1542,7 +1542,7 @@
   object-fit: cover;
   display: block;
   border: 0;
-  transition: transform 0.3s ease;
+  transition: none;
   
 }
 
