@@ -28,6 +28,7 @@ function RecordListView(props: any) {
             setCurrentSong={props.setCurrentSong}
             setCurrentName={props.setCurrentName}
             setCurrentArtistName={props.setCurrentArtistName}
+            setSongId={props.setSongId} // Add setSongId here
             audioPlayerRef={props.audioPlayerRef}
             currentSongId={currentSongId}
             setCurrentSongId={setCurrentSongId}

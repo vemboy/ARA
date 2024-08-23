@@ -699,6 +699,10 @@ text-align: center;
   border: 5px solid #000;
 }
 
+.audio-player-wrapper a {
+  text-decoration: none;
+}
+
 .current-song-info-wrapper {
   display: flex;
   align-items: center;
@@ -826,6 +830,10 @@ text-align: center;
 
 .rhap_main .rhap_progress-bar .rhap_progress-bar-fill {
   background-color: #000;
+}
+
+.rhap_time {
+  font-feature-settings: "tnum" on;
 }
 
 @keyframes slideIn {

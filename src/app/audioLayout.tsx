@@ -16,6 +16,7 @@ export const AudioContext = createContext<{
   setSong: Dispatch<SetStateAction<string>>;
   setName: Dispatch<SetStateAction<string>>;
   setArtistName: Dispatch<SetStateAction<string>>;
+  setSongId: Dispatch<SetStateAction<string>>;
   audioPlayerRef: RefObject<AudioPlayer>;
 } | null>(null);
 
@@ -27,12 +28,15 @@ export function AudioLayout({
   const [currentSong, setSong] = useState("");
   const [currentName, setName] = useState(""); // Keep this to display the name
   const [currentArtistName, setArtistName] = useState("");
+  const [currentSongId, setSongId] = useState(""); // Add songId state
+
   const audioPlayerRef = useRef<AudioPlayer>(null);
 
   const audioProps = {
     setSong,
     setName,
     setArtistName,
+    setSongId, // Pass down setSongId
     audioPlayerRef,
   };
 
@@ -77,7 +81,7 @@ export function AudioLayout({
               </div>
             ) : (
               <div className="audio-player-wrapper">
-                <div className="current-song-info-wrapper">
+                <a href={`https://ara-jet.vercel.app/collection-detail/${currentSongId}`} className="current-song-info-wrapper">
                   {/* Album Art */}
                   <img 
                     src="https://via.placeholder.com/50" 
@@ -87,9 +91,9 @@ export function AudioLayout({
                   {/* Song Info */}
                   <div className="current-song-info">
                     <p className="song-title">{currentName || "Unknown Song"}</p>
-                    <p className="song-artist">{currentArtistName || "Unknown Artist"}</p> {/* Dummy Artist Name */}
+                    <p className="song-artist">{currentArtistName || "Unknown Artist"}</p>
                   </div>
-                </div>
+                </a>
                 <div className="audio-player-container">
                   <AudioPlayer
                     ref={audioPlayerRef}

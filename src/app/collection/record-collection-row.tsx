@@ -12,7 +12,6 @@ interface ZoomData {
 function RecordCollectionRow(props: any) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0); // Store the current rotation angle
-  const [lastTimestamp, setLastTimestamp] = useState<number | null>(null); // Track the last timestamp for rotation
   const songId = props.songId;
   const currentSongId = props.currentSongId;
   const { fontSize, containerRef } = useResponsiveFontSize(props.display_title);
@@ -48,6 +47,7 @@ function RecordCollectionRow(props: any) {
       props.setCurrentSongId(songId);
       props.setCurrentName(props.title);
       props.setCurrentArtistName(props.author);
+      props.setSongId(props.id);  // Pass the songId here
       setIsPlaying(true);
 
       // Automatically start playing the song

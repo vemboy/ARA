@@ -63,6 +63,7 @@ export default function Collection() {
   const setSong = audioContext?.setSong;
   const setName = audioContext?.setName;
   const setAristName = audioContext?.setArtistName;
+  const setSongId = audioContext?.setSongId;
   const audioPlayerRef = audioContext?.audioPlayerRef;
 
   console.log("PAGE:", audioPlayerRef);
@@ -411,6 +412,7 @@ export default function Collection() {
         setCurrentSong={setSong}
         setCurrentName={setName}
         setCurrentArtistName={setAristName}
+        setSongId={setSongId}
         audioPlayerRef={audioPlayerRef}
         records={records}
   />
