@@ -26,6 +26,7 @@ function RecordListView(props: any) {
         <div key={record.id}>
           <RecordCollectionRow
             setCurrentSong={props.setCurrentSong}
+            setCurrentName={props.setCurrentName}
             audioPlayerRef={props.audioPlayerRef}
             currentSongId={currentSongId}
             setCurrentSongId={setCurrentSongId}

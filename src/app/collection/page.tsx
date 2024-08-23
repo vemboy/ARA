@@ -59,8 +59,11 @@ function FilterButton(filterProp: FilterProp) {
 }
 
 export default function Collection() {
-  const setSong = React.useContext(AudioContext)?.setSong;
-  const audioPlayerRef = React.useContext(AudioContext)?.audioPlayerRef;
+  const audioContext = React.useContext(AudioContext);
+  const setSong = audioContext?.setSong;
+  const setName = audioContext?.setName;
+  const audioPlayerRef = audioContext?.audioPlayerRef;
+
   console.log("PAGE:", audioPlayerRef);
   
   
@@ -71,7 +74,7 @@ export default function Collection() {
 
   const updateSearchYear = (e: any) => {
     console.log("Searching year...:", e.target.value);
-    setSearchYear(e.target.value);
+    setSearchYear(e.target.value);  
   };
 
   const updateSearchArtist = (e: any) => {
@@ -404,9 +407,10 @@ export default function Collection() {
   </div>
 
   <RecordListView
-    setCurrentSong={setSong}
-    audioPlayerRef={audioPlayerRef}
-    records={records}
+        setCurrentSong={setSong}
+        setCurrentName={setName}
+        audioPlayerRef={audioPlayerRef}
+        records={records}
   />
 </div>
 
