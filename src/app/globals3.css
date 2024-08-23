@@ -475,41 +475,6 @@
   flex-direction: column;
 }
 
-.language-selector {
-  display: flex;
-  gap: 10px;
-}
-
-.footer-language-toggle {
-  display: flex;
-  gap: 5px;
-}
-
-.footer-label {
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.footer-input {
-  padding: 8px;
-  width: 100%;
-  border: 2px solid #000;
-  margin-bottom: 10px;
-}
-
-.subscribe-button {
-  padding: 8px 16px;
-  background-color: #000;
-  color: #fff;
-  border: 2px solid #000;
-  cursor: pointer;
-}
-
-.footer-copyright {
-  font-size: 10px;
-  text-align: center;
-  color: #333;
-}
 
 .language-selector {
   display: flex;
@@ -1781,4 +1746,276 @@
   object-fit: cover;
   display: block;
   border: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* COLLECTION DETAIL PAGE */
+
+
+
+
+
+
+
+
+
+
+
+
+
+.layout-container-cd {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.sidebar-cd {
+  width: 20vw;
+  max-width: 300px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 15px;
+  background-color: #fff;
+  border-right: 5px solid #000;
+  box-shadow: 5px 0 0 0 #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar-logo-section-cd {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.sidebar-logo-text-cd {
+  font-size: 120px;
+  font-stretch: 200%;
+  color: #000;
+  margin: 0;
+  padding: 5px 0;
+  font-family: 'Fit-variable';
+}
+
+.sidebar-content-cd {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-welcome-text-cd {
+  text-align: center;
+  font-weight: bold;
+}
+
+.sidebar-mini-footer-cd {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.sidebar-language-selector-cd {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.sidebar-language-toggle-cd {
+  display: flex;
+  gap: 6px;
+}
+
+.sidebar-language-button-cd {
+  padding: 6px 12px;
+  border: 2px solid #000;
+  background-color: #f0f0f0;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.sidebar-footer-label-cd {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.sidebar-footer-input-cd {
+  padding: 8px;
+  border: 2px solid #000;
+  font-size: 12px;
+  background-color: #f0f0f0;
+}
+
+.sidebar-subscribe-button-cd {
+  padding: 6px 12px;
+  border: 2px solid #000;
+  background-color: #000;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.sidebar-subscribe-button-cd:hover {
+  background-color: #fff;
+  color: #000;
+}
+
+.sidebar-copyright-cd {
+  font-size: 10px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Main Content */
+.main-content-cd {
+  flex-grow: 1;
+  display: flex;
+  padding-left: 20vw;
+  padding: 40px;
+  box-sizing: border-box;
+  align-items: start;
+  height: 100vh;
+  transition: height 0.3s ease-in-out;
+}
+
+.main-content-footer-visible-cd {
+  height: 90vh;
+}
+
+.main-image-column-cd {
+  flex: 0 0 40%;
+  margin-right: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8.5vh;
+}
+
+.record-image-cd {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border: 5px solid black;
+  box-shadow: 5px 5px 0px 0px black;
+}
+
+.main-details-column-cd {
+  flex: 1;
+  color: #000;
+  overflow-y: auto;
+  padding-right: 20px;
+}
+
+/* Armenian Title */
+.armenian-title-cd {
+  font-size: 48px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #000;
+  margin-top: 12vh;
+  font-family: "arm-bold";
+}
+
+/* English Title */
+.english-title-cd {
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 20px;
+  color: #333;
+  font-family: "arm-reg";
+}
+
+/* Record Description */
+.record-description-cd {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  color: #555;
+  width: 25vw;
+}
+
+/* Record Metadata */
+.record-metadata-cd {
+  margin-top: 30px;
+}
+
+.record-metadata-cd div {
+  margin-bottom: 15px;
+}
+
+.record-id-cd,
+.record-genres-cd,
+.record-date-cd {
+  font-size: 20px;
+  
+}
+
+.record-id-value-cd {
+  margin-left: 0.75vw;
+}
+
+.record-id-label-cd,
+.record-genres-label-cd,
+.record-date-label-cd {
+  font-weight: bold;
+}
+
+.record-genres-value-cd,
+.record-decade-value-cd,
+.record-date-value-cd {
+  margin-left: 0.75vw;
+  background-color: black;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 20px;
+}
+
+/* Footer */
+.footer-cd {
+  height: 10vh;
+  background-color: #bbb;
+  transition: transform 0.3s ease-in-out;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 20vw;
+}
+
+.toggle-footer-button-cd {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  z-index: 100;
+  cursor: pointer;
 }

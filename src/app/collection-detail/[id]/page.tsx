@@ -10,6 +10,11 @@ import {
 } from "@/utils/assetUtils";
 import Link from "next/link";
 
+
+import GridLayout from "react-grid-layout";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
+
 interface Props {}
 
 const Album: React.FC<Props> = ({}) => {
@@ -18,6 +23,14 @@ const Album: React.FC<Props> = ({}) => {
   const recordId = pathName.split("/").slice(-1)[0];
   console.log(pathName);
   console.log(recordId);
+
+  const [footerVisible, setFooterVisible] = useState(false);
+
+  const layout = [
+    { i: "sidebar", x: 0, y: 0, w: 1, h: 10, static: true },  // Sidebar occupies 1 column
+    { i: "main", x: 1, y: 0, w: 4, h: footerVisible ? 9 : 10, static: true },  // Main area
+    { i: "footer", x: 1, y: 1, w: 4, h: 1, static: true },  // Footer area, y will adjust dynamically
+  ];
 
   useEffect(() => {
     axios
@@ -38,105 +51,106 @@ const Album: React.FC<Props> = ({}) => {
         <>
 
 
+    <div className="layout-container-cd">
+    {/* Sidebar */}
+    <div className="sidebar-cd">
+      <div className="sidebar-logo-section-cd">
+        <h1 className="sidebar-logo-text-cd">ARA</h1>
+      </div>
 
-    
-    <div className="overlap-group6">
-      <div className="overlap-group8">
+      <div className="sidebar-content-cd">
+        <p className="sidebar-welcome-text-cd">Welcome to the Sidebar</p>
+      </div>
+
+      <div className="sidebar-mini-footer-cd">
+        <div className="sidebar-language-selector-cd">
+          <label className="sidebar-footer-label-cd">Language:</label>
+          <div className="sidebar-language-toggle-cd">
+            <button className="sidebar-language-button-cd selected">EN</button>
+            <button className="sidebar-language-button-cd">HY</button>
+          </div>
+        </div>
+
+        <div className="sidebar-subscribe-section-cd">
+          <label className="sidebar-footer-label-cd">Subscribe for updates:</label>
+          <input type="email" className="sidebar-footer-input-cd" placeholder="Enter your email" />
+          <button className="sidebar-subscribe-button-cd">Subscribe</button>
+        </div>
+
+        <div className="sidebar-copyright-cd">
+          <p>© 2024 ARA. All rights reserved. Fueled by Costco 🍗</p>
+        </div>
+      </div>
+    </div>
+
+    {/* Main Content */}
+    <div className={`main-content-cd ${footerVisible ? "main-content-footer-visible-cd" : ""}`}>
+      {/* Left Column (Image) */}
+      <div className="main-image-column-cd">
         <img
-          className="r-11379693-1515454010-2972-3"
           src={
             record["record_image"]
               ? getImageDetailUrl(record["record_image"])
               : getDefaultImageDetailUrl()
           }
-          alt="R-11379693-1515454010-2972 3"
+          alt="Record Image"
+          className="record-image-cd"
         />
-        <div className="overlap-group3">
-          <div className="flex-container-1226 flex-container adellesansarm-extra-extra-bold-white-19px">
-            <div className="text">
-              <span className="adellesansarm-extra-extra-bold-white-19px"></span>
-            </div>
-            <div className="text">
-              <span className="adellesansarm-extra-extra-bold-white-19px">
-                3:51
-              </span>
-            </div>
-            <div className="text">
-              <span className="adellesansarm-extra-extra-bold-white-19px"></span>
-            </div>
-            <div className="text">
-              <span className="adellesansarm-extra-extra-bold-white-19px">
-                3:35
-              </span>
-            </div>
-            <div className="text">
-              <span className="adellesansarm-extra-extra-bold-white-19px"></span>
-            </div>
-            <div className="text">
-              <span className="adellesansarm-extra-extra-bold-white-19px">
-                7:33
-              </span>
-            </div>
-            <div className="text">
-              <span className="adellesansarm-extra-extra-bold-white-19px"></span>
-            </div>
-            <div className="text">
-              <span className="adellesansarm-extra-extra-bold-white-19px">
-                4:20
-              </span>
-            </div>
-          </div>
-          <div
-            style={{ marginTop: "70px" }}
-            className="flex-container-1232 flex-container adellesansarm-semi-bold-black-33px"
-          >
-            <div className="text-1 text-6">
-              <span className="adellesansarm-semi-bold-black-33px">
-                Origin: Canada
-              </span>
-            </div>
-            <div className="text-1 text-6">
-              <span className="adellesansarm-semi-bold-black-33px">
-                {record["genre"] ?? "Genre: Unkown"}
-              </span>
-            </div>
-            <div className="text-1 text-6">
-              <span className="adellesansarm-semi-bold-black-33px">
-                {record["record_original_recording_date"] ?? "Date: Unkown"}
-              </span>
-            </div>
-          </div>
-
-
-        </div>
       </div>
-      <div className="flex-container-1225 flex-container adellesansarm-regular-normal-midnight-52px">
-        <div className="text-2 text-6">
-          <span className="adellesansarm-regular-normal-midnight-52px-1">
-            ԱՒՕ
-          </span>
-        </div>
-        <div
-          style={{ marginTop: "40px", width: "35vw" }}
-          className="text-2 text-6"
-        >
-          <span
-            style={{ fontSize: "35px", lineHeight: "normal" }}
-            className="adellesansarm-regular-normal-midnight-52px"
-          >
-            Artists: {record["artist_original"]}
-          </span>
-        </div>
-        <div style={{ top: "0px" }} className="text-2 text-6">
-          <span
-            style={{ fontSize: "30px", color: "black !important" }}
-            className="adellesansarm-regular-normal-midnight-52px"
-          >
-            Grouping: {record["title"]}
-          </span>
+
+      {/* Right Column (Text Details) */}
+      <div className="main-details-column-cd">
+        {/* Armenian Title */}
+        <h1 className="armenian-title-cd">{record["armenian_title"] ?? "No Armenian Title"}</h1>
+
+        {/* English Title */}
+        <h2 className="english-title-cd">{record["title"] ?? "No English Title"}</h2>
+
+        {/* Record Description */}
+        <p className="record-description-cd">
+          {record["description"] ?? "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."}
+        </p>
+
+        {/* Record Metadata */}
+        <div className="record-metadata-cd">
+          <div className="record-id-cd">
+            <strong className="record-id-label-cd">RECORD ID:</strong>
+            <span className="record-id-value-cd">{record["id"] ?? "XXXXXXXXXXXXXXXXXXX"}</span>
+          </div>
+
+          <div className="record-genres-cd">
+            <strong className="record-genres-label-cd">GENRES:</strong>
+            <span className="record-genres-value-cd">{record["genre"] ?? "tarab"}</span>
+          </div>
+
+          <div className="record-date-cd">
+            <strong className="record-date-label-cd">DATE:</strong>
+            <span className="record-date-value-cd">{record["record_original_recording_date"] ?? "1932"}</span>
+          </div>
         </div>
       </div>
     </div>
+
+    {/* Footer */}
+    {footerVisible && (
+      <div className="footer-cd">Footer Content</div>
+    )}
+
+    {/* Toggle Footer Button */}
+    <button
+      className="toggle-footer-button-cd"
+      onClick={() => setFooterVisible(!footerVisible)}
+    >
+      Toggle Footer
+    </button>
+  </div>
+
+
+
+
+
+ 
+
     </>
   );
 };
@@ -145,234 +159,13 @@ export default function CollectionDetail() {
   return (
 
     <>
- <div className="frame-1 screen">
-          <div className="overlap-group3">
-            <div className="rectangle-137"></div>
-            <div className="group-79">
-              <div className="overlap-group2">
-                <div className="ellipse-1"></div>
-              </div>
-              <div className="group-81">
-                
 
-              </div>
-            </div>
-            <div className="group-80 adellesansarm-extra-extra-bold-white-16-3px">
-              <div className="flex-container-58 flex-container">
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="/">HOMEPAGE</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="/">ՏՆԷՋ</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-              <div className="flex-container-59 flex-container">
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="">COLLECTION</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="#">ՀԱԲԱԿԱԾՈՒ</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-              <div className="flex-container-57 flex-container">
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="javascript:scrollTo(AboutUs);">ABOUT US</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="javascript:scrollTo(AboutUs);">
-                        ՄԵՐ ՄԱՍԻՆ
-                      </Link>
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-              <div className="flex-container-56 flex-container">
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="javascript:scrollTo(Footer);">CONTACT</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px">
-                      <Link href="javascript:scrollTo(Footer);">ԿԱՊ</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <h1 className="full-page-armenian valign-text-middle">
-              Armenian Record Archive
-            </h1>
-          </div>
-        </div>
-    <div className="container-center-horizontal">
-      <div className="collection-detail screen">
-        
-        
-        <div className="group-9"></div>
 
         <Album></Album>
 
 
 
-        <div className="overlap-group5">
-          <div className="overlap-group7">
-            <div className="overlap-group2">
-              <div className="group-5"></div>
-              <div className="flex-container-1227 flex-container adellesansarm-extra-extra-bold-white-19px">
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px">
-                    Design
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-regular-normal-white-19px">
-                    Dickran A. Manavian
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px">
-                    Engineer
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-regular-normal-white-19px">
-                    Joey Galimi
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px">
-                    Lead Vocals, Arranged by
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-regular-normal-white-19px">
-                    Avo Sarkissian (tracks: A1–A5, B1–B4)
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px">
-                    Word by, Music by
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-regular-normal-white-19px">
-                    Avo Sarkissian (tracks: A1, A2, A5, B1, B4)
-                  </span>
-                </div>
-              </div>
-              
 
-
-            </div>
-            <div className="flexcontainer-container">
-              <div className="flex-container-1228 flex-container adellesansarm-extra-extra-bold-white-19px">
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px">
-                    Design
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-regular-normal-white-19px">
-                    Dickran A. Manavian
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px">
-                    Engineer
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-regular-normal-white-19px">
-                    Joey Galimi
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px">
-                    Lead Vocals, Arranged by
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-regular-normal-white-19px">
-                    Avo Sarkissian (tracks: A1–A5, B1–B4)
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-extra-extra-bold-white-19px">
-                    Word by, Music by
-                  </span>
-                </div>
-                <div className="text">
-                  <span className="adellesansarm-regular-normal-white-19px">
-                    Avo Sarkissian (tracks: A1, A2, A5, B1, B4)
-                  </span>
-                </div>
-              </div>
-              <div className="flex-container-1230 flex-container fitvariable-regular-normal-white-222px">
-                <div className="text-4 valign-text-middle text-6">
-                  <span>
-                    <span className="fitvariable-regular-normal-white-222px">
-                      Credits
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text1-1230 valign-text-middle">
-                  <span>
-                    <span className="fitvariable-regular-normal-white-222px">
-                      ԵՐԱԽՏԻՔԻ ՏՈՒՐՔ
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="flex-container-1231 flex-container fitvariable-regular-normal-white-222px">
-              <div className="text-4 valign-text-middle text-6">
-                <span>
-                  <span className="fitvariable-regular-normal-white-222px">
-                    Personel
-                  </span>{" "}
-                </span>
-              </div>
-              <div className="text-4 valign-text-middle text-6">
-                <span>
-                  <span className="fitvariable-regular-normal-white-222px">
-                    Մասնակիցներ
-                  </span>{" "}
-                </span>
-              </div>
-            </div>
-
-
-          </div>
-
-        </div>
-      </div>
-    </div>
 
     </>
   );
