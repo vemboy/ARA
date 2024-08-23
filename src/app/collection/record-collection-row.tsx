@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import useResponsiveFontSize from "./useResponsiveFontSize"; // Adjust path as needed
 import axios from "axios";
 
@@ -11,6 +11,8 @@ interface ZoomData {
 
 function RecordCollectionRow(props: any) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [rotationAngle, setRotationAngle] = useState(0); // Store the current rotation angle
+  const [lastTimestamp, setLastTimestamp] = useState<number | null>(null); // Track the last timestamp for rotation
   const songId = props.songId;
   const currentSongId = props.currentSongId;
   const { fontSize, containerRef } = useResponsiveFontSize(props.display_title);
@@ -36,20 +38,19 @@ function RecordCollectionRow(props: any) {
 
   const handleRecordClick = () => {
     if (isPlaying && currentSongId === songId) {
-      // Pause the current song
       props.audioPlayerRef.current.audio.current.pause();
       setIsPlaying(false);
     } else if (!isPlaying && currentSongId === songId) {
-      // Resume the current song
       props.audioPlayerRef.current.audio.current.play();
       setIsPlaying(true);
     } else {
-      // Play a new song and reset the spinning of other records
       props.setCurrentSong(`https://ara.directus.app/assets/${props.songId}`);
       props.setCurrentSongId(songId);
+      props.setCurrentName(props.title);
+      props.setCurrentArtistName(props.author);
       setIsPlaying(true);
 
-      // Automatically start playing the new song
+      // Automatically start playing the song
       setTimeout(() => {
         if (props.audioPlayerRef.current) {
           props.audioPlayerRef.current.audio.current.play();
@@ -58,12 +59,62 @@ function RecordCollectionRow(props: any) {
     }
   };
 
-  // Reset spinning when the current song is not the same as this record
+  // Calculate rotation based on elapsed time
+  useEffect(() => {
+    let animationFrame: number;
+    let start: number | null = null;
+
+    const rotate = (timestamp: number) => {
+      if (!start) start = timestamp;
+      const elapsed = timestamp - start;
+
+      const newRotation = (rotationAngle + (elapsed / 16.6667) * 3) % 360; // 3 degrees per frame (~60fps)
+      setRotationAngle(newRotation);
+      start = timestamp;
+
+      if (isPlaying) {
+        animationFrame = requestAnimationFrame(rotate);
+      }
+    };
+
+    if (isPlaying && currentSongId === songId) {
+      animationFrame = requestAnimationFrame(rotate);
+    }
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+    };
+  }, [isPlaying, rotationAngle, currentSongId, songId]);
+
+  // Stop spinning when the current song is not this record
   useEffect(() => {
     if (currentSongId !== songId) {
-      setIsPlaying(false); // Stop spinning when this record is no longer playing
+      setIsPlaying(false);
     }
   }, [currentSongId]);
+
+  // Listen for the global audioPause and audioPlay events
+  useEffect(() => {
+    const handleGlobalPause = () => {
+      if (currentSongId === songId) {
+        setIsPlaying(false);
+      }
+    };
+
+    const handleGlobalPlay = () => {
+      if (currentSongId === songId) {
+        setIsPlaying(true);
+      }
+    };
+
+    window.addEventListener("audioPause", handleGlobalPause);
+    window.addEventListener("audioPlay", handleGlobalPlay);
+
+    return () => {
+      window.removeEventListener("audioPause", handleGlobalPause);
+      window.removeEventListener("audioPlay", handleGlobalPlay);
+    };
+  }, [currentSongId, songId]);
 
   return (
     <div>
@@ -77,10 +128,10 @@ function RecordCollectionRow(props: any) {
         <div className="rebellious-photo-frame">
           <a>
             <img
-              style={{ transform: `scale(${zoomAmount})` }}
+              style={{ transform: `rotate(${rotationAngle}deg) scale(${zoomAmount})` }} // Apply rotation dynamically
               src={`${props.src}`}
               onClick={handleRecordClick}
-              className={isPlaying && currentSongId === songId ? "daring-photo-rotating" : "daring-photo"}
+              className="daring-photo"
             />
           </a>
         </div>

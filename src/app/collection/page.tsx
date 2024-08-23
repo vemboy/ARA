@@ -62,6 +62,7 @@ export default function Collection() {
   const audioContext = React.useContext(AudioContext);
   const setSong = audioContext?.setSong;
   const setName = audioContext?.setName;
+  const setAristName = audioContext?.setArtistName;
   const audioPlayerRef = audioContext?.audioPlayerRef;
 
   console.log("PAGE:", audioPlayerRef);
@@ -409,6 +410,7 @@ export default function Collection() {
   <RecordListView
         setCurrentSong={setSong}
         setCurrentName={setName}
+        setCurrentArtistName={setAristName}
         audioPlayerRef={audioPlayerRef}
         records={records}
   />

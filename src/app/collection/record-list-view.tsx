@@ -27,6 +27,7 @@ function RecordListView(props: any) {
           <RecordCollectionRow
             setCurrentSong={props.setCurrentSong}
             setCurrentName={props.setCurrentName}
+            setCurrentArtistName={props.setCurrentArtistName}
             audioPlayerRef={props.audioPlayerRef}
             currentSongId={currentSongId}
             setCurrentSongId={setCurrentSongId}
