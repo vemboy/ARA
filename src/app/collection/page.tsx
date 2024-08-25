@@ -317,6 +317,15 @@ export default function Collection() {
 
 
 <div className="page-container">
+   <form className="search-form">
+              <input
+                className="search_bar"
+                name="query"
+                placeholder="Search..."
+                onChange={updateSearchString}
+              />
+              {/* <span className="search-icon">🔍</span> */}
+            </form>
       <div className="side-bar">
         <div className="logo-section">
           <h1 className="logo-text">ARA</h1>
