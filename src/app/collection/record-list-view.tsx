@@ -15,7 +15,7 @@ function RecordListView(props: any) {
         marginLeft: "280px",
         padding: "20px",
         height: "100vh",
-        overflowY: "auto",
+        // overflow: "hidden",
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
         columnGap: "25px", // Increase gap between items in the same row

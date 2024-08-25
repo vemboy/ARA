@@ -85,6 +85,11 @@ export default function Collection() {
   };
 
   const [filters, setFilter] = useState<{ [key: string]: Set<string> }>({});
+  const [language, setLanguage] = useState("EN"); // New state for language
+
+  const changeLanguage = (lang: string) => {
+    setLanguage(lang);
+  };
 
   function getUrlWithFilters() {
     const filterObj: { _or: object[]; _and: object[] } = {
@@ -306,185 +311,145 @@ export default function Collection() {
  
 
       
-      {/* <div className="container-center-horizontal">
-        
-        <div className="collection screen">
 
             
-          <div>
-            <form className="search-form">
-              <input
-                className="search_bar"
-                name="query"
-                placeholder="Search..."
-                onChange={updateSearchString}
-              />
-              <span className="search-icon">🔍</span>
-            </form>
-          </div> */}
+
+
 
 <div className="page-container">
-  <div className="side-bar">
-    <div className="logo-section">
-      <h1 className="logo-text">ARA</h1>
-    </div>
-    <div className="brutalist-container">
-      <form className="brutalist-form">
-        <div className="brutalist-filter-group">
-          <label className="brutalist-label">Artist / Ֆիլտերներ</label>
-          <input
-            type="text"
-            name="artist"
-            className="brutalist-input"
-            onChange={updateSearchArtist}
-          />
+      <div className="side-bar">
+        <div className="logo-section">
+          <h1 className="logo-text">ARA</h1>
         </div>
-        <div className="brutalist-filter-group">
-          <label className="brutalist-label">Country –</label>
-          <input
-            type="text"
-            name="country"
-            className="brutalist-input"
-          />
-        </div>
-        <div className="brutalist-filter-group">
-          <label className="brutalist-label">Year +</label>
-          <input
-            type="text"
-            name="year"
-            className="brutalist-input"
-            onChange={updateSearchYear}
-          />
-        </div>
-        <div className="brutalist-filter-group">
-          <label className="brutalist-label">Genre +</label>
-          <div className="brutalist-button-group">
-            {genres.map((genres) => (
-              <FilterButton
-                filterName={"genres"}
-                buttonName={genres}
-                filters={filters}
-                setFilter={setFilter}
+        <div className="brutalist-container">
+          <form className="brutalist-form">
+            <div className="brutalist-filter-group">
+              <label className="brutalist-label">
+                {language === "EN" ? "Artist" : "Արտիստ"}
+              </label>
+              <input
+                type="text"
+                name="artist"
+                className="brutalist-input"
+                placeholder={language === "EN" ? "Artist" : "Արտիստ"}
+                onChange={updateSearchArtist}
               />
-            ))}
+            </div>
+            <div className="brutalist-filter-group">
+              <label className="brutalist-label">
+                {language === "EN" ? "Country" : "Երկիր"}
+              </label>
+              <input
+                type="text"
+                name="country"
+                className="brutalist-input"
+                placeholder={language === "EN" ? "Country" : "Երկիր"}
+              />
+            </div>
+            <div className="brutalist-filter-group">
+              <label className="brutalist-label">
+                {language === "EN" ? "Year" : "Տարի"}
+              </label>
+              <input
+                type="text"
+                name="year"
+                className="brutalist-input"
+                placeholder={language === "EN" ? "Year" : "Տարի"}
+                onChange={updateSearchYear}
+              />
+            </div>
+            <div className="brutalist-filter-group">
+              <label className="brutalist-label">
+                {language === "EN" ? "Genre" : "Ժանր"}
+              </label>
+              <div className="brutalist-button-group">
+                {genres.map((genre) => (
+                  <FilterButton
+                    key={genre}
+                    filterName={"genres"}
+                    buttonName={genre}
+                    filters={filters}
+                    setFilter={setFilter}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="brutalist-filter-group">
+              <label className="brutalist-label">
+                {language === "EN" ? "Instruments" : "Գործիքներ"}
+              </label>
+              <div className="brutalist-button-group">
+                {instruments.map((instrument) => (
+                  <FilterButton
+                    key={instrument}
+                    filterName={"instruments"}
+                    buttonName={instrument}
+                    filters={filters}
+                    setFilter={setFilter}
+                  />
+                ))}
+              </div>
+            </div>
+          </form>
+        </div>
+        <div className="mini-footer">
+          <div className="language-selector">
+            <label className="footer-label">
+              {language === "EN" ? "Language" : "Լեզու"}:
+            </label>
+            <div className="footer-language-toggle">
+              <button
+                className={`brutalist-toggle-button ${
+                  language === "EN" ? "selected" : ""
+                }`}
+                onClick={() => changeLanguage("EN")}
+              >
+                EN
+              </button>
+              <button
+                className={`brutalist-toggle-button ${
+                  language === "HY" ? "selected" : ""
+                }`}
+                onClick={() => changeLanguage("HY")}
+              >
+                HY
+              </button>
+            </div>
+          </div>
+          <div className="subscribe-section">
+            <label className="footer-label">
+              {language === "EN"
+                ? "Subscribe for updates:"
+                : "Բաժանորդագրվել:"}
+            </label>
+            <input
+              type="email"
+              name="email"
+              className="footer-input"
+              placeholder={
+                language === "EN" ? "Enter your email" : "Մուտքագրեք ձեր էլ․ հասցեն"
+              }
+            />
+            <button className="subscribe-button">
+              {language === "EN" ? "Subscribe" : "Բաժանորդագրվել"}
+            </button>
+          </div>
+          <div className="footer-copyright">
+            <p>© 2024 ARA. All rights reserved. Fueled by Costco 🍗</p>
           </div>
         </div>
-        <div className="brutalist-filter-group">
-          <label className="brutalist-label">Instruments +</label>
-          <div className="brutalist-button-group">
-            {instruments.map((instruments) => (
-              <FilterButton
-                filterName={"instruments"}
-                buttonName={instruments}
-                filters={filters}
-                setFilter={setFilter}
-              />
-            ))}
-          </div>
-        </div>
-      </form>
-    </div>
-    <div className="mini-footer">
-      <div className="language-selector">
-        <label className="footer-label">Language:</label>
-        <div className="footer-language-toggle">
-          <button className="brutalist-toggle-button selected">EN</button>
-          <button className="brutalist-toggle-button">HY</button>
-        </div>
       </div>
-      <div className="subscribe-section">
-        <label className="footer-label">Subscribe for updates:</label>
-        <input
-          type="email"
-          name="email"
-          className="footer-input"
-          placeholder="Enter your email"
-        />
-        <button className="subscribe-button">Subscribe</button>
-      </div>
-      <div className="footer-copyright">
-        <p>© 2024 ARA. All rights reserved. Fueled by Costco 🍗</p>
-      </div>
-    </div>
-  </div>
 
-  <RecordListView
+      <RecordListView
         setCurrentSong={setSong}
         setCurrentName={setName}
         setCurrentArtistName={setAristName}
         setSongId={setSongId}
         audioPlayerRef={audioPlayerRef}
         records={records}
-  />
-</div>
-
-{/*
-            </div>
-            <div className="brutalist-nav-buttons">
-              <button
-                type="button"
-                className="brutalist-nav-btn"
-                onClick={previousPage}
-              >
-                Previous
-              </button>
-              <button
-                type="button"
-                className="brutalist-nav-btn"
-                onClick={nextPage}
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    <div className="two-sections">
-      <div className="section section-left">
-        <div className="inner-container">
-          <div className="vinyl-info-container">
-            <h1 className="vinyl-title">Record of the week</h1>
-            <div className="vinyl-info">
-              <div className="vinyl-info-item">
-                <span className="vinyl-label">Artist:</span>
-                <span className="vinyl-text">{selectedRecord?.author || "N/A"}</span>
-              </div>
-              <div className="vinyl-info-item">
-                <span className="vinyl-label">Album:</span>
-                <span className="vinyl-text">{selectedRecord?.title || "N/A"}</span>
-              </div>
-              <div className="vinyl-info-item">
-                <span className="vinyl-label">Release Date:</span>
-                <span className="vinyl-text">{selectedRecord?.year || "N/A"}</span>
-              </div>
-              <div className="vinyl-info-item">
-                <span className="vinyl-label">Genre:</span>
-                <span className="vinyl-text">{selectedRecord?.genre || "N/A"}</span>
-              </div>
-              <div className="vinyl-info-item">
-                <span className="vinyl-label">Description:</span>
-                <span className="vinyl-text">
-                  Description of the album goes here. This can be a brief overview of the album, its significance, and any interesting facts.
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="section section-right">
-        <SingleRecordView
-          setCurrentSong={setSong}
-          audioPlayerRef={audioPlayerRef}
-          records={records}
-          setSelectedRecord={setSelectedRecord}
-        ></SingleRecordView>
-      </div>
-    </div> */}
-
-                  
-
+      />
+    </div>
+                
     </>
   );
 }

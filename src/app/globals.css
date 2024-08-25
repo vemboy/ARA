@@ -856,6 +856,11 @@ text-align: center;
   
 }
 
+html, body {
+  -ms-overflow-style: none;  /* for Internet Explorer, Edge */
+  scrollbar-width: none;  /* for Firefox */
+}
+
 
 
 /* Style for the search form */
@@ -863,10 +868,11 @@ text-align: center;
   display: flex;
   align-items: center;
   gap: 10px; /* Space between input and icon */
-  width: 65vw; /* Set width to 80% of the viewport width */
-  margin-left: 2.5vw;
+  width: 75vw; /* Set width to 80% of the viewport width */
+  margin-left: 325px;
+  margin-top: 2.5vh;
   
-  position: relative; /* Ensure the form is positioned correctly */
+  
 }
 
 /* Style for the search input */
