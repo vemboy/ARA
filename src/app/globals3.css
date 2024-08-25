@@ -1780,9 +1780,6 @@
 
 
 
-
-
-
 .layout-container-cd {
   display: flex;
   height: 100vh;
@@ -1912,12 +1909,29 @@
 }
 
 .main-image-column-cd {
-  flex: 0 0 40%;
-  margin-right: 40px;
+  margin-left: 4vw;
+  margin-right: px; /* Reduced margin to make space for small images */
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 8.5vh;
+}
+
+.small-images-column-cd {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Spacing between the small images */
+  margin-top: 9.5vh;
+  margin-left: 1vw;
+}
+
+.small-image-cd {
+  width: 180px; /* Width of the small images */
+  height: 180px; /* Height of the small images */
+  border: 3px solid black;
+  box-shadow: 3px 3px 0px 0px black;
+  object-fit: cover;
+  cursor: pointer;
 }
 
 .record-image-cd {
@@ -1926,13 +1940,15 @@
   object-fit: contain;
   border: 5px solid black;
   box-shadow: 5px 5px 0px 0px black;
+  cursor: pointer;
+  visibility: visible; /* Ensure visibility */
 }
-
 .main-details-column-cd {
   flex: 1;
   color: #000;
   overflow-y: auto;
   padding-right: 20px;
+  margin-left: 3vw;
 }
 
 /* Armenian Title */
@@ -2018,4 +2034,53 @@
   padding: 10px 20px;
   z-index: 100;
   cursor: pointer;
+}
+
+
+/* Simple Backdrop */
+.image-backdrop-cd {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  visibility: hidden; /* Hidden by default */
+}
+
+/* Centered Enlarged Image */
+.enlarged-image-cd {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  border: 5px solid black;
+  box-shadow: 5px 5px 0px 0px black;
+  max-width: 90vw;
+  max-height: 90vh;
+  visibility: hidden; /* Hidden by default */
+}
+
+.sidebar-nav-cd {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.sidebar-nav-item-cd {
+  font-size: 20px;
+  font-family: 'arm-heavy', sans-serif;
+  text-transform: uppercase;
+  color: #000;
+  padding: 8px;
+  text-align: left;
+  border-bottom: 2px solid #000;
+  text-decoration: none;
+}
+
+.sidebar-nav-item-cd:hover {
+  background-color: #f0f0f0;
 }
