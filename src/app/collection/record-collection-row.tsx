@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import useResponsiveFontSize from "./useResponsiveFontSize"; // Adjust path as needed
 import axios from "axios";
+import Link from "next/link";
 
 interface ZoomData {
   id: string;
@@ -21,8 +22,12 @@ function RecordCollectionRow(props: any) {
   useEffect(() => {
     async function fetchZoomAmount() {
       try {
-        const response = await axios.get(`https://ara.directus.app/items/website_variables`);
-        const zoomData: ZoomData | undefined = response?.data?.data?.find((item: ZoomData) => item.id === "RecordZoomAmount");
+        const response = await axios.get(
+          `https://ara.directus.app/items/website_variables`
+        );
+        const zoomData: ZoomData | undefined = response?.data?.data?.find(
+          (item: ZoomData) => item.id === "RecordZoomAmount"
+        );
 
         if (zoomData && zoomData.Value) {
           setZoomAmount(zoomData.Value); // Update the zoom amount from Directus
@@ -47,7 +52,7 @@ function RecordCollectionRow(props: any) {
       props.setCurrentSongId(songId);
       props.setCurrentName(props.title);
       props.setCurrentArtistName(props.author);
-      props.setSongId(props.id);  // Pass the songId here
+      props.setSongId(props.id); // Pass the songId here
       setIsPlaying(true);
 
       // Automatically start playing the song
@@ -118,7 +123,10 @@ function RecordCollectionRow(props: any) {
 
   return (
     <div>
-      <div style={{ backgroundColor: `${props.color}` }} className="revolutionary-box">
+      <div
+        style={{ backgroundColor: `${props.color}` }}
+        className="revolutionary-box"
+      >
         {isPlaying && songId === currentSongId ? (
           <div className="pioneering-pause-icon"></div>
         ) : (
@@ -128,21 +136,27 @@ function RecordCollectionRow(props: any) {
         <div className="rebellious-photo-frame">
           <a>
             <img
-              style={{ transform: `rotate(${rotationAngle}deg) scale(${zoomAmount})` }} // Apply rotation dynamically
+              style={{
+                transform: `rotate(${rotationAngle}deg) scale(${zoomAmount})`,
+              }} // Apply rotation dynamically
               src={`${props.src}`}
               onClick={handleRecordClick}
               className="daring-photo"
             />
           </a>
         </div>
-        <div className="maverick-caption" ref={containerRef} style={{ fontSize }}>
-          <a className="Armenian" href={`https://ara-jet.vercel.app/collection-detail/${props.id}`}>
+        <div
+          className="maverick-caption"
+          ref={containerRef}
+          style={{ fontSize }}
+        >
+          <Link className="Armenian" href={`collection-detail/${props.id}`}>
             {props.title_armenian}
             <br />
-          </a>
-          <a className="English" href={`https://ara-jet.vercel.app/collection-detail/${props.id}`}>
+          </Link>
+          <Link className="English" href={`collection-detail/${props.id}`}>
             {props.title}
-          </a>
+          </Link>
         </div>
       </div>
     </div>

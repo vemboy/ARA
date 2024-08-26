@@ -9,6 +9,7 @@ import {
 } from "react";
 import { Inter } from "next/font/google";
 import AudioPlayer from "react-h5-audio-player";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -64,7 +65,7 @@ export function AudioLayout({
   }, [currentSong]);
 
   return (
-    <>  
+    <>
       <html lang="en">
         <AudioContext.Provider value={audioProps}>
           <body className={inter.className}>
@@ -81,19 +82,26 @@ export function AudioLayout({
               </div>
             ) : (
               <div className="audio-player-wrapper">
-                <a href={`https://ara-jet.vercel.app/collection-detail/${currentSongId}`} className="current-song-info-wrapper">
+                <Link
+                  href={`collection-detail/${currentSongId}`}
+                  className="current-song-info-wrapper"
+                >
                   {/* Album Art */}
-                  <img 
-                    src="https://via.placeholder.com/50" 
-                    alt="Album Art" 
+                  <img
+                    src="https://via.placeholder.com/50"
+                    alt="Album Art"
                     className="album-art"
                   />
                   {/* Song Info */}
                   <div className="current-song-info">
-                    <p className="song-title">{currentName || "Unknown Song"}</p>
-                    <p className="song-artist">{currentArtistName || "Unknown Artist"}</p>
+                    <p className="song-title">
+                      {currentName || "Unknown Song"}
+                    </p>
+                    <p className="song-artist">
+                      {currentArtistName || "Unknown Artist"}
+                    </p>
                   </div>
-                </a>
+                </Link>
                 <div className="audio-player-container">
                   <AudioPlayer
                     ref={audioPlayerRef}

@@ -7,6 +7,7 @@ import {
 } from "@/utils/assetUtils"; // Adjust the import path as needed
 import useResponsiveFontSize from "./useResponsiveFontSize"; // Adjust the import path as needed
 import styles from "./SingleRecordView.module.css"; // Import the CSS module
+import Link from "next/link";
 
 type Record = {
   songId: string;
@@ -21,11 +22,18 @@ type Record = {
   display_title: string;
 };
 
-function SingleRecordView(props: { records: Record[], setCurrentSong: any, audioPlayerRef: any, setSelectedRecord: (record: Record) => void }) {
+function SingleRecordView(props: {
+  records: Record[];
+  setCurrentSong: any;
+  audioPlayerRef: any;
+  setSelectedRecord: (record: Record) => void;
+}) {
   const [currentSongId, setCurrentSongId] = useState<string | null>(null);
   const [record, setRecord] = useState<Record | null>(null);
 
-  const { fontSize, containerRef } = useResponsiveFontSize(record ? record.display_title : "");
+  const { fontSize, containerRef } = useResponsiveFontSize(
+    record ? record.display_title : ""
+  );
 
   useEffect(() => {
     if (props.records.length > 0 && !record) {
@@ -46,7 +54,10 @@ function SingleRecordView(props: { records: Record[], setCurrentSong: any, audio
 
   return (
     <div className="single-record-view">
-      <div className={styles["revolutionary-box"]} style={{ backgroundColor: record.color }}>
+      <div
+        className={styles["revolutionary-box"]}
+        style={{ backgroundColor: record.color }}
+      >
         <div className={styles["daring-header"]}>ARA</div>
 
         {/* Display play button if not playing and pause button if playing */}
@@ -66,18 +77,28 @@ function SingleRecordView(props: { records: Record[], setCurrentSong: any, audio
                   props.audioPlayerRef.current.audio.current.pause();
                   setCurrentSongId(null);
                 } else {
-                  props.setCurrentSong(`https://ara.directus.app/assets/${record.songId}`);
+                  props.setCurrentSong(
+                    `https://ara.directus.app/assets/${record.songId}`
+                  );
                   setCurrentSongId(record.songId);
                 }
               }}
-              className={currentSongId === record.songId ? styles["daring-photo-rotating"] : styles["daring-photo"]}
+              className={
+                currentSongId === record.songId
+                  ? styles["daring-photo-rotating"]
+                  : styles["daring-photo"]
+              }
             />
           </a>
         </div>
-        <div className={styles["maverick-caption"]} ref={containerRef} style={{ fontSize }}>
-          <a href={`https://ara-jet.vercel.app/collection-detail/${record.id}`}>
+        <div
+          className={styles["maverick-caption"]}
+          ref={containerRef}
+          style={{ fontSize }}
+        >
+          <Link href={`collection-detail/${record.id}`}>
             {record.display_title}
-          </a>
+          </Link>
         </div>
       </div>
     </div>
