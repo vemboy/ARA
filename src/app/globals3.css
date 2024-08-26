@@ -1787,31 +1787,46 @@
 
 
 
-
-
-.layout-container-cd {
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
+/* Reset and global styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.sidebar-cd {
-  width: 20vw;
-  max-width: 300px;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 15px;
+:root {
+  --grid-gap: 20px; /* Define the grid gap size variable */
+  --column-width: 100px; /* Width for the first and third columns */
+}
+
+/* Main container and grid layout */
+.main-container {
+  display: grid;
+  grid-template-columns: 200px 1fr 1fr;
+  grid-template-rows: auto auto auto auto;
+  grid-template-areas: 
+    "sidebar images text"
+    "sidebar images text"
+    "sidebar tracklist tracklist"
+    "sidebar detail-images detail-images";
+  gap: var(--grid-gap);
+  height: 100vh; /* Ensure the container takes full viewport height */
+  padding: var(--grid-gap);
+}
+
+/* Sidebar styles */
+.sidebar {
+  grid-area: sidebar;
   background-color: #fff;
   border-right: 5px solid #000;
   box-shadow: 5px 0 0 0 #000;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 15px;
 }
 
+/* Sidebar logo section */
 .sidebar-logo-section-cd {
   text-align: center;
   margin-bottom: 15px;
@@ -1826,6 +1841,7 @@
   font-family: 'Fit-variable';
 }
 
+/* Sidebar content and footer */
 .sidebar-content-cd {
   flex: 1;
   overflow-y: auto;
@@ -1833,144 +1849,81 @@
   flex-direction: column;
 }
 
-.sidebar-welcome-text-cd {
-  text-align: center;
-  font-weight: bold;
-}
-
 .sidebar-mini-footer-cd {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
   padding-top: 10px;
   padding-bottom: 10px;
 }
 
-.sidebar-language-selector-cd {
-  display: flex;
-  justify-content: left;
-  align-items: center;
-  gap: 8px;
+.sidebar-language-selector-cd,
+.sidebar-subscribe-section-cd,
+.sidebar-copyright-cd {
   margin-bottom: 10px;
 }
 
-.sidebar-language-toggle-cd {
-  display: flex;
-  gap: 6px;
+/* Main images and thumbnails */
+.images {
+  grid-area: images;
+  display: grid;
+  grid-template-rows: min-content auto;
+  grid-template-areas: 
+    "main-image"
+    "thumbnails";
+  gap: var(--grid-gap);
+  background-color: #d0eaff;
 }
 
-.sidebar-language-button-cd {
-  padding: 6px 12px;
-  border: 2px solid #000;
-  background-color: #f0f0f0;
-  font-size: 12px;
-  font-weight: bold;
-  text-transform: uppercase;
+.main-image {
+  grid-area: main-image;
+  aspect-ratio: 1;
+  background-color: #b0d0ff;
+  border: 5px solid #000;
+  box-shadow: 5px 5px 0px 0px black;
   cursor: pointer;
-}
-
-.sidebar-footer-label-cd {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.sidebar-footer-input-cd {
-  padding: 8px;
-  border: 2px solid #000;
-  font-size: 12px;
-  background-color: #f0f0f0;
-}
-
-.sidebar-subscribe-button-cd {
-  padding: 6px 12px;
-  border: 2px solid #000;
-  background-color: #000;
-  color: #fff;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.sidebar-subscribe-button-cd:hover {
-  background-color: #fff;
-  color: #000;
-}
-
-.sidebar-copyright-cd {
-  font-size: 10px;
-  margin-top: 10px;
-  text-align: center;
-}
-
-/* Main Content */
-.main-content-cd {
-  flex-grow: 1;
-  display: flex;
-  padding-left: 20vw;
-  padding: 40px;
-  box-sizing: border-box;
-  align-items: start;
-  height: 100vh;
-  transition: height 0.3s ease-in-out;
-}
-
-.main-content-footer-visible-cd {
-  height: 90vh;
-}
-
-.main-image-column-cd {
-  margin-left: 4vw;
-  margin-right: px; /* Reduced margin to make space for small images */
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 8.5vh;
-}
-
-.small-images-column-cd {
-  display: flex;
-  flex-direction: column;
-  gap: 20px; /* Spacing between the small images */
-  margin-top: 9.5vh;
-  margin-left: 1vw;
-}
-
-.small-image-cd {
-  width: 180px; /* Width of the small images */
-  height: 180px; /* Height of the small images */
-  border: 3px solid black;
-  box-shadow: 3px 3px 0px 0px black;
-  object-fit: cover;
-  cursor: pointer;
 }
 
 .record-image-cd {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  border: 5px solid black;
-  box-shadow: 5px 5px 0px 0px black;
-  cursor: pointer;
-  visibility: visible; /* Ensure visibility */
-}
-.main-details-column-cd {
-  flex: 1;
-  color: #000;
-  overflow-y: auto;
-  padding-right: 20px;
-  margin-left: 3vw;
 }
 
-/* Armenian Title */
+.thumbnails {
+  grid-area: thumbnails;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns for thumbnails */
+  gap: var(--grid-gap);
+}
+
+.small-image-cd {
+  width: 100%;
+  height: auto;
+  border: 3px solid black;
+  box-shadow: 3px 3px 0px 0px black;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+/* Text content styles */
+.text-content {
+  grid-area: text;
+  padding-right: 20px;
+  color: #000;
+  background-color: #e0f7fa;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
 .armenian-title-cd {
   font-size: 48px;
   font-weight: 600;
   margin-bottom: 10px;
-  color: #000;
-  margin-top: 12vh;
   font-family: "arm-bold";
 }
 
-/* English Title */
 .english-title-cd {
   font-size: 28px;
   font-weight: 400;
@@ -1979,74 +1932,73 @@
   font-family: "arm-reg";
 }
 
-/* Record Description */
 .record-description-cd {
   font-size: 18px;
   line-height: 1.6;
   margin-bottom: 30px;
   color: #555;
-  width: 25vw;
 }
 
-/* Record Metadata */
 .record-metadata-cd {
   margin-top: 30px;
 }
 
-.record-metadata-cd div {
+.record-id-cd, .record-genres-cd, .record-date-cd {
+  font-size: 20px;
   margin-bottom: 15px;
 }
 
-.record-id-cd,
-.record-genres-cd,
-.record-date-cd {
-  font-size: 20px;
-  
-}
-
-.record-id-value-cd {
-  margin-left: 0.75vw;
-}
-
-.record-id-label-cd,
-.record-genres-label-cd,
-.record-date-label-cd {
-  font-weight: bold;
-}
-
-.record-genres-value-cd,
-.record-decade-value-cd,
-.record-date-value-cd {
+.record-id-value-cd, .record-genres-value-cd, .record-date-value-cd {
   margin-left: 0.75vw;
   background-color: black;
   color: #fff;
   padding: 5px 10px;
   border-radius: 5px;
-  font-size: 20px;
 }
 
-/* Footer */
-.footer-cd {
-  height: 10vh;
-  background-color: #bbb;
-  transition: transform 0.3s ease-in-out;
-  width: 100%;
-  position: fixed;
-  bottom: 0;
-  left: 20vw;
+/* Tracklist and detail images */
+.tracklist {
+  grid-area: tracklist;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns for Side A and Side B */
+  gap: var(--grid-gap);
+  background-color: #e0ffe0;
+  padding: var(--grid-gap);
 }
 
-.toggle-footer-button-cd {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  padding: 10px 20px;
-  z-index: 100;
-  cursor: pointer;
+.tracklist-side {
+  display: flex;
+  flex-direction: column;
 }
 
+.track-item {
+  display: grid;
+  grid-template-columns: 1fr var(--column-width);
+  gap: var(--grid-gap);
+  align-items: center;
+}
 
-/* Simple Backdrop */
+.side-title, .track-name, .track-time {
+  background-color: #d0c0ff;
+  padding: var(--grid-gap);
+  border: 1px solid black;
+}
+
+.detail-images {
+  grid-area: detail-images;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--grid-gap);
+  background-color: #e0ffe0;
+}
+
+.detail-image {
+  aspect-ratio: 1;
+  background-color: #c0f0c0;
+  border: 2px solid black;
+}
+
+/* Image enlargement styles */
 .image-backdrop-cd {
   position: fixed;
   top: 0;
@@ -2058,7 +2010,6 @@
   visibility: hidden; /* Hidden by default */
 }
 
-/* Centered Enlarged Image */
 .enlarged-image-cd {
   position: fixed;
   top: 50%;
@@ -2072,24 +2023,31 @@
   visibility: hidden; /* Hidden by default */
 }
 
-.sidebar-nav-cd {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
-}
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .main-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto auto;
+    grid-template-areas: 
+      "header"
+      "images"
+      "text"
+      "tracklist"
+      "detail-images";
+    gap: 0;
+    padding: 20px;
+  }
 
-.sidebar-nav-item-cd {
-  font-size: 20px;
-  font-family: 'arm-heavy', sans-serif;
-  text-transform: uppercase;
-  color: #000;
-  padding: 8px;
-  text-align: left;
-  border-bottom: 2px solid #000;
-  text-decoration: none;
-}
+  .sidebar {
+    grid-area: header;
+    height: auto;
+  }
 
-.sidebar-nav-item-cd:hover {
-  background-color: #f0f0f0;
+  .tracklist {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-images {
+    grid-template-columns: 1fr 1fr;
+  }
 }
