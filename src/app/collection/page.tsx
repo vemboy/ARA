@@ -13,6 +13,7 @@ import { AudioContext } from "../audioLayout";
 import Link from "next/link";
 import SingleRecordView from "./record-single";
 import _ from "lodash";
+import FilterMenu from "./filter-menu";
 
 interface FilterProp {
   buttonName: string;
@@ -209,6 +210,7 @@ export default function Collection() {
   const [instruments, setInstruments] = useState<string[]>([]);
   const [genres, setGenres] = useState<string[]>([]);
   const [isMenuExpanded, setMenuExpanded] = useState(false); // State to track menu expansion
+  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({});
 
   const toggleMenu = () => {
   setMenuExpanded(!isMenuExpanded);
@@ -304,19 +306,22 @@ export default function Collection() {
     });
   }, [searchString, searchYear, filters, searchArtist]);
 
+
+    const dummyArtists = ["Artist 1", "Artist 2", "Artist 3"];
+  const dummyGenres = ["Genre 1", "Genre 2", "Genre 3"];
+  const dummyCountries = ["Country 1", "Country 2", "Country 3"];
+  const dummyDecades = ["Decade 1", "Decade 2", "Decade 3"];
+  const dummyInstruments = ["Instrument 1", "Instrument 2", "Instrument 3"];
+  const dummyLabels = ["Label 1", "Label 2", "Label 3"];
+
+
+  
+
   return (
     <>
 
-
- 
-
-      
-
-            
-
-
-
 <div className="page-container">
+  
    {/* <form className="search-form">
               <input
                 className="search_bar"
@@ -448,6 +453,18 @@ export default function Collection() {
           </div>
         </div>
       </div>
+
+      
+      
+      <FilterMenu
+        genres={genres}
+        instruments={instruments}
+        filters={filters}
+        setFilter={setFilter} // Pass the setFilter function to FilterMenu
+      />
+
+
+
 
       <RecordListView
         setCurrentSong={setSong}

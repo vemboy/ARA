@@ -376,6 +376,147 @@
   }
 }
 
+/* Filter menu container */
+.filter-menu-hm {
+  font-family: sans-serif;
+  margin: 1vw;
+}
+
+.filters-header-hm {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.language-toggle-hm {
+  font-size: 14px;
+}
+
+.lang-option-hm {
+  cursor: pointer;
+  font-weight: normal;
+  color: gray;
+}
+
+.lang-option-hm.active {
+  color: red;
+  font-weight: bold;
+}
+
+/* Selected Filters Display */
+.selected-filters-pills-hm {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.pill-hm {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  margin: 2px;
+  background-color: #d3d3d3;
+  border-radius: 16px;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pill-hm:first-child {
+  margin-left: 312px; /* Only the first pill gets this margin */
+}
+
+.pill-hm:hover {
+  background-color: #b0b0b0;
+  color: #000;
+}
+
+.x-button-hm {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 14px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.clear-all-hm {
+  color: red;
+  font-weight: bold;
+  margin-left: 10px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.clear-all-hm:hover {
+  text-decoration: underline;
+}
+
+/* Filter grid */
+.filter-grid-hm {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid black;
+  line-height: 1;
+}
+
+.filter-item-hm {
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.filter-item-hm.active {
+  font-weight: bold;
+}
+
+/* Sub grid */
+.sub-grid-hm {
+  grid-column: 1 / -1;
+  margin-top: 10px;
+}
+
+.sub-list-hm {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: none;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px;
+  grid-auto-flow: column;
+}
+
+.sub-list-hm.active {
+  display: grid;
+}
+
+.sub-list-hm li {
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.sub-list-hm li.active {
+  font-weight: bold;
+}
+
+.sub-list-hm li .icon-circle-hm {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid black;
+  margin-right: 10px;
+}
+
+.sub-list-hm li.active .icon-circle-hm {
+  background-color: black;
+}
+
 
 
 .side-bar {
