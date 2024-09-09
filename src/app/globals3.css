@@ -379,7 +379,9 @@
 /* Filter menu container */
 .filter-menu-hm {
   font-family: sans-serif;
-  margin: 1vw;
+  margin-left: 1vw;
+  margin-top: 1vw;
+  margin-right: 1vw;
 }
 
 .filters-header-hm {
@@ -486,7 +488,7 @@
   margin: 0;
   display: none;
   grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr); /* 4 items per column */
   gap: 10px;
   grid-auto-flow: column;
 }
