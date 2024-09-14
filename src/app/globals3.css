@@ -467,15 +467,25 @@
   line-height: 1;
 }
 
+/* Disabled filter items */
+.filter-item-hm.disabled,
+.sub-list-hm li.disabled {
+  pointer-events: none;
+  color: gray;
+  font-style: italic;
+}
+
+/* Regular filter items */
 .filter-item-hm {
   cursor: pointer;
   font-weight: normal;
 }
 
-.filter-item-hm.active {
+/* Active filter items */
+.filter-item-hm.active,
+.sub-list-hm li.active {
   font-weight: bold;
 }
-
 /* Sub grid */
 .sub-grid-hm {
   grid-column: 1 / -1;
