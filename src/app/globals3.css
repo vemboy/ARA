@@ -1906,13 +1906,6 @@
 
 /* COLLECTION DETAIL PAGE */
 
-
-
-
-
-
-
-
 /* Reset and global styles */
 * {
   box-sizing: border-box;
@@ -2069,12 +2062,16 @@
   margin-top: 30px;
 }
 
-.record-id-cd, .record-genres-cd, .record-date-cd {
+.record-id-cd,
+.record-genres-cd,
+.record-date-cd {
   font-size: 20px;
   margin-bottom: 15px;
 }
 
-.record-id-value-cd, .record-genres-value-cd, .record-date-value-cd {
+.record-id-value-cd,
+.record-genres-value-cd,
+.record-date-value-cd {
   margin-left: 0.75vw;
   background-color: black;
   color: #fff;
@@ -2104,7 +2101,9 @@
   align-items: center;
 }
 
-.side-title, .track-name, .track-time {
+.side-title,
+.track-name,
+.track-time {
   background-color: #d0c0ff;
   padding: var(--grid-gap);
   border: 1px solid black;

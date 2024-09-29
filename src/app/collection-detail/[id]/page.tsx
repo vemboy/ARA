@@ -9,17 +9,19 @@ import {
 } from "@/utils/assetUtils";
 import Link from "next/link";
 
-interface Props {}
+interface RecordType {
+  [key: string]: any;
+}
 
-const Album: React.FC<Props> = ({}) => {
-  const [records, setRecords] = useState<any[]>([]);
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+const Album: React.FC = () => {
+  const [records, setRecords] = useState<RecordType[]>([]);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(0);
   const pathName = usePathname();
   const recordId = pathName.split("/").slice(-1)[0];
 
-  const [isImageEnlarged, setIsImageEnlarged] = useState(false);
-  const [footerVisible, setFooterVisible] = useState(false);
-  const [isFlipped, setIsFlipped] = useState(false); // Added state for flip animation
+  const [isImageEnlarged, setIsImageEnlarged] = useState<boolean>(false);
+  const [footerVisible, setFooterVisible] = useState<boolean>(false);
+  const [isFlipped, setIsFlipped] = useState<boolean>(false); // Added state for flip animation
 
   useEffect(() => {
     axios
@@ -126,27 +128,33 @@ const Album: React.FC<Props> = ({}) => {
 
           {/* Thumbnails */}
           <div className="thumbnails">
-            {currentRecord["image_1"] && (
-              <img
-                src={getImageDetailUrl(currentRecord["image_1"])}
-                alt="Small Image 1"
-                className="small-image-cd"
-              />
-            )}
-            {currentRecord["image_2"] && (
-              <img
-                src={getImageDetailUrl(currentRecord["image_2"])}
-                alt="Small Image 2"
-                className="small-image-cd"
-              />
-            )}
-            {currentRecord["image_3"] && (
-              <img
-                src={getImageDetailUrl(currentRecord["image_3"])}
-                alt="Small Image 3"
-                className="small-image-cd"
-              />
-            )}
+            <img
+              src={
+                currentRecord["image_1"]
+                  ? getImageDetailUrl(currentRecord["image_1"])
+                  : getDefaultImageDetailUrl()
+              }
+              alt="Small Image 1"
+              className="small-image-cd"
+            />
+            <img
+              src={
+                currentRecord["image_2"]
+                  ? getImageDetailUrl(currentRecord["image_2"])
+                  : getDefaultImageDetailUrl()
+              }
+              alt="Small Image 2"
+              className="small-image-cd"
+            />
+            <img
+              src={
+                currentRecord["image_3"]
+                  ? getImageDetailUrl(currentRecord["image_3"])
+                  : getDefaultImageDetailUrl()
+              }
+              alt="Small Image 3"
+              className="small-image-cd"
+            />
           </div>
         </div>
 
@@ -310,7 +318,7 @@ const Album: React.FC<Props> = ({}) => {
           </div>
         </div>
 
-        {/* Tracklist (Side A / Side B) */}
+        {/* Tracklist (Reverted to Old Structure) */}
         <div className="tracklist">
           <div className="tracklist-side tracklist-side-a">
             <div className="side-title">
@@ -327,31 +335,35 @@ const Album: React.FC<Props> = ({}) => {
           </div>
         </div>
 
-        {/* Detail Images */}
+        {/* Detail Images (Unconditional Rendering) */}
         <div className="detail-images">
-          {/* Display supplemental images if available */}
-          {currentRecord["supplemental_image"] && (
-            <img
-              src={getImageDetailUrl(currentRecord["supplemental_image"])}
-              alt="Detail Image 1"
-              className="detail-image"
-            />
-          )}
-          {/* Additional detail images */}
-          {currentRecord["image_1"] && (
-            <img
-              src={getImageDetailUrl(currentRecord["image_1"])}
-              alt="Detail Image 2"
-              className="detail-image"
-            />
-          )}
-          {currentRecord["image_2"] && (
-            <img
-              src={getImageDetailUrl(currentRecord["image_2"])}
-              alt="Detail Image 3"
-              className="detail-image"
-            />
-          )}
+          <img
+            src={
+              currentRecord["supplemental_image"]
+                ? getImageDetailUrl(currentRecord["supplemental_image"])
+                : getDefaultImageDetailUrl()
+            }
+            alt="Detail Image 1"
+            className="detail-image"
+          />
+          <img
+            src={
+              currentRecord["image_1"]
+                ? getImageDetailUrl(currentRecord["image_1"])
+                : getDefaultImageDetailUrl()
+            }
+            alt="Detail Image 2"
+            className="detail-image"
+          />
+          <img
+            src={
+              currentRecord["image_2"]
+                ? getImageDetailUrl(currentRecord["image_2"])
+                : getDefaultImageDetailUrl()
+            }
+            alt="Detail Image 3"
+            className="detail-image"
+          />
         </div>
       </div>
     </>
