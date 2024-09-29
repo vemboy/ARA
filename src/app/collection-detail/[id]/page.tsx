@@ -1,6 +1,5 @@
 "use client";
 
-import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { usePathname } from "next/navigation";
@@ -13,27 +12,48 @@ import Link from "next/link";
 interface Props {}
 
 const Album: React.FC<Props> = ({}) => {
-  const [record, setRecord] = useState(null);
+  const [records, setRecords] = useState<any[]>([]);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const pathName = usePathname();
   const recordId = pathName.split("/").slice(-1)[0];
-  console.log(pathName);
-  console.log(recordId);
 
   const [isImageEnlarged, setIsImageEnlarged] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false); // Added state for flip animation
 
   useEffect(() => {
     axios
       .get(`https://ara.directus.app/items/record_archive/${recordId}`)
       .then((response) => {
-        console.log(response);
-        setRecord(response.data.data);
+        const initialRecord = response.data.data;
+        const ARAID = initialRecord["ARAID"];
+
+        // Fetch all records with the same ARAID (both tracks)
+        axios
+          .get(
+            `https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}`
+          )
+          .then((recordsResponse) => {
+            setRecords(recordsResponse.data.data);
+          });
       });
   }, []);
 
-  if (record === null) {
+  if (records.length === 0) {
     return null;
   }
+
+  const currentRecord = records[currentTrackIndex];
+
+  // Function to handle image click
+  const handleImageClick = () => {
+    // Flip the image and switch tracks
+    setIsFlipped(true);
+    setTimeout(() => {
+      setCurrentTrackIndex((currentTrackIndex + 1) % records.length);
+      setIsFlipped(false);
+    }, 600); // Duration of the flip animation in milliseconds
+  };
 
   return (
     <>
@@ -75,7 +95,9 @@ const Album: React.FC<Props> = ({}) => {
                 className="sidebar-footer-input-cd"
                 placeholder="Enter your email"
               />
-              <button className="sidebar-subscribe-button-cd">Subscribe</button>
+              <button className="sidebar-subscribe-button-cd">
+                Subscribe
+              </button>
             </div>
 
             <div className="sidebar-copyright-cd">
@@ -87,56 +109,44 @@ const Album: React.FC<Props> = ({}) => {
         {/* Main Image & Thumbnails */}
         <div className="images">
           <div
-            className="main-image"
-            onClick={() => setIsImageEnlarged(!isImageEnlarged)}
+            className={`main-image ${isFlipped ? "flipped" : ""}`}
+            onClick={handleImageClick}
+            style={{ cursor: "pointer" }}
           >
             <img
               src={
-                record["record_image"]
-                  ? getImageDetailUrl(record["record_image"])
+                currentRecord["record_image"]
+                  ? getImageDetailUrl(currentRecord["record_image"])
                   : getDefaultImageDetailUrl()
               }
               alt="Record Image"
               className="record-image-cd"
             />
-
-            {isImageEnlarged && (
-              <>
-                <div
-                  className="image-backdrop-cd"
-                  style={{ visibility: isImageEnlarged ? "visible" : "hidden" }}
-                />
-                <img
-                  src={
-                    record["record_image"]
-                      ? getImageDetailUrl(record["record_image"])
-                      : getDefaultImageDetailUrl()
-                  }
-                  alt="Enlarged Record Image"
-                  className="enlarged-image-cd"
-                  style={{ visibility: isImageEnlarged ? "visible" : "hidden" }}
-                />
-              </>
-            )}
           </div>
 
           {/* Thumbnails */}
           <div className="thumbnails">
-            <img
-              src={getImageDetailUrl(record["image_1"])}
-              alt="Small Image 1"
-              className="small-image-cd"
-            />
-            <img
-              src={getImageDetailUrl(record["image_2"])}
-              alt="Small Image 2"
-              className="small-image-cd"
-            />
-            <img
-              src={getImageDetailUrl(record["image_3"])}
-              alt="Small Image 3"
-              className="small-image-cd"
-            />
+            {currentRecord["image_1"] && (
+              <img
+                src={getImageDetailUrl(currentRecord["image_1"])}
+                alt="Small Image 1"
+                className="small-image-cd"
+              />
+            )}
+            {currentRecord["image_2"] && (
+              <img
+                src={getImageDetailUrl(currentRecord["image_2"])}
+                alt="Small Image 2"
+                className="small-image-cd"
+              />
+            )}
+            {currentRecord["image_3"] && (
+              <img
+                src={getImageDetailUrl(currentRecord["image_3"])}
+                alt="Small Image 3"
+                className="small-image-cd"
+              />
+            )}
           </div>
         </div>
 
@@ -145,40 +155,155 @@ const Album: React.FC<Props> = ({}) => {
           <div className="header">
             {/* Armenian Title */}
             <h1 className="armenian-title-cd">
-              {record["armenian_title"] ?? "No Armenian Title"}
+              {currentRecord["title_armenian"] ?? "No Armenian Title"}
             </h1>
 
             {/* English Title */}
             <h2 className="english-title-cd">
-              {record["title"] ?? "No English Title"}
+              {currentRecord["title"] ?? "No English Title"}
             </h2>
 
             {/* Record Description */}
             <p className="record-description-cd">
-              {record["description"] ??
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit."}
+              {currentRecord["description"] ??
+                "No description available for this record."}
             </p>
 
             {/* Record Metadata */}
             <div className="record-metadata-cd">
+              {/* Record ID */}
               <div className="record-id-cd">
                 <strong className="record-id-label-cd">RECORD ID:</strong>
                 <span className="record-id-value-cd">
-                  {record["id"] ?? "XXXXXXXXXXXXXXXXXXX"}
+                  {currentRecord["id"] ?? "N/A"}
                 </span>
               </div>
 
+              {/* ARAID */}
+              <div className="record-araid-cd">
+                <strong className="record-araid-label-cd">ARAID:</strong>
+                <span className="record-araid-value-cd">
+                  {currentRecord["ARAID"] ?? "N/A"}
+                </span>
+              </div>
+
+              {/* Genres */}
               <div className="record-genres-cd">
                 <strong className="record-genres-label-cd">GENRES:</strong>
                 <span className="record-genres-value-cd">
-                  {record["genre"] ?? "tarab"}
+                  {currentRecord["genres"]
+                    ? currentRecord["genres"].join(", ")
+                    : "N/A"}
                 </span>
               </div>
 
+              {/* Instruments */}
+              <div className="record-instruments-cd">
+                <strong className="record-instruments-label-cd">
+                  INSTRUMENTS:
+                </strong>
+                <span className="record-instruments-value-cd">
+                  {currentRecord["instruments"]
+                    ? currentRecord["instruments"].join(", ")
+                    : "N/A"}
+                </span>
+              </div>
+
+              {/* Language */}
+              <div className="record-language-cd">
+                <strong className="record-language-label-cd">LANGUAGE:</strong>
+                <span className="record-language-value-cd">
+                  {currentRecord["language"]
+                    ? currentRecord["language"].join(", ")
+                    : "N/A"}
+                </span>
+              </div>
+
+              {/* Artist */}
+              <div className="record-artist-cd">
+                <strong className="record-artist-label-cd">ARTIST:</strong>
+                <span className="record-artist-value-cd">
+                  {currentRecord["artist_original"] ?? "N/A"}
+                </span>
+              </div>
+
+              {/* Artist 2 */}
+              <div className="record-artist-2-cd">
+                <strong className="record-artist-2-label-cd">ARTIST 2:</strong>
+                <span className="record-artist-2-value-cd">
+                  {currentRecord["artist_2"] ?? "N/A"}
+                </span>
+              </div>
+
+              {/* Arranged By */}
+              <div className="record-arranged-by-cd">
+                <strong className="record-arranged-by-label-cd">
+                  ARRANGED BY:
+                </strong>
+                <span className="record-arranged-by-value-cd">
+                  {currentRecord["arranged_by"] ?? "N/A"}
+                </span>
+              </div>
+
+              {/* Composed By */}
+              <div className="record-composed-by-cd">
+                <strong className="record-composed-by-label-cd">
+                  COMPOSED BY:
+                </strong>
+                <span className="record-composed-by-value-cd">
+                  {currentRecord["composed_by"] ?? "N/A"}
+                </span>
+              </div>
+
+              {/* Conducted By */}
+              <div className="record-conducted-by-cd">
+                <strong className="record-conducted-by-label-cd">
+                  CONDUCTED BY:
+                </strong>
+                <span className="record-conducted-by-value-cd">
+                  {currentRecord["conducted_by"] ?? "N/A"}
+                </span>
+              </div>
+
+              {/* Lyrics By */}
+              <div className="record-lyrics-by-cd">
+                <strong className="record-lyrics-by-label-cd">
+                  LYRICS BY:
+                </strong>
+                <span className="record-lyrics-by-value-cd">
+                  {currentRecord["lyrics_by"] ?? "N/A"}
+                </span>
+              </div>
+
+              {/* Date */}
               <div className="record-date-cd">
                 <strong className="record-date-label-cd">DATE:</strong>
                 <span className="record-date-value-cd">
-                  {record["record_original_recording_date"] ?? "1932"}
+                  {currentRecord["track_year"] ?? "N/A"}
+                </span>
+              </div>
+
+              {/* Region */}
+              <div className="record-region-cd">
+                <strong className="record-region-label-cd">REGION:</strong>
+                <span className="record-region-value-cd">
+                  {currentRecord["region"] ?? "N/A"}
+                </span>
+              </div>
+
+              {/* Label */}
+              <div className="record-label-cd">
+                <strong className="record-label-label-cd">LABEL:</strong>
+                <span className="record-label-value-cd">
+                  {currentRecord["record_label"] ?? "N/A"}
+                </span>
+              </div>
+
+              {/* Comment */}
+              <div className="record-comment-cd">
+                <strong className="record-comment-label-cd">COMMENT:</strong>
+                <span className="record-comment-value-cd">
+                  {currentRecord["comment"] ?? "N/A"}
                 </span>
               </div>
             </div>
@@ -188,35 +313,45 @@ const Album: React.FC<Props> = ({}) => {
         {/* Tracklist (Side A / Side B) */}
         <div className="tracklist">
           <div className="tracklist-side tracklist-side-a">
-            <div className="side-title">Side A</div>
-            {/* Example tracks */}
-            <div className="track-item">
-              <div className="track-name">Track 1</div>
-              <div className="track-time">1:52</div>
+            <div className="side-title">
+              {currentRecord["track_side"] ?? "Side"}
             </div>
             <div className="track-item">
-              <div className="track-name">Track 2</div>
-              <div className="track-time">2:30</div>
-            </div>
-          </div>
-
-          <div className="tracklist-side tracklist-side-b">
-            <div className="side-title">Side B</div>
-            <div className="track-item">
-              <div className="track-name">Track 3</div>
-              <div className="track-time">3:00</div>
-            </div>
-            <div className="track-item">
-              <div className="track-name">Track 4</div>
-              <div className="track-time">4:15</div>
+              <div className="track-name">
+                {currentRecord["title"] ?? "Track Title"}
+              </div>
+              <div className="track-time">
+                {currentRecord["duration"] ?? ""}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Detail Images */}
         <div className="detail-images">
-          <div className="detail-image">Detail Image 1</div>
-          <div className="detail-image">Detail Image 2</div>
+          {/* Display supplemental images if available */}
+          {currentRecord["supplemental_image"] && (
+            <img
+              src={getImageDetailUrl(currentRecord["supplemental_image"])}
+              alt="Detail Image 1"
+              className="detail-image"
+            />
+          )}
+          {/* Additional detail images */}
+          {currentRecord["image_1"] && (
+            <img
+              src={getImageDetailUrl(currentRecord["image_1"])}
+              alt="Detail Image 2"
+              className="detail-image"
+            />
+          )}
+          {currentRecord["image_2"] && (
+            <img
+              src={getImageDetailUrl(currentRecord["image_2"])}
+              alt="Detail Image 3"
+              className="detail-image"
+            />
+          )}
         </div>
       </div>
     </>

@@ -68,8 +68,7 @@ export default function Collection() {
   const audioPlayerRef = audioContext?.audioPlayerRef;
 
   console.log("PAGE:", audioPlayerRef);
-  
-  
+
   const updateSearchString = (e: any) => {
     console.log("Searching...:", e.target.value);
     setSearchString(e.target.value);
@@ -77,7 +76,7 @@ export default function Collection() {
 
   const updateSearchYear = (e: any) => {
     console.log("Searching year...:", e.target.value);
-    setSearchYear(e.target.value);  
+    setSearchYear(e.target.value);
   };
 
   const updateSearchArtist = (e: any) => {
@@ -93,7 +92,7 @@ export default function Collection() {
   };
 
   function getUrlWithFilters() {
-    const filterObj: { _or: object[]; _and: object[] } = {
+    const filterObj: { _or?: object[]; _and?: object[] } = {
       _or: [],
       _and: [],
     };
@@ -110,12 +109,12 @@ export default function Collection() {
 
     // Year search
     if (searchYear.length > 0) {
-      filterObj._and.push({ "year(year)": { _eq: searchYear } });
+      filterObj._and?.push({ "year(year)": { _eq: searchYear } });
     }
 
     // Artist search
     if (searchArtist.length > 0) {
-      filterObj._and.push({
+      filterObj._and?.push({
         _or: [
           { artist_english: { _icontains: searchArtist } },
           { artist_armenian: { _icontains: searchArtist } },
@@ -129,6 +128,7 @@ export default function Collection() {
       const filterArray = Array.from(filtersSet);
       if (filterArray.length > 0) {
         filterArray.forEach((filter) => {
+          if (!filterObj._and) filterObj._and = [];
           filterObj._and.push({ [filterName]: { _contains: filter } });
         });
       }
@@ -139,7 +139,9 @@ export default function Collection() {
     const stringifiedFilterObj = JSON.stringify(filterObj);
     console.log("stringifiedFilter", stringifiedFilterObj);
 
-    return `https://ara.directus.app/items/record_archive?limit=200&filter=${stringifiedFilterObj}`;
+    return `https://ara.directus.app/items/record_archive?limit=200&filter=${encodeURIComponent(
+      stringifiedFilterObj
+    )}`;
   }
 
   const nextPage = () => {
@@ -209,12 +211,17 @@ export default function Collection() {
   const [selectedRecord, setSelectedRecord] = useState<any | null>(null);
   const [instruments, setInstruments] = useState<string[]>([]);
   const [genres, setGenres] = useState<string[]>([]);
+  const [regions, setRegions] = useState<string[]>([]);
+  const [artists, setArtists] = useState<string[]>([]);
+  const [labels, setLabels] = useState<string[]>([]);
   const [isMenuExpanded, setMenuExpanded] = useState(false); // State to track menu expansion
-  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({});
+  const [selectedFilters, setSelectedFilters] = useState<
+    Record<string, string[]>
+  >({});
 
   const toggleMenu = () => {
-  setMenuExpanded(!isMenuExpanded);
-};
+    setMenuExpanded(!isMenuExpanded);
+  };
 
   useEffect(() => {
     console.log("RENDER");
@@ -228,7 +235,7 @@ export default function Collection() {
       .then((response) => {
         const uniqueInstruments: Set<string> = new Set();
         _.forEach(response.data.data, (instrumentsArray: any) => {
-          if (instrumentsArray.instruments) {
+          if (Array.isArray(instrumentsArray.instruments)) {
             _.forEach(instrumentsArray.instruments, (instrument: string) =>
               uniqueInstruments.add(instrument as string)
             );
@@ -258,7 +265,7 @@ export default function Collection() {
       .then((response) => {
         const uniqueGenres: Set<string> = new Set();
         _.forEach(response.data.data, (genresArray: any) => {
-          if (genresArray.genres) {
+          if (Array.isArray(genresArray.genres)) {
             _.forEach(genresArray.genres, (genre: string) =>
               uniqueGenres.add(genre as string)
             );
@@ -280,6 +287,61 @@ export default function Collection() {
             "vocal",
           ])
         );
+      });
+
+    // Get regions set
+    axios
+      .get("https://ara.directus.app/items/record_archive?groupBy[]=region")
+      .then((response) => {
+        const uniqueRegions: Set<string> = new Set();
+        _.forEach(response.data.data, (regionObj: any) => {
+          if (regionObj.region) {
+            uniqueRegions.add(regionObj.region as string);
+          }
+        });
+        setRegions(Array.from(uniqueRegions));
+      })
+      .catch((error) => {
+        console.log("Error fetching regions:", error);
+        setRegions([]);
+      });
+
+    // Get artists set
+    axios
+      .get(
+        "https://ara.directus.app/items/record_archive?groupBy[]=artist_original"
+      )
+      .then((response) => {
+        const uniqueArtists: Set<string> = new Set();
+        _.forEach(response.data.data, (artistObj: any) => {
+          if (artistObj.artist_original) {
+            uniqueArtists.add(artistObj.artist_original as string);
+          }
+        });
+        setArtists(Array.from(uniqueArtists));
+      })
+      .catch((error) => {
+        console.log("Error fetching artists:", error);
+        setArtists([]);
+      });
+
+    // Get labels set
+    axios
+      .get(
+        "https://ara.directus.app/items/record_archive?groupBy[]=record_label"
+      )
+      .then((response) => {
+        const uniqueLabels: Set<string> = new Set();
+        _.forEach(response.data.data, (labelObj: any) => {
+          if (labelObj.record_label) {
+            uniqueLabels.add(labelObj.record_label as string);
+          }
+        });
+        setLabels(Array.from(uniqueLabels));
+      })
+      .catch((error) => {
+        console.log("Error fetching labels:", error);
+        setLabels([]);
       });
 
     axios.get(url).then((response) => {
@@ -306,176 +368,103 @@ export default function Collection() {
     });
   }, [searchString, searchYear, filters, searchArtist]);
 
-
-    const dummyArtists = ["Artist 1", "Artist 2", "Artist 3"];
-  const dummyGenres = ["Genre 1", "Genre 2", "Genre 3"];
-  const dummyCountries = ["Country 1", "Country 2", "Country 3"];
-  const dummyDecades = ["Decade 1", "Decade 2", "Decade 3"];
-  const dummyInstruments = ["Instrument 1", "Instrument 2", "Instrument 3"];
-  const dummyLabels = ["Label 1", "Label 2", "Label 3"];
-
-
-  
-
   return (
     <>
+      <div className="page-container">
+        <div className="side-bar">
+          <div className="logo-section">
+            <h1 className="logo-text">ARA</h1>
+          </div>
+          <div className="brutalist-container">
+            <nav className="navigation-menu">
+              <ul>
+                <li>
+                  <Link href="/">
+                    {language === "EN" ? "Home" : "Գլխավոր"}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about">
+                    {language === "EN" ? "About Us" : "Մեր Մասին"}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/etc">
+                    {language === "EN" ? "ETC" : "Այլ"}
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div className="mini-footer">
+            <div className="language-selector">
+              <label className="footer-label">
+                {language === "EN" ? "Language" : "Լեզու"}:
+              </label>
+              <div className="footer-language-toggle">
+                <button
+                  className={`brutalist-toggle-button ${
+                    language === "EN" ? "selected" : ""
+                  }`}
+                  onClick={() => changeLanguage("EN")}
+                >
+                  EN
+                </button>
+                <button
+                  className={`brutalist-toggle-button ${
+                    language === "HY" ? "selected" : ""
+                  }`}
+                  onClick={() => changeLanguage("HY")}
+                >
+                  HY
+                </button>
+              </div>
+            </div>
+            <div className="subscribe-section">
+              <label className="footer-label">
+                {language === "EN"
+                  ? "Subscribe for updates:"
+                  : "Բաժանորդագրվել:"}
+              </label>
+              <input
+                type="email"
+                name="email"
+                className="footer-input"
+                placeholder={
+                  language === "EN"
+                    ? "Enter your email"
+                    : "Մուտքագրեք ձեր էլ․ հասցեն"
+                }
+              />
+              <button className="subscribe-button">
+                {language === "EN" ? "Subscribe" : "Բաժանորդագրվել"}
+              </button>
+            </div>
+            <div className="footer-copyright">
+              <p>© 2024 ARA. All rights reserved. Fueled by Costco 🍗</p>
+            </div>
+          </div>
+        </div>
 
-<div className="page-container">
-  
-   {/* <form className="search-form">
-              <input
-                className="search_bar"
-                name="query"
-                placeholder="Search..."
-                onChange={updateSearchString}
-              />
-              <span className="search-icon">🔍</span>
-            </form> */}
-      <div className="side-bar">
-        <div className="logo-section">
-          <h1 className="logo-text">ARA</h1>
-        </div>
-        <div className="brutalist-container">
-          <form className="brutalist-form">
-            <div className="brutalist-filter-group">
-              <label className="brutalist-label">
-                {language === "EN" ? "Artist" : "Արտիստ"}
-              </label>
-              <input
-                type="text"
-                name="artist"
-                className="brutalist-input"
-                placeholder={language === "EN" ? "Artist" : "Արտիստ"}
-                onChange={updateSearchArtist}
-              />
-            </div>
-            <div className="brutalist-filter-group">
-              <label className="brutalist-label">
-                {language === "EN" ? "Country" : "Երկիր"}
-              </label>
-              <input
-                type="text"
-                name="country"
-                className="brutalist-input"
-                placeholder={language === "EN" ? "Country" : "Երկիր"}
-              />
-            </div>
-            <div className="brutalist-filter-group">
-              <label className="brutalist-label">
-                {language === "EN" ? "Year" : "Տարի"}
-              </label>
-              <input
-                type="text"
-                name="year"
-                className="brutalist-input"
-                placeholder={language === "EN" ? "Year" : "Տարի"}
-                onChange={updateSearchYear}
-              />
-            </div>
-            <div className="brutalist-filter-group">
-              <label className="brutalist-label">
-                {language === "EN" ? "Genre" : "Ժանր"}
-              </label>
-              <div className="brutalist-button-group">
-                {genres.map((genre) => (
-                  <FilterButton
-                    key={genre}
-                    filterName={"genres"}
-                    buttonName={genre}
-                    filters={filters}
-                    setFilter={setFilter}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="brutalist-filter-group">
-              <label className="brutalist-label">
-                {language === "EN" ? "Instruments" : "Գործիքներ"}
-              </label>
-              <div className="brutalist-button-group">
-                {instruments.map((instrument) => (
-                  <FilterButton
-                    key={instrument}
-                    filterName={"instruments"}
-                    buttonName={instrument}
-                    filters={filters}
-                    setFilter={setFilter}
-                  />
-                ))}
-              </div>
-            </div>
-          </form>
-        </div>
-        <div className="mini-footer">
-          <div className="language-selector">
-            <label className="footer-label">
-              {language === "EN" ? "Language" : "Լեզու"}:
-            </label>
-            <div className="footer-language-toggle">
-              <button
-                className={`brutalist-toggle-button ${
-                  language === "EN" ? "selected" : ""
-                }`}
-                onClick={() => changeLanguage("EN")}
-              >
-                EN
-              </button>
-              <button
-                className={`brutalist-toggle-button ${
-                  language === "HY" ? "selected" : ""
-                }`}
-                onClick={() => changeLanguage("HY")}
-              >
-                HY
-              </button>
-            </div>
-          </div>
-          <div className="subscribe-section">
-            <label className="footer-label">
-              {language === "EN"
-                ? "Subscribe for updates:"
-                : "Բաժանորդագրվել:"}
-            </label>
-            <input
-              type="email"
-              name="email"
-              className="footer-input"
-              placeholder={
-                language === "EN" ? "Enter your email" : "Մուտքագրեք ձեր էլ․ հասցեն"
-              }
-            />
-            <button className="subscribe-button">
-              {language === "EN" ? "Subscribe" : "Բաժանորդագրվել"}
-            </button>
-          </div>
-          <div className="footer-copyright">
-            <p>© 2024 ARA. All rights reserved. Fueled by Costco 🍗</p>
-          </div>
-        </div>
+        <FilterMenu
+          genres={genres}
+          instruments={instruments}
+          regions={regions}
+          artists={artists}
+          labels={labels}
+          filters={filters}
+          setFilter={setFilter} // Pass the setFilter function to FilterMenu
+        />
+
+        <RecordListView
+          setCurrentSong={setSong}
+          setCurrentName={setName}
+          setCurrentArtistName={setAristName}
+          setSongId={setSongId}
+          audioPlayerRef={audioPlayerRef}
+          records={records}
+        />
       </div>
-
-      
-      
-      <FilterMenu
-        genres={genres}
-        instruments={instruments}
-        filters={filters}
-        setFilter={setFilter} // Pass the setFilter function to FilterMenu
-      />
-
-
-
-
-      <RecordListView
-        setCurrentSong={setSong}
-        setCurrentName={setName}
-        setCurrentArtistName={setAristName}
-        setSongId={setSongId}
-        audioPlayerRef={audioPlayerRef}
-        records={records}
-      />
-    </div>
-                
     </>
   );
 }

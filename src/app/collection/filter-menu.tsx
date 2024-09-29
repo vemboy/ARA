@@ -5,6 +5,9 @@ import _ from "lodash";
 interface FilterMenuProps {
   genres: string[];
   instruments: string[];
+  regions: string[];
+  artists: string[];
+  labels: string[];
   filters: { [key: string]: Set<string> };
   setFilter: React.Dispatch<React.SetStateAction<{ [key: string]: Set<string> }>>;
 }
@@ -27,14 +30,22 @@ function buildFilterObject(filters: { [key: string]: Set<string> }) {
 const FilterMenu: React.FC<FilterMenuProps> = ({
   genres,
   instruments,
+  regions,
+  artists,
+  labels,
   filters,
   setFilter,
 }) => {
-  const [activeFilter, setActiveFilter] = useState<string>("genre");
+  const [activeFilter, setActiveFilter] = useState<string>("genres");
   const [language, setLanguage] = useState("EN");
-  const [availableFilters, setAvailableFilters] = useState({
+  const [availableFilters, setAvailableFilters] = useState<{
+    [key: string]: Set<string>;
+  }>({
     genres: new Set(genres),
     instruments: new Set(instruments),
+    region: new Set(regions),
+    artist_original: new Set(artists),
+    record_label: new Set(labels),
   });
   const [resultCounts, setResultCounts] = useState<{ [key: string]: number }>({});
 
@@ -42,7 +53,7 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
   const fetchAvailableOptions = (currentFilters: { [key: string]: Set<string> }) => {
     const filterObj = buildFilterObject(currentFilters);
     const stringifiedFilterObj = JSON.stringify(filterObj);
-    const url = `https://ara.directus.app/items/record_archive?limit=200&filter=${stringifiedFilterObj}`;
+    const url = `https://ara.directus.app/items/record_archive?limit=200&filter=${encodeURIComponent(stringifiedFilterObj)}`;
 
     axios
       .get(url)
@@ -50,6 +61,9 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
         const records = response.data.data;
         const newAvailableGenres = new Set<string>();
         const newAvailableInstruments = new Set<string>();
+        const newAvailableRegions = new Set<string>();
+        const newAvailableArtists = new Set<string>();
+        const newAvailableLabels = new Set<string>();
         const counts: { [key: string]: number } = {};
 
         // DEBUGGING: Log the entire response to ensure genres are included
@@ -57,7 +71,7 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
 
         // Flatten all genres and instruments
         records.forEach((record: any) => {
-          // Ensure genres array is processed properly
+          // Genres
           if (Array.isArray(record.genres)) {
             record.genres.forEach((genre: string) => {
               newAvailableGenres.add(genre);
@@ -65,12 +79,30 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
             });
           }
 
-          // Process instruments array
+          // Instruments
           if (Array.isArray(record.instruments)) {
             record.instruments.forEach((instrument: string) => {
               newAvailableInstruments.add(instrument);
               counts[instrument] = (counts[instrument] || 0) + 1;
             });
+          }
+
+          // Regions
+          if (record.region) {
+            newAvailableRegions.add(record.region);
+            counts[record.region] = (counts[record.region] || 0) + 1;
+          }
+
+          // Artists
+          if (record.artist_original) {
+            newAvailableArtists.add(record.artist_original);
+            counts[record.artist_original] = (counts[record.artist_original] || 0) + 1;
+          }
+
+          // Labels
+          if (record.record_label) {
+            newAvailableLabels.add(record.record_label);
+            counts[record.record_label] = (counts[record.record_label] || 0) + 1;
           }
         });
 
@@ -78,6 +110,9 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
         setAvailableFilters({
           genres: newAvailableGenres,
           instruments: newAvailableInstruments,
+          region: newAvailableRegions,
+          artist_original: newAvailableArtists,
+          record_label: newAvailableLabels,
         });
         setResultCounts(counts);
       })
@@ -115,16 +150,18 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
 
   const translations: Record<string, Record<string, string>> = {
     EN: {
-      artist: "Artist",
-      genre: "Genre",
-      instrument: "Instrument",
-      recordlabels: "Label",
+      artist_original: "Artist",
+      genres: "Genre",
+      instruments: "Instrument",
+      record_label: "Label",
+      region: "Region",
     },
     HY: {
-      artist: "Հեղինակ",
-      genre: "Ժանր",
-      instrument: "Նվագարան",
-      recordlabels: "Պիտակ",
+      artist_original: "Արտիստ",
+      genres: "Ժանր",
+      instruments: "Նվագարան",
+      record_label: "Պիտակ",
+      region: "Մարզ",
     },
   };
 
@@ -187,8 +224,8 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
         )}
       </div>
 
-      {activeFilter === "genre" && (
-        <ul className="sub-list-hm active" id="list-genre-hm">
+      {activeFilter === "genres" && (
+        <ul className="sub-list-hm active" id="list-genres-hm">
           {genres.map((genre) => (
             <li
               key={genre}
@@ -207,8 +244,8 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
         </ul>
       )}
 
-      {activeFilter === "instrument" && (
-        <ul className="sub-list-hm active" id="list-instrument-hm">
+      {activeFilter === "instruments" && (
+        <ul className="sub-list-hm active" id="list-instruments-hm">
           {instruments.map((instrument) => (
             <li
               key={instrument}
@@ -223,6 +260,68 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
             >
               <span className="icon-circle-hm"></span>
               {`${instrument} (${resultCounts[instrument] || 0})`}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {activeFilter === "region" && (
+        <ul className="sub-list-hm active" id="list-region-hm">
+          {regions.map((region) => (
+            <li
+              key={region}
+              className={`${
+                availableFilters.region.has(region) ? "" : "disabled"
+              } ${filters.region?.has(region) ? "active" : ""}`}
+              data-item={region}
+              onClick={() =>
+                availableFilters.region.has(region) && handleSubItemClick("region", region)
+              }
+            >
+              <span className="icon-circle-hm"></span>
+              {`${region} (${resultCounts[region] || 0})`}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {activeFilter === "artist_original" && (
+        <ul className="sub-list-hm active" id="list-artist_original-hm">
+          {artists.map((artist) => (
+            <li
+              key={artist}
+              className={`${
+                availableFilters.artist_original.has(artist) ? "" : "disabled"
+              } ${filters.artist_original?.has(artist) ? "active" : ""}`}
+              data-item={artist}
+              onClick={() =>
+                availableFilters.artist_original.has(artist) &&
+                handleSubItemClick("artist_original", artist)
+              }
+            >
+              <span className="icon-circle-hm"></span>
+              {`${artist} (${resultCounts[artist] || 0})`}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {activeFilter === "record_label" && (
+        <ul className="sub-list-hm active" id="list-record_label-hm">
+          {labels.map((label) => (
+            <li
+              key={label}
+              className={`${
+                availableFilters.record_label.has(label) ? "" : "disabled"
+              } ${filters.record_label?.has(label) ? "active" : ""}`}
+              data-item={label}
+              onClick={() =>
+                availableFilters.record_label.has(label) &&
+                handleSubItemClick("record_label", label)
+              }
+            >
+              <span className="icon-circle-hm"></span>
+              {`${label} (${resultCounts[label] || 0})`}
             </li>
           ))}
         </ul>
