@@ -1,307 +1,470 @@
 "use client";
 
-
+import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import RecordImage from "./record-image";
+import RecordCollectionRow from "./record-collection-row";
+import RecordCollectionRowDifferent from "./record-collection-row-different";
+import RecordListView from "./record-list-view";
+import PageNumbers from "./page-numbers";
+import AudioPlayer from "react-h5-audio-player";
+import "react-h5-audio-player/lib/styles.css";
+import { AudioContext } from "./audioLayout";
 import Link from "next/link";
+import SingleRecordView from "./record-single";
+import _ from "lodash";
+import FilterMenu from "./filter-menu";
 
+interface FilterProp {
+  buttonName: string;
+  filterName: string;
+  filters: { [key: string]: Set<string> };
+  setFilter: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: Set<string>;
+    }>
+  >;
+}
 
-export default function Home() {
-  const [imageIds, setImageIds] = useState([]);
+function FilterButton(filterProp: FilterProp) {
+  const [selected, setSelected] = useState(false);
 
-  useEffect(() => {
-    axios
-      .get("https://ara.directus.app/items/record_archive?limit=8")
-      .then((response) => {
-        console.log("CORRECT");
-        console.log(response);
-        const records = response.data.data.map((record: any) => {
-          return {
-            image: record.record_image,
-            id: record.id,
-          };
-        });
+  const selectFilter = () => {
+    const newFilters = structuredClone(filterProp.filters);
+    newFilters[filterProp.filterName] ??= new Set();
+    if (!selected) {
+      newFilters[filterProp.filterName].add(filterProp.buttonName);
+    } else {
+      newFilters[filterProp.filterName].delete(filterProp.buttonName);
+    }
+    console.log("New Filters:", newFilters);
 
-        setImageIds(records);
-        console.log(records);
-      });
+    setSelected(!selected);
+    filterProp.setFilter(newFilters);
+  };
 
-  }, []);
+  const buttonClass = selected
+    ? "brutalist-button-clicked"
+    : "brutalist-button";
+
   return (
-    <div>
-      <input type="hidden" id="anPageName" name="page" value="frame-1" />
-      <div className="container-center-horizontal">
-        <div style={{height: "700px"}} className="frame-1 screen">
-          <div className="overlap-group3">
-            <div className="rectangle-137-2"></div>
-            <div className="group-79-2">
-              <div className="overlap-group2-2">
-                <div className="ellipse-1-2"></div>
-              </div>
-              <div className="group-81">
-                <div className="overlap-group">
-                  <p className="armenian-record-arch valign-text-middle">
-                    Armenian Record Archive is a nonprofit center for
-                    inspiration, education, and community.
-                  </p>
-                  <div className="flex-container-515 flex-container adellesansarm-regular-normal-white-29px">
-                    <div className="text valign-text-middle">
-                      <span>
-                        <span className="adellesansarm-regular-normal-white-29px">
-                          Interested in helping out? We’re looking for folks to
-                          help with digitization and historical research. If
-                          you’re in a position to donate your time or resources
-                          to support ARA, please email
-                          hye@armenianrecordarchive.com.
-                        </span>
-                      </span>
-                    </div>
-                    <div className="text valign-text-middle">
-                      <span>
-                        <span className="adellesansarm-regular-normal-white-29px">
-                          For more information, scroll down to the About Us
-                          section.
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="overlap-group">
-                  <p className="armenian-record-arch valign-text-middle">
-                    Armenian Record Archive-ը ոչշահագորձության կենտրոնա
-                    երաժշտական արխիվ:
-                  </p>
-                  <div className="flex-container-517 flex-container adellesansarm-regular-normal-white-29px">
-                    <div className="text valign-text-middle">
-                      <span>
-                        <span className="adellesansarm-regular-normal-white-29px">
-                          Հետաքրքրվա՞ծ եք օգնել: Մենք փնտրում ենք մարդկանց,
-                          որոնք կօգնեն թվայնացման և պատմական հետազոտությունների
-                          հարցում: Եթե ​​ի վիճակի եք նվիրել ձեր ժամանակը կամ
-                          ռեսուրսները ARA- ին աջակցելու համար, խնդրում ենք
-                          ուղարկել hye@armenianrecordarchive.com էլ.
-                        </span>
-                      </span>
-                    </div>
-                    <div className="text valign-text-middle">
-                      <span>
-                        <span className="adellesansarm-regular-normal-white-29px">
-                          Լրացուցիչ տեղեկությունների համար անցեք ներքև ՝ «Մեր
-                          մասին» բաժինը:
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="group-80-2 adellesansarm-extra-extra-bold-white-16-3px-2">
-              <div className="flex-container-58-2 flex-container">
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
-                      <Link href="/collection">COLLECTION</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
-                      <Link href="/collection">ՀԱԲԱԿԱԾՈՒ</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-              <div className="flex-container-59 flex-container">
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
-                      <Link href="#">CONTRIBUTE</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
-                      <Link href="#">ԱՋԱԿՑԵԼ</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-              <div className="flex-container-57 flex-container">
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
-                      <Link href="javascript:scrollTo(AboutUs);">ABOUT US</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
-                      <Link href="javascript:scrollTo(AboutUs);">
-                        ՄԵՐ ՄԱՍԻՆ
-                      </Link>
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-              <div className="flex-container-56 flex-container">
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
-                      <Link href="javascript:scrollTo(Footer);">CONTACT</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-                <div className="text-1 valign-text-middle">
-                  <span>
-                    <span className="adellesansarm-extra-extra-bold-white-16-3px-2">
-                      <Link href="javascript:scrollTo(Footer);">ԿԱՊ</Link>
-                    </span>{" "}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <h1 className="full-page-armenian-2 valign-text-middle">
-              Armenian Record Archive
-            </h1>
-          </div>
-        </div>
-      </div>
-      <input type="hidden" id="anPageName" name="page" value="macbook-pro-81" />
-      <div className="container-center-horizontal">
-        <div className="macbook-pro-81 screen">
-          <div className="overlap-group1"></div>
-
-          <div className="hello-body-container">
-            <div>
-              <div className="my_title_2">
-                COLLECTION
-                <br></br>
-                ՀԱԲԱԿԱԾՈՒ
-              </div>
-            </div>
-            <p className="hello-body">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-              blandit dictum libero, ut congue nisl dapibus vel. Maecenas auctor
-              laoreet nibh ac interdum. Quisque dapibus, enim eu tempor
-              congueLorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Aenean blandit dictum libero, ut congue nisl dapibus vel. Maecenas
-              auctor laoreet nibh ac interdum. Quisque dapibus, enim eu tempor
-              congue..
-            </p>
-            <p className="hello-body">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-              blandit dictum libero, ut congue nisl dapibus vel. Maecenas auctor
-              laoreet nibh ac interdum. Quisque dapibus, enim eu tempor
-              congue.Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Aenean blandit dictum libero, ut congue nisl dapibus vel. Maecenas
-              auctor laoreet nibh ac interdum. Quisque dapibus, enim eu tempor
-              congue.
-            </p>
-          </div>
-          <Link href="/collection">
-            <div className="hello-body-1 valign-text-bottom">
-              View collection —&gt;
-              <br />
-              Հավակածուներ
-            </div>
-          </Link>
-          <div className="overlap-group2">
-            <div className="rectangle-16 rectangle">
-              <div className="stat-page-container">
-                <div className="stat-page-1">
-                  <div className="stat-text-1">1,924</div>
-                  <div className="stat-text-2">135</div>
-                  <div className="stat-text-3">27</div>
-                </div>
-                <div className="stat-page-2">
-                  <div className="stat-text-4">
-                    Digitized Records
-                    <br></br>
-                    Տվանածված
-                  </div>
-                  <div className="stat-text-5">
-                    Countries
-                    <br></br>
-                    Երգիներ
-                  </div>
-                  <div className="stat-text-6">
-                    Contributors
-                    <br></br>
-                    Մասնակծողներ
-                  </div>
-                </div>
-              </div>
-
-              <div className="about-us-container" id="about-us">
-                <div className="about-us-page-1">
-                  <div className="about-us-title">About</div>
-                  <div className="about-us-title-2">Us</div>
-                </div>
-                <div className="about-us-page-2">
-                  <div className="about-us-text">
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Nostrum numquam eaque sed, voluptate saepe voluptatibus
-                    itaque minima veniam architecto rem, dolor nihil voluptatem.
-                    Minima deserunt ratione, itaque dolorum
-                  </div>
-                </div>
-              </div>
-
-              <div className="footer-container" id="footer">
-                <div className="footer-container-1">
-                  <div className="footer-container-1-1">
-                    <div className="footer-container-1-1-title">Contact</div>
-                    <div className="footer-container-1-1-title-2">About</div>
-                    <div className="footer-container-1-1-title-3">People</div>
-                    <div className="footer-container-1-1-title-4">Culture</div>
-                    <div className="footer-container-1-1-title-5">
-                      Whitepaper
-                    </div>
-                  </div>
-                  <div className="footer-container-1-2"></div>
-                  <div className="footekr-container-1-3"></div>
-                </div>
-                <div className="footer-container-2">
-                  <div className="footer-container-2-title">ARA</div>
-                </div>
-              </div>
-            </div>
-            <div className="group-65 group">
-
-              {imageIds.map((record) => (
-                <RecordImage
-                  id={record["id"]}
-                  src={`https://ara.directus.app/assets/${
-                    record["image"]
-                      ? record["image"]
-                      : "bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48"
-                  }?key=thumbnail`}
-                ></RecordImage>
-              ))}
-          
-            </div>
-          </div>
-          <div className="overlap-group">`</div>
-        </div>
-      </div>
-    </div>
+    <button
+      type="button"
+      className={buttonClass}
+      key={filterProp.buttonName}
+      onClick={selectFilter}
+    >
+      {filterProp.buttonName}
+    </button>
   );
 }
 
-{
-  /* <script>
-            const AboutUs = document.getElementById("about-us");
-            const Footer = document.getElementById("footer");
+export default function Collection() {
+  const audioContext = React.useContext(AudioContext);
+  const setSong = audioContext?.setSong;
+  const setName = audioContext?.setName;
+  const setAristName = audioContext?.setArtistName;
+  const setSongId = audioContext?.setSongId;
+  const audioPlayerRef = audioContext?.audioPlayerRef;
 
-            console.log("Hello")
+  console.log("PAGE:", audioPlayerRef);
 
-            function scrollTo(name) {
-              console.log("hi")
-              name.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-            }
-          </script> */
+  const updateSearchString = (e: any) => {
+    console.log("Searching...:", e.target.value);
+    setSearchString(e.target.value);
+  };
+
+  const updateSearchYear = (e: any) => {
+    console.log("Searching year...:", e.target.value);
+    setSearchYear(e.target.value);
+  };
+
+  const updateSearchArtist = (e: any) => {
+    console.log("Searching artist...:", e.target.value);
+    setSearchArtist(e.target.value);
+  };
+
+  const [filters, setFilter] = useState<{ [key: string]: Set<string> }>({});
+  const [language, setLanguage] = useState("EN"); // New state for language
+
+  const changeLanguage = (lang: string) => {
+    setLanguage(lang);
+  };
+
+  function getUrlWithFilters() {
+    const filterObj: { _or?: object[]; _and?: object[] } = {
+      _or: [],
+      _and: [],
+    };
+
+    // Text search
+    if (searchString.length > 0) {
+      filterObj._or = [
+        { title: { _icontains: searchString } },
+        { title_armenian: { _icontains: searchString } },
+        { artist_armenian: { _icontains: searchString } },
+        { artist_original: { _icontains: searchString } },
+      ];
+    }
+
+    // Year search
+    if (searchYear.length > 0) {
+      filterObj._and?.push({ "year(year)": { _eq: searchYear } });
+    }
+
+    // Artist search
+    if (searchArtist.length > 0) {
+      filterObj._and?.push({
+        _or: [
+          { artist_english: { _icontains: searchArtist } },
+          { artist_armenian: { _icontains: searchArtist } },
+          { artist_original: { _icontains: searchArtist } },
+        ],
+      });
+    }
+
+    // Filters
+    Object.entries(filters).forEach(([filterName, filtersSet]) => {
+      const filterArray = Array.from(filtersSet);
+      if (filterArray.length > 0) {
+        filterArray.forEach((filter) => {
+          if (!filterObj._and) filterObj._and = [];
+          filterObj._and.push({ [filterName]: { _contains: filter } });
+        });
+      }
+    });
+
+    console.log("filterObj:", filterObj);
+
+    const stringifiedFilterObj = JSON.stringify(filterObj);
+    console.log("stringifiedFilter", stringifiedFilterObj);
+
+    return `https://ara.directus.app/items/record_archive?limit=200&filter=${encodeURIComponent(
+      stringifiedFilterObj
+    )}`;
+  }
+
+  const nextPage = () => {
+    setPage(currentPage + 1);
+    const url = getUrlWithFilters();
+    axios.get(`${url}&page=${currentPage}`).then((response) => {
+      console.log("Hello");
+      console.log(response);
+
+      const records = response.data.data.map((record: any) => {
+        return {
+          songId: record.audio,
+          author: record.artist_original,
+          title: record.title,
+          image: record.record_image,
+          id: record.id,
+          genre: record.genre,
+          year: record.year,
+          title_armenian: record.title_armenian,
+          color: record.hex_color,
+          display_title: record.display_title,
+        };
+      });
+
+      setRecords(records);
+      console.log(records);
+    });
+  };
+
+  const previousPage = () => {
+    console.log(currentPage);
+    if (currentPage - 2 > 0) {
+      setPage(currentPage - 1);
+    } else {
+      console.log("At start");
+    }
+    const url = getUrlWithFilters();
+    axios.get(`${url}&page=${currentPage}`).then((response) => {
+      console.log("Hello");
+      console.log(response);
+
+      const records = response.data.data.map((record: any) => {
+        return {
+          songId: record.audio,
+          author: record.artist_original,
+          title: record.title,
+          image: record.record_image,
+          id: record.id,
+          genre: record.genre,
+          year: record.year,
+          title_armenian: record.title_armenian,
+          color: record.hex_color,
+          display_title: record.display_title,
+        };
+      });
+
+      setRecords(records);
+      console.log(records);
+    });
+  };
+
+  const [currentPage, setPage] = useState(2);
+  const [records, setRecords] = useState<any[]>([]);
+  const [searchString, setSearchString] = useState<string>("");
+  const [searchYear, setSearchYear] = useState<string>("");
+  const [searchArtist, setSearchArtist] = useState<string>("");
+  const [selectedRecord, setSelectedRecord] = useState<any | null>(null);
+  const [instruments, setInstruments] = useState<string[]>([]);
+  const [genres, setGenres] = useState<string[]>([]);
+  const [regions, setRegions] = useState<string[]>([]);
+  const [artists, setArtists] = useState<string[]>([]);
+  const [labels, setLabels] = useState<string[]>([]);
+  const [isMenuExpanded, setMenuExpanded] = useState(false); // State to track menu expansion
+  const [selectedFilters, setSelectedFilters] = useState<
+    Record<string, string[]>
+  >({});
+
+  const toggleMenu = () => {
+    setMenuExpanded(!isMenuExpanded);
+  };
+
+  useEffect(() => {
+    console.log("RENDER");
+    const url = getUrlWithFilters();
+
+    // Get instruments set
+    axios
+      .get(
+        "https://ara.directus.app/items/record_archive?groupBy[]=instruments"
+      )
+      .then((response) => {
+        const uniqueInstruments: Set<string> = new Set();
+        _.forEach(response.data.data, (instrumentsArray: any) => {
+          if (Array.isArray(instrumentsArray.instruments)) {
+            _.forEach(instrumentsArray.instruments, (instrument: string) =>
+              uniqueInstruments.add(instrument as string)
+            );
+          }
+        });
+        setInstruments(Array.from(uniqueInstruments));
+      })
+      .catch((error) => {
+        console.log("Error fetching instruments:", error);
+        setInstruments(
+          Array.from([
+            "guitar",
+            "piano",
+            "drums",
+            "violin",
+            "bass",
+            "saxophone",
+            "oud",
+            "darabuka",
+          ])
+        );
+      });
+
+    // Get genres set
+    axios
+      .get("https://ara.directus.app/items/record_archive?groupBy[]=genres")
+      .then((response) => {
+        const uniqueGenres: Set<string> = new Set();
+        _.forEach(response.data.data, (genresArray: any) => {
+          if (Array.isArray(genresArray.genres)) {
+            _.forEach(genresArray.genres, (genre: string) =>
+              uniqueGenres.add(genre as string)
+            );
+          }
+        });
+        setGenres(Array.from(uniqueGenres));
+      })
+      .catch((error) => {
+        console.log("Error fetching genres:", error);
+        setGenres(
+          Array.from([
+            "pop",
+            "rock",
+            "jazz",
+            "classical",
+            "hip-hop",
+            "electronic",
+            "religious",
+            "vocal",
+          ])
+        );
+      });
+
+    // Get regions set
+    axios
+      .get("https://ara.directus.app/items/record_archive?groupBy[]=region")
+      .then((response) => {
+        const uniqueRegions: Set<string> = new Set();
+        _.forEach(response.data.data, (regionObj: any) => {
+          if (regionObj.region) {
+            uniqueRegions.add(regionObj.region as string);
+          }
+        });
+        setRegions(Array.from(uniqueRegions));
+      })
+      .catch((error) => {
+        console.log("Error fetching regions:", error);
+        setRegions([]);
+      });
+
+    // Get artists set
+    axios
+      .get(
+        "https://ara.directus.app/items/record_archive?groupBy[]=artist_original"
+      )
+      .then((response) => {
+        const uniqueArtists: Set<string> = new Set();
+        _.forEach(response.data.data, (artistObj: any) => {
+          if (artistObj.artist_original) {
+            uniqueArtists.add(artistObj.artist_original as string);
+          }
+        });
+        setArtists(Array.from(uniqueArtists));
+      })
+      .catch((error) => {
+        console.log("Error fetching artists:", error);
+        setArtists([]);
+      });
+
+    // Get labels set
+    axios
+      .get(
+        "https://ara.directus.app/items/record_archive?groupBy[]=record_label"
+      )
+      .then((response) => {
+        const uniqueLabels: Set<string> = new Set();
+        _.forEach(response.data.data, (labelObj: any) => {
+          if (labelObj.record_label) {
+            uniqueLabels.add(labelObj.record_label as string);
+          }
+        });
+        setLabels(Array.from(uniqueLabels));
+      })
+      .catch((error) => {
+        console.log("Error fetching labels:", error);
+        setLabels([]);
+      });
+
+    axios.get(url).then((response) => {
+      console.log(response.data.data);
+      const amountOfPages = response.data.data.length;
+
+      const records = response.data.data.map((record: any) => {
+        return {
+          songId: record.audio,
+          author: record.artist_original,
+          title: record.title,
+          image: record.record_image,
+          id: record.id,
+          genre: record.genre,
+          year: record.year,
+          title_armenian: record.title_armenian,
+          color: record.hex_color,
+          display_title: record.display_title,
+        };
+      });
+
+      setRecords(records);
+      console.log(records);
+    });
+  }, [searchString, searchYear, filters, searchArtist]);
+
+  return (
+    <>
+      <div className="page-container">
+        <div className="side-bar">
+          <div className="logo-section">
+            <h1 className="logo-text">ARA</h1>
+          </div>
+          <div className="brutalist-container">
+            <nav className="navigation-menu">
+              <ul>
+                <li>
+                  <Link href="/">
+                    {language === "EN" ? "Home" : "Գլխավոր"}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about">
+                    {language === "EN" ? "About Us" : "Մեր Մասին"}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/etc">
+                    {language === "EN" ? "ETC" : "Այլ"}
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div className="mini-footer">
+            <div className="language-selector">
+              <label className="footer-label">
+                {language === "EN" ? "Language" : "Լեզու"}:
+              </label>
+              <div className="footer-language-toggle">
+                <button
+                  className={`brutalist-toggle-button ${
+                    language === "EN" ? "selected" : ""
+                  }`}
+                  onClick={() => changeLanguage("EN")}
+                >
+                  EN
+                </button>
+                <button
+                  className={`brutalist-toggle-button ${
+                    language === "HY" ? "selected" : ""
+                  }`}
+                  onClick={() => changeLanguage("HY")}
+                >
+                  HY
+                </button>
+              </div>
+            </div>
+            <div className="subscribe-section">
+              <label className="footer-label">
+                {language === "EN"
+                  ? "Subscribe for updates:"
+                  : "Բաժանորդագրվել:"}
+              </label>
+              <input
+                type="email"
+                name="email"
+                className="footer-input"
+                placeholder={
+                  language === "EN"
+                    ? "Enter your email"
+                    : "Մուտքագրեք ձեր էլ․ հասցեն"
+                }
+              />
+              <button className="subscribe-button">
+                {language === "EN" ? "Subscribe" : "Բաժանորդագրվել"}
+              </button>
+            </div>
+            <div className="footer-copyright">
+              <p>© 2024 ARA. All rights reserved. Fueled by Costco 🍗</p>
+            </div>
+          </div>
+        </div>
+
+        <FilterMenu
+          genres={genres}
+          instruments={instruments}
+          regions={regions}
+          artists={artists}
+          labels={labels}
+          filters={filters}
+          setFilter={setFilter} // Pass the setFilter function to FilterMenu
+        />
+
+        <RecordListView
+          setCurrentSong={setSong}
+          setCurrentName={setName}
+          setCurrentArtistName={setAristName}
+          setSongId={setSongId}
+          audioPlayerRef={audioPlayerRef}
+          records={records}
+        />
+      </div>
+    </>
+  );
 }
