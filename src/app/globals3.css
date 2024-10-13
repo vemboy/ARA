@@ -485,6 +485,7 @@
 .filter-item-hm.active,
 .sub-list-hm li.active {
   font-weight: bold;
+  
 }
 /* Sub grid */
 .sub-grid-hm {
@@ -505,6 +506,7 @@
 
 .sub-list-hm.active {
   display: grid;
+  margin-left: 35vw;
 }
 
 .sub-list-hm li {
@@ -514,6 +516,7 @@
 
 .sub-list-hm li.active {
   font-weight: bold;
+  
 }
 
 .sub-list-hm li .icon-circle-hm {

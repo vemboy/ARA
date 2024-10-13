@@ -1,470 +1,1060 @@
 "use client";
 
-import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import RecordCollectionRow from "./record-collection-row";
-import RecordCollectionRowDifferent from "./record-collection-row-different";
-import RecordListView from "./record-list-view";
-import PageNumbers from "./page-numbers";
-import AudioPlayer from "react-h5-audio-player";
-import "react-h5-audio-player/lib/styles.css";
-import { AudioContext } from "./audioLayout";
+import { usePathname } from "next/navigation";
+import {
+  getDefaultImageDetailUrl,
+  getImageDetailUrl,
+} from "@/utils/assetUtils";
 import Link from "next/link";
-import SingleRecordView from "./record-single";
-import _ from "lodash";
-import FilterMenu from "./filter-menu";
 
-interface FilterProp {
-  buttonName: string;
-  filterName: string;
-  filters: { [key: string]: Set<string> };
-  setFilter: React.Dispatch<
-    React.SetStateAction<{
-      [key: string]: Set<string>;
-    }>
-  >;
+interface RecordType {
+  track_side: "A" | "B";
+  track_number?: string;
+  title_armenian?: string;
+  title?: string;
+  duration?: string;
+  liner_notes_side_a?: string;
+  liner_notes_side_b?: string;
+  summary_side_a?: string;
+  summary_side_b?: string;
+  names_side_a?: string;
+  names_side_b?: string;
+  genre_side_a?: string;
+  genre_side_b?: string;
+  media_size_side_a?: string;
+  media_size_side_b?: string;
+  record_label_side_a?: string;
+  record_label_side_b?: string;
+  catalog_number_side_a?: string;
+  catalog_number_side_b?: string;
+  matrix_number_side_a?: string;
+  matrix_number_side_b?: string;
+  take_number_side_a?: string;
+  take_number_side_b?: string;
+  recording_date_side_a?: string;
+  recording_date_side_b?: string;
+  recording_location_side_a?: string;
+  recording_location_side_b?: string;
+  recording_repository_side_a?: string;
+  recording_repository_side_b?: string;
+  rights_advisory_side_a?: string;
+  rights_advisory_side_b?: string;
+  online_format_side_a?: string;
+  online_format_side_b?: string;
+  [key: string]: any; // For any additional fields
 }
 
-function FilterButton(filterProp: FilterProp) {
-  const [selected, setSelected] = useState(false);
+const Album: React.FC = () => {
+  const [records, setRecords] = useState<RecordType[]>([]);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(0);
+  const pathName = usePathname();
+  const recordId = pathName.split("/").slice(-1)[0];
 
-  const selectFilter = () => {
-    const newFilters = structuredClone(filterProp.filters);
-    newFilters[filterProp.filterName] ??= new Set();
-    if (!selected) {
-      newFilters[filterProp.filterName].add(filterProp.buttonName);
-    } else {
-      newFilters[filterProp.filterName].delete(filterProp.buttonName);
-    }
-    console.log("New Filters:", newFilters);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
 
-    setSelected(!selected);
-    filterProp.setFilter(newFilters);
-  };
+  // Images array for carousel
+  const [images, setImages] = useState<string[]>([]);
 
-  const buttonClass = selected
-    ? "brutalist-button-clicked"
-    : "brutalist-button";
+  // Error and Loading States
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  return (
-    <button
-      type="button"
-      className={buttonClass}
-      key={filterProp.buttonName}
-      onClick={selectFilter}
-    >
-      {filterProp.buttonName}
-    </button>
-  );
-}
+  // Find Side A and Side B records
+  const sideARecord = records.find((record) => record.track_side === "A");
+  const sideBRecord = records.find((record) => record.track_side === "B");
 
-export default function Collection() {
-  const audioContext = React.useContext(AudioContext);
-  const setSong = audioContext?.setSong;
-  const setName = audioContext?.setName;
-  const setAristName = audioContext?.setArtistName;
-  const setSongId = audioContext?.setSongId;
-  const audioPlayerRef = audioContext?.audioPlayerRef;
+  // Fetching data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const initialResponse = await axios.get(
+          `https://ara.directus.app/items/record_archive/${recordId}`
+        );
+        const initialRecord = initialResponse.data.data;
+        const ARAID = initialRecord["ARAID"];
 
-  console.log("PAGE:", audioPlayerRef);
+        // Fetch all records with the same ARAID (both tracks)
+        const recordsResponse = await axios.get(
+          `https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}`
+        );
+        const fetchedRecords: RecordType[] = recordsResponse.data.data;
+        setRecords(fetchedRecords);
 
-  const updateSearchString = (e: any) => {
-    console.log("Searching...:", e.target.value);
-    setSearchString(e.target.value);
-  };
+        // Set up images for the carousel
+        const imageUrls = fetchedRecords.map((record: any) =>
+          record["record_image"]
+            ? getImageDetailUrl(record["record_image"])
+            : getDefaultImageDetailUrl()
+        );
 
-  const updateSearchYear = (e: any) => {
-    console.log("Searching year...:", e.target.value);
-    setSearchYear(e.target.value);
-  };
+        // Add additional images if available
+        if (initialRecord["image_1"]) {
+          imageUrls.push(getImageDetailUrl(initialRecord["image_1"]));
+        }
+        if (initialRecord["image_2"]) {
+          imageUrls.push(getImageDetailUrl(initialRecord["image_2"]));
+        }
+        if (initialRecord["image_3"]) {
+          imageUrls.push(getImageDetailUrl(initialRecord["image_3"]));
+        }
 
-  const updateSearchArtist = (e: any) => {
-    console.log("Searching artist...:", e.target.value);
-    setSearchArtist(e.target.value);
-  };
-
-  const [filters, setFilter] = useState<{ [key: string]: Set<string> }>({});
-  const [language, setLanguage] = useState("EN"); // New state for language
-
-  const changeLanguage = (lang: string) => {
-    setLanguage(lang);
-  };
-
-  function getUrlWithFilters() {
-    const filterObj: { _or?: object[]; _and?: object[] } = {
-      _or: [],
-      _and: [],
+        setImages(imageUrls);
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError("Failed to load album details.");
+        setIsLoading(false);
+      }
     };
 
-    // Text search
-    if (searchString.length > 0) {
-      filterObj._or = [
-        { title: { _icontains: searchString } },
-        { title_armenian: { _icontains: searchString } },
-        { artist_armenian: { _icontains: searchString } },
-        { artist_original: { _icontains: searchString } },
-      ];
+    fetchData();
+  }, [recordId]);
+
+  // Update current track based on image index
+  useEffect(() => {
+    if (records.length > 0) {
+      setCurrentTrackIndex(currentIndex % records.length);
     }
+  }, [currentIndex, records.length]);
 
-    // Year search
-    if (searchYear.length > 0) {
-      filterObj._and?.push({ "year(year)": { _eq: searchYear } });
+  // Handle Image Click for Carousel
+  const handleImageClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const containerWidth = event.currentTarget.offsetWidth;
+    const clickPosition = event.nativeEvent.offsetX;
+
+    if (clickPosition < containerWidth / 2) {
+      // Previous image
+      setCurrentIndex((prevIndex) =>
+        (prevIndex - 1 + images.length) % images.length
+      );
+    } else {
+      // Next image
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     }
+  };
 
-    // Artist search
-    if (searchArtist.length > 0) {
-      filterObj._and?.push({
-        _or: [
-          { artist_english: { _icontains: searchArtist } },
-          { artist_armenian: { _icontains: searchArtist } },
-          { artist_original: { _icontains: searchArtist } },
-        ],
-      });
-    }
+  // Apply inline styles to <body> using useEffect
+  useEffect(() => {
+    // Define your desired body styles here
+    const bodyStyles: React.CSSProperties = {
+      backgroundColor: "#f4f4f4",
+      fontFamily: "Arial, sans-serif",
+      padding: "20px",
+      margin: "0",
+    };
 
-    // Filters
-    Object.entries(filters).forEach(([filterName, filtersSet]) => {
-      const filterArray = Array.from(filtersSet);
-      if (filterArray.length > 0) {
-        filterArray.forEach((filter) => {
-          if (!filterObj._and) filterObj._and = [];
-          filterObj._and.push({ [filterName]: { _contains: filter } });
-        });
-      }
-    });
+    // Apply styles
+    Object.assign(document.body.style, bodyStyles);
 
-    console.log("filterObj:", filterObj);
+    // Cleanup function to reset styles when component unmounts
+    return () => {
+      // Reset to original styles or remove specific styles
+      document.body.style.backgroundColor = "";
+      document.body.style.fontFamily = "";
+      document.body.style.padding = "";
+      document.body.style.margin = "";
+    };
+  }, []); // Empty dependency array ensures this runs once on mount and cleanup on unmount
 
-    const stringifiedFilterObj = JSON.stringify(filterObj);
-    console.log("stringifiedFilter", stringifiedFilterObj);
-
-    return `https://ara.directus.app/items/record_archive?limit=200&filter=${encodeURIComponent(
-      stringifiedFilterObj
-    )}`;
+  // Early returns for loading and error states
+  if (isLoading) {
+    return (
+      <div style={{ textAlign: "center", marginTop: "50px" }}>
+        Loading album details...
+      </div>
+    );
   }
 
-  const nextPage = () => {
-    setPage(currentPage + 1);
-    const url = getUrlWithFilters();
-    axios.get(`${url}&page=${currentPage}`).then((response) => {
-      console.log("Hello");
-      console.log(response);
+  if (error) {
+    return (
+      <div style={{ color: "red", textAlign: "center", marginTop: "50px" }}>
+        {error}
+      </div>
+    );
+  }
 
-      const records = response.data.data.map((record: any) => {
-        return {
-          songId: record.audio,
-          author: record.artist_original,
-          title: record.title,
-          image: record.record_image,
-          id: record.id,
-          genre: record.genre,
-          year: record.year,
-          title_armenian: record.title_armenian,
-          color: record.hex_color,
-          display_title: record.display_title,
-        };
-      });
+  if (records.length === 0) {
+    return (
+      <div style={{ color: "red", textAlign: "center", marginTop: "50px" }}>
+        No records found for this album.
+      </div>
+    );
+  }
 
-      setRecords(records);
-      console.log(records);
-    });
-  };
-
-  const previousPage = () => {
-    console.log(currentPage);
-    if (currentPage - 2 > 0) {
-      setPage(currentPage - 1);
-    } else {
-      console.log("At start");
-    }
-    const url = getUrlWithFilters();
-    axios.get(`${url}&page=${currentPage}`).then((response) => {
-      console.log("Hello");
-      console.log(response);
-
-      const records = response.data.data.map((record: any) => {
-        return {
-          songId: record.audio,
-          author: record.artist_original,
-          title: record.title,
-          image: record.record_image,
-          id: record.id,
-          genre: record.genre,
-          year: record.year,
-          title_armenian: record.title_armenian,
-          color: record.hex_color,
-          display_title: record.display_title,
-        };
-      });
-
-      setRecords(records);
-      console.log(records);
-    });
-  };
-
-  const [currentPage, setPage] = useState(2);
-  const [records, setRecords] = useState<any[]>([]);
-  const [searchString, setSearchString] = useState<string>("");
-  const [searchYear, setSearchYear] = useState<string>("");
-  const [searchArtist, setSearchArtist] = useState<string>("");
-  const [selectedRecord, setSelectedRecord] = useState<any | null>(null);
-  const [instruments, setInstruments] = useState<string[]>([]);
-  const [genres, setGenres] = useState<string[]>([]);
-  const [regions, setRegions] = useState<string[]>([]);
-  const [artists, setArtists] = useState<string[]>([]);
-  const [labels, setLabels] = useState<string[]>([]);
-  const [isMenuExpanded, setMenuExpanded] = useState(false); // State to track menu expansion
-  const [selectedFilters, setSelectedFilters] = useState<
-    Record<string, string[]>
-  >({});
-
-  const toggleMenu = () => {
-    setMenuExpanded(!isMenuExpanded);
-  };
-
-  useEffect(() => {
-    console.log("RENDER");
-    const url = getUrlWithFilters();
-
-    // Get instruments set
-    axios
-      .get(
-        "https://ara.directus.app/items/record_archive?groupBy[]=instruments"
-      )
-      .then((response) => {
-        const uniqueInstruments: Set<string> = new Set();
-        _.forEach(response.data.data, (instrumentsArray: any) => {
-          if (Array.isArray(instrumentsArray.instruments)) {
-            _.forEach(instrumentsArray.instruments, (instrument: string) =>
-              uniqueInstruments.add(instrument as string)
-            );
-          }
-        });
-        setInstruments(Array.from(uniqueInstruments));
-      })
-      .catch((error) => {
-        console.log("Error fetching instruments:", error);
-        setInstruments(
-          Array.from([
-            "guitar",
-            "piano",
-            "drums",
-            "violin",
-            "bass",
-            "saxophone",
-            "oud",
-            "darabuka",
-          ])
-        );
-      });
-
-    // Get genres set
-    axios
-      .get("https://ara.directus.app/items/record_archive?groupBy[]=genres")
-      .then((response) => {
-        const uniqueGenres: Set<string> = new Set();
-        _.forEach(response.data.data, (genresArray: any) => {
-          if (Array.isArray(genresArray.genres)) {
-            _.forEach(genresArray.genres, (genre: string) =>
-              uniqueGenres.add(genre as string)
-            );
-          }
-        });
-        setGenres(Array.from(uniqueGenres));
-      })
-      .catch((error) => {
-        console.log("Error fetching genres:", error);
-        setGenres(
-          Array.from([
-            "pop",
-            "rock",
-            "jazz",
-            "classical",
-            "hip-hop",
-            "electronic",
-            "religious",
-            "vocal",
-          ])
-        );
-      });
-
-    // Get regions set
-    axios
-      .get("https://ara.directus.app/items/record_archive?groupBy[]=region")
-      .then((response) => {
-        const uniqueRegions: Set<string> = new Set();
-        _.forEach(response.data.data, (regionObj: any) => {
-          if (regionObj.region) {
-            uniqueRegions.add(regionObj.region as string);
-          }
-        });
-        setRegions(Array.from(uniqueRegions));
-      })
-      .catch((error) => {
-        console.log("Error fetching regions:", error);
-        setRegions([]);
-      });
-
-    // Get artists set
-    axios
-      .get(
-        "https://ara.directus.app/items/record_archive?groupBy[]=artist_original"
-      )
-      .then((response) => {
-        const uniqueArtists: Set<string> = new Set();
-        _.forEach(response.data.data, (artistObj: any) => {
-          if (artistObj.artist_original) {
-            uniqueArtists.add(artistObj.artist_original as string);
-          }
-        });
-        setArtists(Array.from(uniqueArtists));
-      })
-      .catch((error) => {
-        console.log("Error fetching artists:", error);
-        setArtists([]);
-      });
-
-    // Get labels set
-    axios
-      .get(
-        "https://ara.directus.app/items/record_archive?groupBy[]=record_label"
-      )
-      .then((response) => {
-        const uniqueLabels: Set<string> = new Set();
-        _.forEach(response.data.data, (labelObj: any) => {
-          if (labelObj.record_label) {
-            uniqueLabels.add(labelObj.record_label as string);
-          }
-        });
-        setLabels(Array.from(uniqueLabels));
-      })
-      .catch((error) => {
-        console.log("Error fetching labels:", error);
-        setLabels([]);
-      });
-
-    axios.get(url).then((response) => {
-      console.log(response.data.data);
-      const amountOfPages = response.data.data.length;
-
-      const records = response.data.data.map((record: any) => {
-        return {
-          songId: record.audio,
-          author: record.artist_original,
-          title: record.title,
-          image: record.record_image,
-          id: record.id,
-          genre: record.genre,
-          year: record.year,
-          title_armenian: record.title_armenian,
-          color: record.hex_color,
-          display_title: record.display_title,
-        };
-      });
-
-      setRecords(records);
-      console.log(records);
-    });
-  }, [searchString, searchYear, filters, searchArtist]);
+  const currentRecord = records[currentTrackIndex];
 
   return (
     <>
-      <div className="page-container">
-        <div className="side-bar">
-          <div className="logo-section">
-            <h1 className="logo-text">ARA</h1>
+      <style jsx global>{`
+        /* Global Styles with Increased Specificity */
+
+        /* Ensure body styles override any external CSS */
+        body {
+          background-color: #f4f4f4 !important;
+          font-family: Arial, sans-serif !important;
+          padding: 20px !important;
+          margin: 0 !important;
+        }
+
+        .container {
+          /* max-width: 1200px; */
+          margin: 0 auto;
+          display: grid;
+          gap: 50px;
+          grid-template-areas:
+            "images heading"
+            "images tracklist"
+            "images info"
+            "metadata metadata";
+          /* "gallery gallery"; */
+
+          grid-template-columns: 35vw 2fr; /* Two columns for larger screens */
+          /* grid-template-columns: 20vw 2fr; /* Two columns for larger screens */ */
+        }
+
+        /* Main Info Section */
+        .main-info {
+          display: contents; /* Keep structure, but remove the additional grid */
+        }
+
+        /* Left: Image + Thumbnails */
+        .album-info {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          grid-area: images; /* Assign area name */
+          border-radius: 20%;
+          background-color: lightgray;
+          padding: 50px;
+          position: relative; /* Set position to relative */
+          aspect-ratio: 1;
+          overflow: hidden; /* Ensure no overflow */
+        }
+
+        .main-image-container {
+          position: relative;
+          width: 100%;
+          cursor: default; /* Default cursor for the image container */
+        }
+
+        /* Change cursor to left arrow when hovering on the left side */
+        .album-info::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 50%; /* Half width for left side */
+          height: 100%; /* Full height */
+          cursor: url(
+              "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' fill='white'><path d='M35 45l-15-15 15-15v30z'/></svg>"
+            )
+            30 30,
+            auto; /* Larger custom left arrow */
+          z-index: 10; /* Ensure it's above other content */
+        }
+
+        /* Change cursor to right arrow when hovering on the right side */
+        .album-info::after {
+          content: "";
+          position: absolute;
+          right: 0;
+          top: 0;
+          width: 50%; /* Half width for right side */
+          height: 100%; /* Full height */
+          cursor: url(
+              "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' fill='white'><path d='M25 45l15-15-15-15v30z'/></svg>"
+            )
+            30 30,
+            auto; /* Larger custom right arrow */
+          z-index: 10; /* Ensure it's above other content */
+        }
+
+        .dots-container {
+          text-align: center;
+          /* margin-top: 10px; */
+        }
+
+        .dot {
+          display: inline-block;
+          width: 10px;
+          height: 10px;
+          background-color: #ccc;
+          border-radius: 50%;
+          /* margin: 0 5px; */
+          cursor: pointer;
+        }
+
+        .dot.active {
+          background-color: #333;
+        }
+
+        .main-image-container img {
+          width: 100%;
+          border-radius: 100%;
+          outline: none; /* Removes the focus outline */
+          user-select: none; /* Prevents text/image selection */
+          -webkit-user-drag: none; /* For Safari */
+          user-drag: none; /* Prevents image dragging */
+        }
+
+        .thumbnails {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr 1fr;
+          /* grid-template-columns: 1fr 1fr; */
+          gap: 10px;
+        }
+
+        .thumbnails img {
+          width: 100%;
+          /* border-radius: 20%; */
+        }
+
+        /* Right: Text Section */
+        .text-info {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          /* grid-area: heading; /* Assign area name for text info */ */
+        }
+
+        /* Header Section */
+        .header {
+          display: grid;
+          grid-template-columns: max-content 1fr;
+          /* justify-content: space-between; */
+          /* align-items: baseline; */
+          border-bottom: 2px solid black;
+          padding-bottom: 10px;
+          grid-area: heading; /* Assign area name for text info */
+        }
+
+        .header h1 {
+          font-size: 32px;
+          text-transform: uppercase;
+        }
+
+        .header span {
+          font-family: monospace;
+          font-size: 16px;
+          justify-self: end;
+          /* font-feature-settings: "tnum" on; */
+        }
+
+        .album-subtitle {
+          font-size: 24px;
+          font-weight: lighter;
+        }
+
+        /* Side Section */
+        .side-section {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 30px;
+          /* border-top: 2px solid black; */
+          grid-area: tracklist; /* Assign area name for the tracklist */
+        }
+
+        .side {
+          /* padding-top: 10px; */
+          /* border-top: 2px solid black; */
+        }
+
+        .side h4 {
+          text-transform: uppercase;
+          margin-bottom: 5px;
+          font-size: 16px;
+        }
+
+        /* Song List: Three columns (Track Number, Title, Length) */
+        .track-list {
+          display: grid;
+          grid-template-columns: 2ch 1fr 6ch; /* Track number, song title, song length */
+          gap: 10px;
+          align-items: baseline;
+          border-top: 1px solid black;
+          padding-top: 10px;
+          /* align-items: start; /* Align items to the start of the cell */ */
+        }
+
+        .track-entry {
+          display: contents; /* Allows track-entry to be a wrapper without affecting grid layout */
+        }
+
+        .track-entry:hover .track-number,
+        .track-entry:hover .song-title,
+        .track-entry:hover .song-length {
+          font-weight: bold;
+        }
+
+        .track-number {
+          font-size: 16px;
+          /* text-align: center; /* Center align track number */ */
+        }
+
+        .song-title-container {
+          display: flex;
+          flex-direction: column; /* Stack the title and transliteration */
+          align-items: flex-start; /* Align left */
+        }
+
+        .song-title {
+          font-size: 24px;
+          /* margin-bottom: 2px; /* Add spacing below song title */ */
+          text-align: start; /* Align left */
+          text-transform: uppercase;
+        }
+
+        /* .song-title:hover {
+          font-weight: bold;
+        } */
+
+        .transliteration {
+          font-style: italic;
+          font-size: 16px;
+          color: #555; /* Optional: softer color for transliteration */
+          text-align: start; /* Align left */
+        }
+
+        .song-length {
+          font-family: monospace;
+          text-align: right;
+          font-size: 18px;
+        }
+
+        /* Info Section below Side A and Side B */
+        .info-section {
+          display: grid;
+          /* grid-template-columns: 1fr ; */
+          grid-template-columns: 1fr 1fr;
+          /* grid-template-rows: 1fr 1fr; */
+          gap: 20px;
+          padding-top: 20px;
+          /* border-top: 2px solid black; */
+          border-top: 1px solid black;
+          grid-area: info; /* Assign area name for info section */
+        }
+
+        .info-entry {
+          display: grid;
+          grid-template-columns: 1fr;
+        }
+
+        .info-title {
+          /* grid-column: span 2; */
+          grid-row: 1;
+          font-size: 16px;
+          font-weight: bold;
+          margin-bottom: 10px;
+        }
+
+        .info-content {
+          /* grid-column: 2; */
+          grid-row: 2;
+          font-size: 14px;
+          margin-bottom: 20px;
+          max-width: 50ch;
+          /* margin-left:30px; */
+        }
+
+        .gallery-section {
+          grid-area: gallery; /* Assign area name */
+        }
+
+        .gallery-images {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr 1fr;
+          /* grid-template-columns: 1fr 1fr; */
+          gap: 10px;
+        }
+
+        .gallery-images img {
+          /* width: 100%; */
+          height: 100vh;
+          /* border-radius: 20%; */
+        }
+
+        .meta-section {
+          display: grid;
+          grid-template-columns: 1fr;
+          border-top: 2px solid black;
+          border-bottom: 2px solid black;
+          padding-bottom: 10px;
+          grid-area: metadata; /* Assign area name */
+        }
+
+        .metadata-row {
+          display: grid;
+          grid-template-columns: 250px 1fr 1fr;
+          border-top: 1px solid lightgray;
+          grid-gap: 10px;
+          padding: 10px 0;
+        }
+
+        /* Metadata Table Section */
+        .metadata {
+          background-color: #fff;
+          border-collapse: collapse;
+          width: 100%;
+          margin-top: 20px;
+        }
+
+        .metadata th,
+        .metadata td {
+          border: 1px solid #ddd;
+          padding: 10px;
+          text-align: left;
+        }
+
+        .metadata th {
+          background-color: #f9f9f9;
+        }
+
+        /* Footer Section (Images) */
+        .footer-images {
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .footer-images img {
+          width: 45%;
+        }
+
+        /* Media Queries for Breakpoints */
+        @media (max-width: 1024px) {
+          /* Breakpoint for typical laptop */
+          .container {
+            grid-template-columns: 35vw 1fr; /* Stack images and text */
+            /* grid-template-columns: 1fr 1fr; /* Stack images and text */ */
+          }
+
+          .side-section {
+            grid-template-columns: 1fr; /* Stack Side A and Side B */
+          }
+
+          .info-section {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        @media (max-width: 800px) {
+          /* Mobile narrow breakpoint */
+          .container {
+            grid-template-areas:
+              "heading"
+              "images"
+              "tracklist"
+              "info"
+              "metadata";
+            /* "gallery"; */
+            grid-template-columns: 1fr; /* Single column layout */
+          }
+
+          .dots-container {
+            margin-top: 5px;
+          }
+
+          .footer-images {
+            flex-direction: column; /* Stack footer images vertically */
+            align-items: center; /* Center footer images */
+          }
+
+          .footer-images img {
+            width: 80%; /* Adjust width for footer images on mobile */
+            margin-bottom: 10px; /* Add spacing between images */
+          }
+        }
+      `}</style>
+
+      <div className="container">
+        {/* Header Section */}
+        <div className="header">
+          <h1>
+            {currentRecord["record_label"] ? (
+              currentRecord["record_label"]
+            ) : (
+              <span style={{ color: "red" }}>Label Name</span>
+            )}
+          </h1>
+          <span>
+            {currentRecord["id"] ? (
+              currentRecord["id"]
+            ) : (
+              <span style={{ color: "red" }}>Record ID</span>
+            )}
+          </span>
+          <h2 className="album-subtitle">
+            {currentRecord["title"] ? (
+              currentRecord["title"]
+            ) : (
+              <span style={{ color: "red" }}>Album Subtitle</span>
+            )}
+          </h2>
+        </div>
+
+        {/* Main Info Section */}
+        <div className="main-info">
+          {/* Left: Image + Thumbnails */}
+          <div className="album-info">
+            <div
+              className="main-image-container"
+              onClick={handleImageClick}
+              onMouseMove={(e) => {
+                const containerWidth = e.currentTarget.offsetWidth;
+                if (e.nativeEvent.offsetX < containerWidth / 2) {
+                  e.currentTarget.style.cursor =
+                    "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"60\" height=\"60\" fill=\"white\"><path d=\"M35 45l-15-15 15-15v30z\"/></svg>') 30 30, auto";
+                } else {
+                  e.currentTarget.style.cursor =
+                    "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"60\" height=\"60\" fill=\"white\"><path d=\"M25 45l15-15-15-15v30z\"/></svg>') 30 30, auto";
+                }
+              }}
+            >
+              <img
+                src={images[currentIndex]}
+                alt={`Side ${currentRecord.track_side}`}
+                className="main-image"
+                draggable="false"
+              />
+            </div>
+            {/* Dots for image carousel */}
+            <div className="dots-container">
+              {images.map((_, index) => (
+                <span
+                  key={index}
+                  className={`dot ${index === currentIndex ? "active" : ""}`}
+                  onClick={() => setCurrentIndex(index)}
+                ></span>
+              ))}
+            </div>
+            {/* Uncomment and adjust thumbnails if needed */}
+            {/* <div className="thumbnails">
+              {images.map((imgSrc, index) => (
+                <img key={index} src={imgSrc} alt={`Thumbnail ${index}`} />
+              ))}
+            </div> */}
           </div>
-          <div className="brutalist-container">
-            <nav className="navigation-menu">
-              <ul>
-                <li>
-                  <Link href="/">
-                    {language === "EN" ? "Home" : "Գլխավոր"}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about">
-                    {language === "EN" ? "About Us" : "Մեր Մասին"}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/etc">
-                    {language === "EN" ? "ETC" : "Այլ"}
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-          <div className="mini-footer">
-            <div className="language-selector">
-              <label className="footer-label">
-                {language === "EN" ? "Language" : "Լեզու"}:
-              </label>
-              <div className="footer-language-toggle">
-                <button
-                  className={`brutalist-toggle-button ${
-                    language === "EN" ? "selected" : ""
-                  }`}
-                  onClick={() => changeLanguage("EN")}
-                >
-                  EN
-                </button>
-                <button
-                  className={`brutalist-toggle-button ${
-                    language === "HY" ? "selected" : ""
-                  }`}
-                  onClick={() => changeLanguage("HY")}
-                >
-                  HY
-                </button>
+
+          {/* Right: Text Information */}
+          <div className="text-info">
+            {/* Track List */}
+            <div className="side-section">
+              <div className="side">
+                <h4>Side A</h4>
+                <div className="track-list">
+                  {records
+                    .filter((record) => record.track_side === "A")
+                    .map((record: RecordType, index: number) => (
+                      <div className="track-entry" key={`A-${index}`}>
+                        <div className="track-number">
+                          {record.track_number ? (
+                            record.track_number
+                          ) : (
+                            <span style={{ color: "red" }}>Track #</span>
+                          )}
+                        </div>
+                        <div className="song-title-container">
+                          <div className="song-title">
+                            {record.title_armenian ? (
+                              record.title_armenian
+                            ) : (
+                              <span style={{ color: "red" }}>Armenian Title</span>
+                            )}
+                          </div>
+                          <div className="transliteration">
+                            {record.title ? (
+                              record.title
+                            ) : (
+                              <span style={{ color: "red" }}>Transliteration</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="song-length">
+                          {record.duration ? (
+                            record.duration
+                          ) : (
+                            <span style={{ color: "red" }}>Duration</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+
+              <div className="side">
+                <h4>Side B</h4>
+                <div className="track-list">
+                  {records
+                    .filter((record) => record.track_side === "B")
+                    .map((record: RecordType, index: number) => (
+                      <div className="track-entry" key={`B-${index}`}>
+                        <div className="track-number">
+                          {record.track_number ? (
+                            record.track_number
+                          ) : (
+                            <span style={{ color: "red" }}>Track #</span>
+                          )}
+                        </div>
+                        <div className="song-title-container">
+                          <div className="song-title">
+                            {record.title_armenian ? (
+                              record.title_armenian
+                            ) : (
+                              <span style={{ color: "red" }}>Armenian Title</span>
+                            )}
+                          </div>
+                          <div className="transliteration">
+                            {record.title ? (
+                              record.title
+                            ) : (
+                              <span style={{ color: "red" }}>Transliteration</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="song-length">
+                          {record.duration ? (
+                            record.duration
+                          ) : (
+                            <span style={{ color: "red" }}>Duration</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                </div>
               </div>
             </div>
-            <div className="subscribe-section">
-              <label className="footer-label">
-                {language === "EN"
-                  ? "Subscribe for updates:"
-                  : "Բաժանորդագրվել:"}
-              </label>
-              <input
-                type="email"
-                name="email"
-                className="footer-input"
-                placeholder={
-                  language === "EN"
-                    ? "Enter your email"
-                    : "Մուտքագրեք ձեր էլ․ հասցեն"
-                }
-              />
-              <button className="subscribe-button">
-                {language === "EN" ? "Subscribe" : "Բաժանորդագրվել"}
-              </button>
-            </div>
-            <div className="footer-copyright">
-              <p>© 2024 ARA. All rights reserved. Fueled by Costco 🍗</p>
+
+            {/* Info Section below Side A and Side B */}
+            <div className="info-section">
+              <div className="info-entry">
+                <div className="info-title">SIDE A — LINER NOTES</div>
+                <div className="info-content">
+                  {sideARecord && sideARecord.liner_notes_side_a ? (
+                    sideARecord.liner_notes_side_a
+                  ) : (
+                    <span style={{ color: "red" }}>Liner notes for Side A</span>
+                  )}
+                </div>
+              </div>
+              <div className="info-entry">
+                <div className="info-title">SIDE B — LINER NOTES</div>
+                <div className="info-content">
+                  {sideBRecord && sideBRecord.liner_notes_side_b ? (
+                    sideBRecord.liner_notes_side_b
+                  ) : (
+                    <span style={{ color: "red" }}>Liner notes for Side B</span>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <FilterMenu
-          genres={genres}
-          instruments={instruments}
-          regions={regions}
-          artists={artists}
-          labels={labels}
-          filters={filters}
-          setFilter={setFilter} // Pass the setFilter function to FilterMenu
-        />
+        {/* Gallery Section (Optional) */}
+        {/* <div className="gallery-section">
+          <div className="gallery-images">
+            {images.map((imgSrc, index) => (
+              <img key={index} src={imgSrc} alt={`Gallery Image ${index}`} />
+            ))}
+          </div>
+        </div> */}
 
-        <RecordListView
-          setCurrentSong={setSong}
-          setCurrentName={setName}
-          setCurrentArtistName={setAristName}
-          setSongId={setSongId}
-          audioPlayerRef={audioPlayerRef}
-          records={records}
-        />
+        {/* Metadata Section */}
+        <div className="meta-section">
+          <h4>METADATA</h4>
+          <br />
+          <div className="metadata-row">
+            <div>DATA TITLE</div>
+            <div>SIDE A DATA</div>
+            <div>SIDE B DATA</div>
+          </div>
+
+          {/* Title Row */}
+          <div className="metadata-row">
+            <div>Title</div>
+            <div>
+              {sideARecord && sideARecord.title ? (
+                sideARecord.title
+              ) : (
+                <span style={{ color: "red" }}>Side A Title</span>
+              )}
+            </div>
+            <div>
+              {sideBRecord && sideBRecord.title ? (
+                sideBRecord.title
+              ) : (
+                <span style={{ color: "red" }}>Side B Title</span>
+              )}
+            </div>
+          </div>
+
+          {/* Summary Row */}
+          <div className="metadata-row">
+            <div>Summary</div>
+            <div>
+              {sideARecord && sideARecord.summary_side_a ? (
+                sideARecord.summary_side_a
+              ) : (
+                <span style={{ color: "red" }}>Summary for Side A</span>
+              )}
+            </div>
+            <div>
+              {sideBRecord && sideBRecord.summary_side_b ? (
+                sideBRecord.summary_side_b
+              ) : (
+                <span style={{ color: "red" }}>Summary for Side B</span>
+              )}
+            </div>
+          </div>
+
+          {/* Names Row */}
+          <div className="metadata-row">
+            <div>Names</div>
+            <div>
+              {sideARecord && sideARecord.names_side_a ? (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: sideARecord.names_side_a.replace(
+                      /\n/g,
+                      "<br/>"
+                    ),
+                  }}
+                />
+              ) : (
+                <span style={{ color: "red" }}>Names for Side A</span>
+              )}
+            </div>
+            <div>
+              {sideBRecord && sideBRecord.names_side_b ? (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: sideBRecord.names_side_b.replace(
+                      /\n/g,
+                      "<br/>"
+                    ),
+                  }}
+                />
+              ) : (
+                <span style={{ color: "red" }}>Names for Side B</span>
+              )}
+            </div>
+          </div>
+
+          {/* Genre Row */}
+          <div className="metadata-row">
+            <div>Genre</div>
+            <div>
+              {sideARecord && sideARecord.genre_side_a ? (
+                sideARecord.genre_side_a.replace(/\n/g, "<br/>")
+              ) : (
+                <span style={{ color: "red" }}>Genre for Side A</span>
+              )}
+            </div>
+            <div>
+              {sideBRecord && sideBRecord.genre_side_b ? (
+                sideBRecord.genre_side_b.replace(/\n/g, "<br/>")
+              ) : (
+                <span style={{ color: "red" }}>Genre for Side B</span>
+              )}
+            </div>
+          </div>
+
+          {/* Media Size Row */}
+          <div className="metadata-row">
+            <div>Media Size</div>
+            <div>
+              {sideARecord && sideARecord.media_size_side_a ? (
+                sideARecord.media_size_side_a
+              ) : (
+                <span style={{ color: "red" }}>Media Size for Side A</span>
+              )}
+            </div>
+            <div>
+              {sideBRecord && sideBRecord.media_size_side_b ? (
+                sideBRecord.media_size_side_b
+              ) : (
+                <span style={{ color: "red" }}>Media Size for Side B</span>
+              )}
+            </div>
+          </div>
+
+          {/* Recording Label Row */}
+          <div className="metadata-row">
+            <div>Recording Label</div>
+            <div>
+              {sideARecord && sideARecord.record_label_side_a ? (
+                sideARecord.record_label_side_a
+              ) : (
+                <span style={{ color: "red" }}>Recording Label for Side A</span>
+              )}
+            </div>
+            <div>
+              {sideBRecord && sideBRecord.record_label_side_b ? (
+                sideBRecord.record_label_side_b
+              ) : (
+                <span style={{ color: "red" }}>Recording Label for Side B</span>
+              )}
+            </div>
+          </div>
+
+          {/* Recording Catalog Number Row */}
+          <div className="metadata-row">
+            <div>Recording Catalog Number</div>
+            <div>
+              {sideARecord && sideARecord.catalog_number_side_a ? (
+                sideARecord.catalog_number_side_a
+              ) : (
+                <span style={{ color: "red" }}>Catalog Number for Side A</span>
+              )}
+            </div>
+            <div>
+              {sideBRecord && sideBRecord.catalog_number_side_b ? (
+                sideBRecord.catalog_number_side_b
+              ) : (
+                <span style={{ color: "red" }}>Catalog Number for Side B</span>
+              )}
+            </div>
+          </div>
+
+          {/* Recording Matrix Number Row */}
+          <div className="metadata-row">
+            <div>Recording Matrix Number</div>
+            <div>
+              {sideARecord && sideARecord.matrix_number_side_a ? (
+                sideARecord.matrix_number_side_a
+              ) : (
+                <span style={{ color: "red" }}>Matrix Number for Side A</span>
+              )}
+            </div>
+            <div>
+              {sideBRecord && sideBRecord.matrix_number_side_b ? (
+                sideBRecord.matrix_number_side_b
+              ) : (
+                <span style={{ color: "red" }}>Matrix Number for Side B</span>
+              )}
+            </div>
+          </div>
+
+          {/* Recording Take Number Row */}
+          <div className="metadata-row">
+            <div>Recording Take Number</div>
+            <div>
+              {sideARecord && sideARecord.take_number_side_a ? (
+                sideARecord.take_number_side_a
+              ) : (
+                <span style={{ color: "red" }}>Take Number for Side A</span>
+              )}
+            </div>
+            <div>
+              {sideBRecord && sideBRecord.take_number_side_b ? (
+                sideBRecord.take_number_side_b
+              ) : (
+                <span style={{ color: "red" }}>Take Number for Side B</span>
+              )}
+            </div>
+          </div>
+
+          {/* Recording Date Row */}
+          <div className="metadata-row">
+            <div>Recording Date</div>
+            <div>
+              {sideARecord && sideARecord.recording_date_side_a ? (
+                sideARecord.recording_date_side_a
+              ) : (
+                <span style={{ color: "red" }}>Recording Date for Side A</span>
+              )}
+            </div>
+            <div>
+              {sideBRecord && sideBRecord.recording_date_side_b ? (
+                sideBRecord.recording_date_side_b
+              ) : (
+                <span style={{ color: "red" }}>Recording Date for Side B</span>
+              )}
+            </div>
+          </div>
+
+          {/* Recording Location Row */}
+          <div className="metadata-row">
+            <div>Recording Location</div>
+            <div>
+              {sideARecord && sideARecord.recording_location_side_a ? (
+                sideARecord.recording_location_side_a
+              ) : (
+                <span style={{ color: "red" }}>Recording Location for Side A</span>
+              )}
+            </div>
+            <div>
+              {sideBRecord && sideBRecord.recording_location_side_b ? (
+                sideBRecord.recording_location_side_b
+              ) : (
+                <span style={{ color: "red" }}>Recording Location for Side B</span>
+              )}
+            </div>
+          </div>
+
+          {/* Recording Repository Row */}
+          <div className="metadata-row">
+            <div>Recording Repository</div>
+            <div>
+              {sideARecord && sideARecord.recording_repository_side_a ? (
+                sideARecord.recording_repository_side_a
+              ) : (
+                <span style={{ color: "red" }}>Recording Repository for Side A</span>
+              )}
+            </div>
+            <div>
+              {sideBRecord && sideBRecord.recording_repository_side_b ? (
+                sideBRecord.recording_repository_side_b
+              ) : (
+                <span style={{ color: "red" }}>Recording Repository for Side B</span>
+              )}
+            </div>
+          </div>
+
+          {/* Rights Advisory Row */}
+          <div className="metadata-row">
+            <div>Rights Advisory</div>
+            <div>
+              {sideARecord && sideARecord.rights_advisory_side_a ? (
+                sideARecord.rights_advisory_side_a
+              ) : (
+                <span style={{ color: "red" }}>Rights Advisory for Side A</span>
+              )}
+            </div>
+            <div>
+              {sideBRecord && sideBRecord.rights_advisory_side_b ? (
+                sideBRecord.rights_advisory_side_b
+              ) : (
+                <span style={{ color: "red" }}>Rights Advisory for Side B</span>
+              )}
+            </div>
+          </div>
+
+          {/* Online Format Row */}
+          <div className="metadata-row">
+            <div>Online Format</div>
+            <div>
+              {sideARecord && sideARecord.online_format_side_a ? (
+                sideARecord.online_format_side_a.replace(/\n/g, "<br/>")
+              ) : (
+                <span style={{ color: "red" }}>Online Format for Side A</span>
+              )}
+            </div>
+            <div>
+              {sideBRecord && sideBRecord.online_format_side_b ? (
+                sideBRecord.online_format_side_b.replace(/\n/g, "<br/>")
+              ) : (
+                <span style={{ color: "red" }}>Online Format for Side B</span>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
+};
+
+export default function CollectionDetail() {
+  return <Album />;
 }
