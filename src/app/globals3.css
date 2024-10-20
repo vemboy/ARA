@@ -2061,6 +2061,7 @@
   text-transform: uppercase;
   margin-bottom: 5px;
   font-size: 16px;
+  font-weight: bold;
 }
 
 /* Song List */
@@ -2091,6 +2092,7 @@
   font-size: 24px;
   text-align: start;
   text-transform: uppercase;
+  font-weight: 400;
 }
 
 .transliteration {
