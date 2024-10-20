@@ -1998,7 +1998,7 @@
   background-color: #ccc;
   border-radius: 50%;
   cursor: pointer;
-  margin: 0 5px;
+  /* Removed margin to match Code 1 */
 }
 
 .dot.active {
@@ -2017,8 +2017,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  grid-area: heading;
-  padding: 20px;
+  /* Removed grid-area to match Code 1 */
 }
 
 /* Header Section */
@@ -2055,7 +2054,7 @@
 }
 
 .side {
-  padding-top: 10px;
+  /* Removed padding-top to match Code 1 */
 }
 
 .side h4 {
@@ -2107,6 +2106,13 @@
   font-size: 18px;
 }
 
+/* Added hover effects to match Code 1 */
+.track-entry:hover .track-number,
+.track-entry:hover .song-title,
+.track-entry:hover .song-length {
+  font-weight: bold;
+}
+
 /* Info Section */
 .info-section {
   display: grid;
@@ -2144,11 +2150,7 @@
   border-bottom: 2px solid black;
   padding-bottom: 10px;
   grid-area: metadata;
-}
-
-.meta-section h4 {
-  margin-top: 20px;
-  font-size: 24px;
+  /* Removed specific styles from h4 to match Code 1 */
 }
 
 .metadata-row {
@@ -2156,22 +2158,10 @@
   grid-template-columns: 250px 1fr 1fr;
   border-top: 1px solid lightgray;
   grid-gap: 10px;
-  padding: 10px 0;
+  /* Removed padding to match Code 1 */
 }
 
-.metadata-title {
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.metadata-content {
-  font-size: 16px;
-}
-
-.metadata-side {
-  font-weight: bold;
-  font-size: 16px;
-}
+/* Removed metadata-title, metadata-content, and metadata-side classes to match Code 1 */
 
 /* Media Queries */
 @media (max-width: 1024px) {
@@ -2197,5 +2187,80 @@
       "info"
       "metadata";
     grid-template-columns: 1fr;
+  }
+}
+
+.carousel {
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-cell {
+  width: 100%; /* Each cell takes up the full carousel width */
+  height: auto;
+  overflow: hidden;
+}
+
+.carousel-cell img {
+  width: 100%;
+  height: auto;
+  object-fit: cover; /* Cover the cell while maintaining aspect ratio */
+  border-radius: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Adjust the album-info to ensure proper sizing */
+.album-info {
+  position: relative;
+  width: 100%;
+  max-width: 100%; /* Ensure it doesn't exceed container width */
+  aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
+  overflow: hidden;
+}
+
+/* Flickity Carousel Styles */
+.carousel {
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-cell {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+.carousel-cell img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Optional: Customize Flickity buttons and arrows */
+.flickity-button {
+  background: transparent;
+  border: none;
+}
+
+.flickity-button:hover {
+  background: transparent;
+}
+
+.flickity-button:focus {
+  outline: none;
+}
+
+.flickity-prev-next-button svg {
+  fill: black; /* Set SVG fill color */
+}
+
+/* Ensure the carousel and images are responsive */
+@media (max-width: 800px) {
+  .carousel-cell {
+    width: 100%;
   }
 }
