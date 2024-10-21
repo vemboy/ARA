@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { usePathname } from "next/navigation";
 import {
@@ -8,9 +8,9 @@ import {
   getImageDetailUrl,
 } from "@/utils/assetUtils";
 
-// Removed Flickity imports
-// import Flickity from "react-flickity-component";
-// import "flickity/css/flickity.css"; // Make sure to install flickity via npm
+import Flickity from "react-flickity-component";
+import "flickity/css/flickity.css"; // Import Flickity CSS
+import imagesLoaded from "imagesloaded"; // Using default import if you adjusted the declaration
 
 interface RecordType {
   [key: string]: any;
@@ -22,7 +22,9 @@ const Album: React.FC = () => {
   const recordId = pathName.split("/").slice(-1)[0];
 
   const [images, setImages] = useState<string[]>([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0); // Added from old code
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+
+  const flickityRef = useRef<any>(null); // Create a ref for Flickity
 
   useEffect(() => {
     axios
@@ -37,7 +39,15 @@ const Album: React.FC = () => {
             `https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}`
           )
           .then((recordsResponse) => {
-            const fetchedRecords = recordsResponse.data.data;
+            let fetchedRecords = recordsResponse.data.data;
+
+            // **Sort the records to ensure Side A comes before Side B**
+            fetchedRecords.sort((a: RecordType, b: RecordType) => {
+              const sideA = a.track_side || "A";
+              const sideB = b.track_side || "B";
+              return sideA.localeCompare(sideB);
+            });
+
             setRecords(fetchedRecords);
 
             // Prepare images array for the image slider
@@ -51,6 +61,15 @@ const Album: React.FC = () => {
       });
   }, []);
 
+  // Use useEffect to handle images loading
+  useEffect(() => {
+    if (images.length > 0 && flickityRef.current) {
+      imagesLoaded(".carousel", () => {
+        flickityRef.current.resize();
+      });
+    }
+  }, [images]);
+
   if (records.length === 0) {
     return null;
   }
@@ -61,35 +80,27 @@ const Album: React.FC = () => {
   const metadataEntries = [
     {
       title: "Title",
-      sideA:
-        records[0]?.title ?? "INFO DOES NOT EXIST IN DB",
-      sideB:
-        records[1]?.title ?? "INFO DOES NOT EXIST IN DB",
+      sideA: records[0]?.title ?? "INFO DOES NOT EXIST IN DB",
+      sideB: records[1]?.title ?? "INFO DOES NOT EXIST IN DB",
     },
     {
       title: "Names",
-      sideA:
-        records[0]?.artist_original ?? "Unknown artists",
-      sideB:
-        records[1]?.artist_original ?? "Unknown artists",
+      sideA: records[0]?.artist_original ?? "Unknown artists",
+      sideB: records[1]?.artist_original ?? "Unknown artists",
     },
     {
       title: "Genre",
-      sideA:
-        records[0]?.genres
-          ? records[0].genres.join(", ")
-          : "No genre assigned",
-      sideB:
-        records[1]?.genres
-          ? records[1].genres.join(", ")
-          : "No genre assigned",
+      sideA: records[0]?.genres
+        ? records[0].genres.join(", ")
+        : "No genre assigned",
+      sideB: records[1]?.genres
+        ? records[1].genres.join(", ")
+        : "No genre assigned",
     },
     {
       title: "Recording Label",
-      sideA:
-        records[0]?.record_label ?? "INFO DOES NOT EXIST IN DB",
-      sideB:
-        records[1]?.record_label ?? "INFO DOES NOT EXIST IN DB",
+      sideA: records[0]?.record_label ?? "INFO DOES NOT EXIST IN DB",
+      sideB: records[1]?.record_label ?? "INFO DOES NOT EXIST IN DB",
     },
     {
       title: "Recording Catalog Number",
@@ -100,70 +111,51 @@ const Album: React.FC = () => {
     },
     {
       title: "Recording Date",
-      sideA:
-        records[0]?.track_year ?? "Unknown date",
-      sideB:
-        records[1]?.track_year ?? "Unknown date",
+      sideA: records[0]?.track_year ?? "Unknown date",
+      sideB: records[1]?.track_year ?? "Unknown date",
     },
     {
       title: "Composed by",
-      sideA:
-        records[0]?.composed_by ?? "Unknown composer",
-      sideB:
-        records[1]?.composed_by ?? "Unknown composer",
+      sideA: records[0]?.composed_by ?? "Unknown composer",
+      sideB: records[1]?.composed_by ?? "Unknown composer",
     },
     {
       title: "Arranged by",
-      sideA:
-        records[0]?.arranged_by ?? "Unknown",
-      sideB:
-        records[1]?.arranged_by ?? "Unknown",
+      sideA: records[0]?.arranged_by ?? "Unknown",
+      sideB: records[1]?.arranged_by ?? "Unknown",
     },
     {
       title: "Lyrics by",
-      sideA:
-        records[0]?.lyrics_by ?? "Unknown",
-      sideB:
-        records[1]?.lyrics_by ?? "Unknown",
+      sideA: records[0]?.lyrics_by ?? "Unknown",
+      sideB: records[1]?.lyrics_by ?? "Unknown",
     },
     {
       title: "Conducted by",
-      sideA:
-        records[0]?.composed_by ?? "Unknown composer",
-      sideB:
-        records[1]?.composed_by ?? "Unknown composer",
+      sideA: records[0]?.conducted_by ?? "Unknown conductor",
+      sideB: records[1]?.conducted_by ?? "Unknown conductor",
     },
     {
       title: "Language",
-      sideA:
-        records[0]?.language ?? "Language not assigned",
-      sideB:
-        records[1]?.language ?? "Language not assigned",
+      sideA: records[0]?.language ?? "Language not assigned",
+      sideB: records[1]?.language ?? "Language not assigned",
     },
     {
-      title: "instruments",
-      sideA:
-        records[0]?.language ?? "Instruments not assigned",
-      sideB:
-        records[1]?.language ?? "Instruments not assigned",
+      title: "Instruments",
+      sideA: records[0]?.instruments ?? "Instruments not assigned",
+      sideB: records[1]?.instruments ?? "Instruments not assigned",
     },
     {
       title: "Recording Location",
-      sideA:
-        records[0]?.regions
-          ? records[0].regions.join(", ")
-          : "Unknown location",
-      sideB:
-        records[1]?.regions
-          ? records[1].regions.join(", ")
-          : "Unknown location",
+      sideA: records[0]?.regions
+        ? records[0].regions.join(", ")
+        : "Unknown location",
+      sideB: records[1]?.regions
+        ? records[1].regions.join(", ")
+        : "Unknown location",
     },
   ];
 
-  // Removed Flickity options
-  // const flickityOptions = { ... };
-
-  // Function to handle image click (from old code)
+  // Function to handle image click
   const handleImageClick = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
@@ -187,7 +179,9 @@ const Album: React.FC = () => {
       <div className="header">
         {/* <h1>{currentRecord["title"] ?? "Album Title"}</h1> */}
         <h1>Record Label Title</h1>
-        <span>{currentRecord["record_catalog_number"] ?? "Unkown Catalog Number"}</span>
+        <span>
+          {currentRecord["record_catalog_number"] ?? "Unknown Catalog Number"}
+        </span>
         <h2 className="album-subtitle">
           {/* {currentRecord["title_armenian"] ?? "Armenian Title"} */}
           ՌԵՔՈՐԴ ԼԵՅԲԼ ԹԱՅԹԼ
@@ -232,11 +226,11 @@ const Album: React.FC = () => {
                     </div>
                     <div className="song-title-container">
                       <div className="song-title">
-                        {records[0]["title"] ?? "Unkown title"}
+                        {records[0]["title"] ?? "Unknown title"}
                       </div>
                       <div className="transliteration">
                         {records[0]["title_armenian"] ??
-                          "Unkown Armenian title"}
+                          "Unknown Armenian title"}
                       </div>
                     </div>
                     <div className="song-length">
@@ -259,11 +253,11 @@ const Album: React.FC = () => {
                     </div>
                     <div className="song-title-container">
                       <div className="song-title">
-                        {records[1]["title"] ?? "Unkown title"}
+                        {records[1]["title"] ?? "Unknown title"}
                       </div>
                       <div className="transliteration">
                         {records[1]["title_armenian"] ??
-                          "Unkown Armenian title"}
+                          "Unknown Armenian title"}
                       </div>
                     </div>
                     <div className="song-length">
@@ -276,27 +270,71 @@ const Album: React.FC = () => {
             )}
           </div>
 
-          {/* Info Section */}
-          <div className="info-section">
+          {/* Details Section */}
+          <div className="details-section">
             {records[0] && (
-              <div className="info-entry">
-                <div className="info-title">
-                  {records[0]["track_side"] ?? "Side A"} — LINER NOTES
+              <div className="details-entry">
+                <div className="details-title">
+                  {records[0]["track_side"] ?? "Side A"} — DETAILS
                 </div>
-                <div className="info-content">
-                  {records[0]["liner_notes"] ??
-                    "This side features traditional Armenian folk tunes, showcasing the rich cultural heritage of the region. Musicians include renowned players of the duduk and other traditional instruments."}
+                <div className="details-content">
+                  <p>
+                    <h5>Artist:</h5>{" "}
+                    {records[0]["artist_original"] ?? "Unknown artist"}
+                  </p>
+                  <p>
+                    <h5>Instrument Used:</h5>{" "}
+                    {records[0]["instruments"] ?? "Unknown instrument"}
+                  </p>
+                  <p>
+                    <h5>Genre:</h5>{" "}
+                    {records[0]["genres"]
+                      ? records[0]["genres"].join(", ")
+                      : "Unknown genre"}
+                  </p>
+                  <p>
+                    <h5>Region:</h5>{" "}
+                    {records[0]["regions"]
+                      ? records[0]["regions"].join(", ")
+                      : "Unknown region"}
+                  </p>
+                  <p>
+                    <h5>Year Composed:</h5>{" "}
+                    {records[0]["track_year"] ?? "Unknown year"}
+                  </p>
                 </div>
               </div>
             )}
             {records.length > 1 && records[1] && (
-              <div className="info-entry">
-                <div className="info-title">
-                  {records[1]["track_side"] ?? "Side B"} — LINER NOTES
+              <div className="details-entry">
+                <div className="details-title">
+                  {records[1]["track_side"] ?? "Side B"} — DETAILS
                 </div>
-                <div className="info-content">
-                  {records[1]["liner_notes"] ??
-                    "Side B includes contemporary interpretations of classic melodies, performed by a mix of local artists and international collaborators, bringing a fresh sound to the folk genre."}
+                <div className="details-content">
+                  <p>
+                    <h5>Artist:</h5>{" "}
+                    {records[1]["artist_original"] ?? "Unknown artist"}
+                  </p>
+                  <p>
+                    <h5>Instrument Used:</h5>{" "}
+                    {records[1]["instruments"] ?? "Unknown instrument"}
+                  </p>
+                  <p>
+                    <h5>Genre:</h5>{" "}
+                    {records[1]["genres"]
+                      ? records[1]["genres"].join(", ")
+                      : "Unknown genre"}
+                  </p>
+                  <p>
+                    <h5>Region:</h5>{" "}
+                    {records[1]["regions"]
+                      ? records[1]["regions"].join(", ")
+                      : "Unknown region"}
+                  </p>
+                  <p>
+                    <h5>Year Composed:</h5>{" "}
+                    {records[1]["track_year"] ?? "Unknown year"}
+                  </p>
                 </div>
               </div>
             )}
@@ -313,9 +351,7 @@ const Album: React.FC = () => {
           <div className="metadata-title">DATA TITLE</div>
           <div className="metadata-side">SIDE A DATA</div>
           <div className="metadata-side">SIDE B DATA</div>
-          
         </div>
-        
 
         {/* Render metadata entries */}
         {metadataEntries.map((entry, index) => (
@@ -323,12 +359,34 @@ const Album: React.FC = () => {
             <div className="metadata-title">{entry.title}</div>
             <div className="metadata-content">{entry.sideA}</div>
             <div className="metadata-content">{entry.sideB}</div>
-            
           </div>
-          
         ))}
       </div>
-      
+
+      {/* Carousel Section - Added under meta-section */}
+      <div className="carousel-container">
+        <Flickity
+          className={"carousel"}
+          elementType={"div"}
+          flickityRef={(c) => (flickityRef.current = c)} // Assign the ref
+          options={{
+            wrapAround: true,
+            cellAlign: "left",
+            autoPlay: false,
+            pageDots: false,
+            arrowShape: "M 10,50 L 70,100 L 70,50 L 70,50 L 70,50 L 70,0 Z",
+          }}
+          disableImagesLoaded={false}
+          reloadOnUpdate={false}
+          static={false}
+        >
+          {images.map((imageSrc, index) => (
+            <div className="carousel-cell" key={index}>
+              <img src={imageSrc} alt={`Slide ${index}`} />
+            </div>
+          ))}
+        </Flickity>
+      </div>
     </div>
   );
 };

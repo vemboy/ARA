@@ -1919,15 +1919,6 @@
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
   padding: 20px;
-}
-
-.album-container * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.album-container {
   margin: 0 auto;
   display: grid;
   gap: 50px;
@@ -1935,8 +1926,15 @@
     "images heading"
     "images tracklist"
     "images info"
-    "metadata metadata";
+    "metadata metadata"
+    "carousel carousel"; /* Added this line */
   grid-template-columns: 35vw 2fr;
+}
+
+.album-container * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* Main Info Section */
@@ -1948,7 +1946,7 @@
 .album-info {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Add this line to center content horizontally */
+  align-items: center; /* Center content horizontally */
   gap: 10px;
   grid-area: images;
   border-radius: 20%;
@@ -2123,8 +2121,8 @@
   font-weight: bold;
 }
 
-/* Info Section */
-.info-section {
+/* Details Section */
+.details-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
@@ -2133,23 +2131,26 @@
   grid-area: info;
 }
 
-.info-entry {
+.details-entry {
   display: grid;
   grid-template-columns: 1fr;
 }
 
-.info-title {
+.details-title {
   grid-row: 1;
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 10px;
 }
 
-.info-content {
+.details-content {
   grid-row: 2;
   font-size: 14px;
   margin-bottom: 20px;
-  max-width: 50ch;
+}
+
+.details-content p {
+  margin-bottom: 8px;
 }
 
 /* Metadata Section */
@@ -2169,6 +2170,57 @@
   grid-gap: 10px;
 }
 
+/* Carousel Styles */
+.carousel-container {
+  grid-area: carousel; /* Assign to the carousel grid area */
+  width: 100%; /* Set carousel width to full */
+  max-width: 100vw; /* Ensure it doesn't exceed viewport width */
+  margin: 0 auto; /* Center the carousel */
+}
+
+.carousel {
+  width: 100%; /* Full width */
+}
+
+.carousel-cell {
+  width: 50%; /* Each cell takes up half of the carousel width */
+  aspect-ratio: 1 / 1; /* Make cells square */
+  overflow: hidden; /* Ensure content doesn't overflow */
+}
+
+/* Image styles */
+.carousel-cell img {
+  width: 100%; /* Make the image fill the cell */
+  height: 100%; /* Make the image fill the cell */
+  object-fit: cover; /* Cover the cell while maintaining aspect ratio */
+}
+
+/* Style the arrows */
+.flickity-button {
+  background: transparent; /* Remove background */
+  border: none; /* Remove border */
+  color: white; /* Change arrow color to white */
+}
+
+.flickity-button:hover {
+  background: transparent;
+  border: none;
+  color: white;
+}
+
+.flickity-button:focus {
+  outline: none;
+}
+
+.flickity-prev-next-button svg {
+  fill: white; /* Set SVG fill color to white */
+}
+
+h5 {
+  display: inline-block;
+  font-weight: bold;
+}
+
 /* Media Queries */
 @media (max-width: 1024px) {
   .album-container {
@@ -2179,7 +2231,7 @@
     grid-template-columns: 1fr;
   }
 
-  .info-section {
+  .details-section {
     grid-template-columns: 1fr;
   }
 }
@@ -2191,7 +2243,8 @@
       "images"
       "tracklist"
       "info"
-      "metadata";
+      "metadata"
+      "carousel"; /* Include carousel in mobile layout */
     grid-template-columns: 1fr;
   }
 }
