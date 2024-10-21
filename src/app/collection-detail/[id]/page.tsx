@@ -10,6 +10,7 @@ import {
 
 import Flickity from "react-flickity-component";
 import "flickity/css/flickity.css"; // Import Flickity CSS
+import imagesLoaded from "imagesloaded"; // Using default import if you adjusted the declaration
 
 interface RecordType {
   [key: string]: any;
