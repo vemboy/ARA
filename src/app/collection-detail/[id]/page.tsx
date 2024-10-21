@@ -170,6 +170,7 @@ const Album: React.FC = () => {
       // Next image
       const newIndex = (currentImageIndex + 1) % images.length;
       setCurrentImageIndex(newIndex);
+      console.log("hello")
     }
   };
 
