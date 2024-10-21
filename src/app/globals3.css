@@ -1911,6 +1911,10 @@
 
 /* Reset and global styles */
 /* Scoped Styles for Album Page */
+:root {
+  --image-zoom-percentage: 2.2; /* Adjust this value to change the zoom level */
+}
+
 .album-container {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
@@ -1944,20 +1948,26 @@
 .album-info {
   display: flex;
   flex-direction: column;
+  align-items: center; /* Add this line to center content horizontally */
   gap: 10px;
   grid-area: images;
   border-radius: 20%;
   background-color: lightgray;
-  padding: 50px;
+  /* Remove or adjust padding to prevent interference */
+  /* padding: 50px; */
   position: relative;
-  aspect-ratio: 1;
+  aspect-ratio: 1 / 1; /* Ensure the container is square */
   overflow: hidden;
 }
 
 .main-image-container {
   position: relative;
-  width: 100%;
+  width: 80%;
   cursor: default;
+  margin-top: 8.5%;
+  overflow: hidden; /* Ensure overflow is hidden */
+  border-radius: 50%; /* Make the container circular */
+  aspect-ratio: 1 / 1; /* Ensure the container is square */
 }
 
 .album-info::before {
@@ -1998,7 +2008,6 @@
   background-color: #ccc;
   border-radius: 50%;
   cursor: pointer;
-  /* Removed margin to match Code 1 */
 }
 
 .dot.active {
@@ -2006,10 +2015,14 @@
 }
 
 .main-image {
-  width: 100%;
-  border-radius: 100%;
+  width: 102.5%;
+  height: 98%;
+  object-fit: cover; /* Ensures the image covers the container */
   user-select: none;
   -webkit-user-drag: none;
+  transform: scale(var(--image-zoom-percentage));
+  transform-origin: center center;
+  /* Removed border-radius from here */
 }
 
 /* Right: Text Section */
@@ -2017,7 +2030,6 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  /* Removed grid-area to match Code 1 */
 }
 
 /* Header Section */
@@ -2051,10 +2063,6 @@
   grid-template-columns: 1fr 1fr;
   gap: 30px;
   grid-area: tracklist;
-}
-
-.side {
-  /* Removed padding-top to match Code 1 */
 }
 
 .side h4 {
@@ -2108,7 +2116,7 @@
   font-size: 18px;
 }
 
-/* Added hover effects to match Code 1 */
+/* Hover Effects */
 .track-entry:hover .track-number,
 .track-entry:hover .song-title,
 .track-entry:hover .song-length {
@@ -2152,7 +2160,6 @@
   border-bottom: 2px solid black;
   padding-bottom: 10px;
   grid-area: metadata;
-  /* Removed specific styles from h4 to match Code 1 */
 }
 
 .metadata-row {
@@ -2160,10 +2167,7 @@
   grid-template-columns: 250px 1fr 1fr;
   border-top: 1px solid lightgray;
   grid-gap: 10px;
-  /* Removed padding to match Code 1 */
 }
-
-/* Removed metadata-title, metadata-content, and metadata-side classes to match Code 1 */
 
 /* Media Queries */
 @media (max-width: 1024px) {
@@ -2189,80 +2193,5 @@
       "info"
       "metadata";
     grid-template-columns: 1fr;
-  }
-}
-
-.carousel {
-  width: 100%;
-  height: 100%;
-}
-
-.carousel-cell {
-  width: 100%; /* Each cell takes up the full carousel width */
-  height: auto;
-  overflow: hidden;
-}
-
-.carousel-cell img {
-  width: 100%;
-  height: auto;
-  object-fit: cover; /* Cover the cell while maintaining aspect ratio */
-  border-radius: 100%;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-/* Adjust the album-info to ensure proper sizing */
-.album-info {
-  position: relative;
-  width: 100%;
-  max-width: 100%; /* Ensure it doesn't exceed container width */
-  aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
-  overflow: hidden;
-}
-
-/* Flickity Carousel Styles */
-.carousel {
-  width: 100%;
-  height: 100%;
-}
-
-.carousel-cell {
-  width: 100%;
-  height: auto;
-  overflow: hidden;
-}
-
-.carousel-cell img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  border-radius: 100%;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-/* Optional: Customize Flickity buttons and arrows */
-.flickity-button {
-  background: transparent;
-  border: none;
-}
-
-.flickity-button:hover {
-  background: transparent;
-}
-
-.flickity-button:focus {
-  outline: none;
-}
-
-.flickity-prev-next-button svg {
-  fill: black; /* Set SVG fill color */
-}
-
-/* Ensure the carousel and images are responsive */
-@media (max-width: 800px) {
-  .carousel-cell {
-    width: 100%;
   }
 }

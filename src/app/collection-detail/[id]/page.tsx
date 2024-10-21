@@ -8,9 +8,9 @@ import {
   getImageDetailUrl,
 } from "@/utils/assetUtils";
 
-// Import Flickity and its CSS
-import Flickity from "react-flickity-component";
-import "flickity/css/flickity.css"; // Make sure to install flickity via npm
+// Removed Flickity imports
+// import Flickity from "react-flickity-component";
+// import "flickity/css/flickity.css"; // Make sure to install flickity via npm
 
 interface RecordType {
   [key: string]: any;
@@ -22,6 +22,7 @@ const Album: React.FC = () => {
   const recordId = pathName.split("/").slice(-1)[0];
 
   const [images, setImages] = useState<string[]>([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0); // Added from old code
 
   useEffect(() => {
     axios
@@ -68,20 +69,20 @@ const Album: React.FC = () => {
     {
       title: "Names",
       sideA:
-        records[0]?.artist_original ?? "INFO DOES NOT EXIST IN DB",
+        records[0]?.artist_original ?? "Unknown artists",
       sideB:
-        records[1]?.artist_original ?? "INFO DOES NOT EXIST IN DB",
+        records[1]?.artist_original ?? "Unknown artists",
     },
     {
       title: "Genre",
       sideA:
         records[0]?.genres
           ? records[0].genres.join(", ")
-          : "Genre Unavailable",
+          : "No genre assigned",
       sideB:
         records[1]?.genres
           ? records[1].genres.join(", ")
-          : "Genre Unavailable",
+          : "No genre assigned",
     },
     {
       title: "Recording Label",
@@ -93,113 +94,127 @@ const Album: React.FC = () => {
     {
       title: "Recording Catalog Number",
       sideA:
-        records[0]?.record_catalog_number ?? "INFO DOES NOT EXIST IN DB",
+        records[0]?.record_catalog_number ?? "No catalog number assigned",
       sideB:
-        records[1]?.record_catalog_number ?? "INFO DOES NOT EXIST IN DB",
+        records[1]?.record_catalog_number ?? "No catalog number assigned",
     },
     {
       title: "Recording Date",
       sideA:
-        records[0]?.track_year ?? "INFO DOES NOT EXIST IN DB",
+        records[0]?.track_year ?? "Unknown date",
       sideB:
-        records[1]?.track_year ?? "INFO DOES NOT EXIST IN DB",
+        records[1]?.track_year ?? "Unknown date",
+    },
+    {
+      title: "Composed by",
+      sideA:
+        records[0]?.composed_by ?? "Unknown composer",
+      sideB:
+        records[1]?.composed_by ?? "Unknown composer",
+    },
+    {
+      title: "Arranged by",
+      sideA:
+        records[0]?.arranged_by ?? "Unknown",
+      sideB:
+        records[1]?.arranged_by ?? "Unknown",
+    },
+    {
+      title: "Lyrics by",
+      sideA:
+        records[0]?.lyrics_by ?? "Unknown",
+      sideB:
+        records[1]?.lyrics_by ?? "Unknown",
+    },
+    {
+      title: "Conducted by",
+      sideA:
+        records[0]?.composed_by ?? "Unknown composer",
+      sideB:
+        records[1]?.composed_by ?? "Unknown composer",
+    },
+    {
+      title: "Language",
+      sideA:
+        records[0]?.language ?? "Language not assigned",
+      sideB:
+        records[1]?.language ?? "Language not assigned",
+    },
+    {
+      title: "instruments",
+      sideA:
+        records[0]?.language ?? "Instruments not assigned",
+      sideB:
+        records[1]?.language ?? "Instruments not assigned",
     },
     {
       title: "Recording Location",
       sideA:
         records[0]?.regions
           ? records[0].regions.join(", ")
-          : "INFO DOES NOT EXIST IN DB",
+          : "Unknown location",
       sideB:
         records[1]?.regions
           ? records[1].regions.join(", ")
-          : "INFO DOES NOT EXIST IN DB",
-    },
-    // Fields not present in the record
-    {
-      title: "Summary",
-      sideA: "INFO DOES NOT EXIST IN DB",
-      sideB: "INFO DOES NOT EXIST IN DB",
-    },
-    {
-      title: "Media Size",
-      sideA: "INFO DOES NOT EXIST IN DB",
-      sideB: "INFO DOES NOT EXIST IN DB",
-    },
-    {
-      title: "Recording Matrix Number",
-      sideA: "INFO DOES NOT EXIST IN DB",
-      sideB: "INFO DOES NOT EXIST IN DB",
-    },
-    {
-      title: "Recording Take Number",
-      sideA: "INFO DOES NOT EXIST IN DB",
-      sideB: "INFO DOES NOT EXIST IN DB",
-    },
-    {
-      title: "Recording Repository",
-      sideA: "INFO DOES NOT EXIST IN DB",
-      sideB: "INFO DOES NOT EXIST IN DB",
-    },
-    {
-      title: "Rights Advisory",
-      sideA: "INFO DOES NOT EXIST IN DB",
-      sideB: "INFO DOES NOT EXIST IN DB",
-    },
-    {
-      title: "Online Format",
-      sideA: "INFO DOES NOT EXIST IN DB",
-      sideB: "INFO DOES NOT EXIST IN DB",
+          : "Unknown location",
     },
   ];
 
-  // Flickity options
-  const flickityOptions = {
-    wrapAround: true,
-    cellAlign: "center",
-    autoPlay: false,
-    pageDots: false,
-    prevNextButtons: true,
-    imagesLoaded: true,
-    adaptiveHeight: true,
-    arrowShape: "M 10,50 L 70,100 L 70,50 L 70,50  L 70,50 L 70,0 Z",
+  // Removed Flickity options
+  // const flickityOptions = { ... };
+
+  // Function to handle image click (from old code)
+  const handleImageClick = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    const containerWidth = (event.currentTarget as HTMLElement).offsetWidth;
+    const clickX = event.nativeEvent.offsetX;
+
+    if (clickX < containerWidth / 2) {
+      // Previous image
+      const newIndex = (currentImageIndex - 1 + images.length) % images.length;
+      setCurrentImageIndex(newIndex);
+    } else {
+      // Next image
+      const newIndex = (currentImageIndex + 1) % images.length;
+      setCurrentImageIndex(newIndex);
+    }
   };
 
   return (
     <div className="album-container">
       {/* Header Section */}
       <div className="header">
-        <h1>{currentRecord["title"] ?? "Album Title"}</h1>
-        <span>{currentRecord["id"] ?? "ID"}</span>
+        {/* <h1>{currentRecord["title"] ?? "Album Title"}</h1> */}
+        <h1>Record Label Title</h1>
+        <span>{currentRecord["record_catalog_number"] ?? "Unkown Catalog Number"}</span>
         <h2 className="album-subtitle">
-          {currentRecord["title_armenian"] ?? "Armenian Title"}
+          {/* {currentRecord["title_armenian"] ?? "Armenian Title"} */}
+          ՌԵՔՈՐԴ ԼԵՅԲԼ ԹԱՅԹԼ
         </h2>
       </div>
 
       {/* Main Info Section */}
       <div className="main-info">
         {/* Left: Image Carousel */}
-        <div className="album-info">
-          <Flickity
-            className={"carousel"} // default ''
-            elementType={"div"} // default 'div'
-            options={flickityOptions} // takes flickity options {}
-            disableImagesLoaded={false} // default false
-            reloadOnUpdate={false} // default false
-            static={false} // default false
-          >
-            
-            {images.map((imageSrc, index) => (
-              <div className="carousel-cell" key={index}>
-                <img
-                  src={imageSrc}
-                  alt={`Slide ${index}`}
-                  className="main-image"
-                  draggable="false"
-                />
-              </div>
+        <div className="album-info" onClick={handleImageClick}>
+          <div className="main-image-container">
+            <img
+              src={images[currentImageIndex]}
+              alt="Main Image"
+              className="main-image"
+              draggable="false"
+            />
+          </div>
+          <div className="dots-container">
+            {images.map((_, index) => (
+              <span
+                key={index}
+                className={`dot ${index === currentImageIndex ? "active" : ""}`}
+                data-image={index}
+              ></span>
             ))}
-          </Flickity>
+          </div>
         </div>
 
         {/* Right: Text Information */}
@@ -217,11 +232,11 @@ const Album: React.FC = () => {
                     </div>
                     <div className="song-title-container">
                       <div className="song-title">
-                        {records[0]["title_armenian"] ?? "Track Title"}
+                        {records[0]["title"] ?? "Unkown title"}
                       </div>
                       <div className="transliteration">
-                        {records[0]["title_transliterated"] ??
-                          "Transliteration"}
+                        {records[0]["title_armenian"] ??
+                          "Unkown Armenian title"}
                       </div>
                     </div>
                     <div className="song-length">
@@ -244,11 +259,11 @@ const Album: React.FC = () => {
                     </div>
                     <div className="song-title-container">
                       <div className="song-title">
-                        {records[1]["title_armenian"] ?? "Track Title"}
+                        {records[1]["title"] ?? "Unkown title"}
                       </div>
                       <div className="transliteration">
-                        {records[1]["title_transliterated"] ??
-                          "Transliteration"}
+                        {records[1]["title_armenian"] ??
+                          "Unkown Armenian title"}
                       </div>
                     </div>
                     <div className="song-length">
@@ -291,13 +306,16 @@ const Album: React.FC = () => {
 
       {/* Metadata Section */}
       <div className="meta-section">
+        <br />
         <h4 style={{ fontWeight: "bold" }}>METADATA</h4>
         <br />
         <div className="metadata-row">
           <div className="metadata-title">DATA TITLE</div>
           <div className="metadata-side">SIDE A DATA</div>
           <div className="metadata-side">SIDE B DATA</div>
+          
         </div>
+        
 
         {/* Render metadata entries */}
         {metadataEntries.map((entry, index) => (
@@ -305,9 +323,12 @@ const Album: React.FC = () => {
             <div className="metadata-title">{entry.title}</div>
             <div className="metadata-content">{entry.sideA}</div>
             <div className="metadata-content">{entry.sideB}</div>
+            
           </div>
+          
         ))}
       </div>
+      
     </div>
   );
 };
