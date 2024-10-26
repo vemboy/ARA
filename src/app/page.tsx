@@ -577,6 +577,7 @@ axios
           audioPlayerRef={audioPlayerRef}
           records={records}
         />
+        <div id="audio-player-container"></div>
       </div>
     </>
   );

@@ -2248,3 +2248,9 @@ h5 {
     grid-template-columns: 1fr;
   }
 }
+
+.album-container .audio-player-wrapper {
+  position: relative; /* Change position to relative */
+  margin-top: 20px;   /* Adjust spacing as needed */
+  /* ... other styles to fit under the details section */
+}

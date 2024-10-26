@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import { usePathname } from "next/navigation";
 import {
@@ -11,6 +11,8 @@ import {
 import Flickity from "react-flickity-component";
 import "flickity/css/flickity.css"; // Import Flickity CSS
 import imagesLoaded from "imagesloaded"; // Using default import if you adjusted the declaration
+
+import { AudioContext } from "../../audioLayout"; // Import AudioContext from '../../audioLayout'
 
 interface RecordType {
   [key: string]: any;
@@ -26,6 +28,22 @@ const Album: React.FC = () => {
 
   const flickityRef = useRef<any>(null); // Create a ref for Flickity
 
+  // Access the AudioContext
+  const audioContext = useContext(AudioContext);
+
+  if (!audioContext) {
+    // Handle null context
+    return null;
+  }
+
+  // Extract setter functions from AudioContext
+  const {
+    setSong,
+    setName,
+    setArtistName,
+    setSongId,
+  } = audioContext;
+
   useEffect(() => {
     axios
       .get(`https://ara.directus.app/items/record_archive/${recordId}`)
@@ -36,7 +54,7 @@ const Album: React.FC = () => {
         // Fetch all records with the same ARAID (both tracks)
         axios
           .get(
-            `https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}`
+            `https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}&fields=*,audio.id`
           )
           .then((recordsResponse) => {
             let fetchedRecords = recordsResponse.data.data;
@@ -46,6 +64,16 @@ const Album: React.FC = () => {
               const sideA = a.track_side || "A";
               const sideB = b.track_side || "B";
               return sideA.localeCompare(sideB);
+            });
+
+            // Include audio URLs in the records
+            fetchedRecords = fetchedRecords.map((record: RecordType) => {
+              return {
+                ...record,
+                audioUrl: record.audio
+                  ? `https://ara.directus.app/assets/${record.audio.id}`
+                  : null,
+              };
             });
 
             setRecords(fetchedRecords);
@@ -170,7 +198,27 @@ const Album: React.FC = () => {
       // Next image
       const newIndex = (currentImageIndex + 1) % images.length;
       setCurrentImageIndex(newIndex);
-      console.log("hello")
+    }
+  };
+
+  const instruments = records[0]["instruments"] ?? ["Unknown instrument"];
+  const instrumentsDisplay = Array.isArray(instruments)
+    ? instruments
+        .map(
+          (instr) => instr.charAt(0).toUpperCase() + instr.slice(1) // Capitalize each instrument
+        )
+        .join(", ") // Join them with commas
+    : instruments;
+
+  // Function to play song
+  const playSong = (record: RecordType) => {
+    if (record.audioUrl) {
+      setSong(record.audioUrl); // Set the audio URL
+      setName(record.title || "Unknown Song"); // Set the song title
+      setArtistName(record.artist_original || "Unknown Artist"); // Set the artist name
+      setSongId(record.id || ""); // Set the song ID
+    } else {
+      console.log("No audio URL available for this song.");
     }
   };
 
@@ -178,15 +226,19 @@ const Album: React.FC = () => {
     <div className="album-container">
       {/* Header Section */}
       <div className="header">
-        {/* <h1>{currentRecord["title"] ?? "Album Title"}</h1> */}
+        {/* Main Title */}
         <h1>Record Label Title</h1>
-        <span>
+
+        {/* Share Text */}
+        <span className="share-button">share</span>
+
+        {/* Album Subtitle */}
+        <h2 className="album-subtitle">ՌԵՔՈՐԴ ԼԵՅԲԼ ԹԱՅԹԼ</h2>
+
+        {/* Catalog Number */}
+        <span className="catalog-number">
           {currentRecord["record_catalog_number"] ?? "Unknown Catalog Number"}
         </span>
-        <h2 className="album-subtitle">
-          {/* {currentRecord["title_armenian"] ?? "Armenian Title"} */}
-          ՌԵՔՈՐԴ ԼԵՅԲԼ ԹԱՅԹԼ
-        </h2>
       </div>
 
       {/* Main Info Section */}
@@ -233,6 +285,14 @@ const Album: React.FC = () => {
                         {records[0]["title_armenian"] ??
                           "Unknown Armenian title"}
                       </div>
+                      {/* Play Text */}
+                      <div
+                        className="play-text"
+                        onClick={() => playSong(records[0])}
+                        style={{ cursor: "pointer", color: "blue" }}
+                      >
+                        Play
+                      </div>
                     </div>
                     <div className="song-length">
                       {records[0]["duration"] ?? "3:00"}
@@ -260,6 +320,14 @@ const Album: React.FC = () => {
                         {records[1]["title_armenian"] ??
                           "Unknown Armenian title"}
                       </div>
+                      {/* Play Text */}
+                      <div
+                        className="play-text"
+                        onClick={() => playSong(records[1])}
+                        style={{ cursor: "pointer", color: "blue" }}
+                      >
+                        Play
+                      </div>
                     </div>
                     <div className="song-length">
                       {records[1]["duration"] ?? "3:00"}
@@ -284,8 +352,7 @@ const Album: React.FC = () => {
                     {records[0]["artist_original"] ?? "Unknown artist"}
                   </p>
                   <p>
-                    <h5>Instrument Used:</h5>{" "}
-                    {records[0]["instruments"] ?? "Unknown instrument"}
+                    <h5>Instrument Used:</h5> {instrumentsDisplay}
                   </p>
                   <p>
                     <h5>Genre:</h5>{" "}
@@ -303,6 +370,28 @@ const Album: React.FC = () => {
                     <h5>Year Composed:</h5>{" "}
                     {records[0]["track_year"] ?? "Unknown year"}
                   </p>
+                  
+                  {/* Conditionally Rendered Fields */}
+                  {records[0]["composed_by"] && (
+                    <p>
+                      <h5>Composer:</h5> {records[0]["composed_by"]}
+                    </p>
+                  )}
+                  {records[0]["arranged_by"] && (
+                    <p>
+                      <h5>Arranger:</h5> {records[0]["arranged_by"]}
+                    </p>
+                  )}
+                  {records[0]["lyrics_by"] && (
+                    <p>
+                      <h5>Lyricist:</h5> {records[0]["lyrics_by"]}
+                    </p>
+                  )}
+                  {records[0]["director"] && (
+                    <p>
+                      <h5>Director:</h5> {records[0]["director"]}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -317,8 +406,7 @@ const Album: React.FC = () => {
                     {records[1]["artist_original"] ?? "Unknown artist"}
                   </p>
                   <p>
-                    <h5>Instrument Used:</h5>{" "}
-                    {records[1]["instruments"] ?? "Unknown instrument"}
+                    <h5>Instrument Used:</h5> {instrumentsDisplay}
                   </p>
                   <p>
                     <h5>Genre:</h5>{" "}
@@ -336,10 +424,33 @@ const Album: React.FC = () => {
                     <h5>Year Composed:</h5>{" "}
                     {records[1]["track_year"] ?? "Unknown year"}
                   </p>
+                  
+                  {/* Conditionally Rendered Fields */}
+                  {records[1]["composed_by"] && (
+                    <p>
+                      <h5>Composer:</h5> {records[1]["composed_by"]}
+                    </p>
+                  )}
+                  {records[1]["arranged_by"] && (
+                    <p>
+                      <h5>Arranger:</h5> {records[1]["arranged_by"]}
+                    </p>
+                  )}
+                  {records[1]["lyrics_by"] && (
+                    <p>
+                      <h5>Lyricist:</h5> {records[1]["lyrics_by"]}
+                    </p>
+                  )}
+                  {records[1]["director"] && (
+                    <p>
+                      <h5>Director:</h5> {records[1]["director"]}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
           </div>
+          <div id="audio-player-container"></div>
         </div>
       </div>
 
