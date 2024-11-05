@@ -233,12 +233,16 @@ const Album: React.FC = () => {
         <span className="share-button">share</span>
 
         {/* Album Subtitle */}
-        <h2 className="album-subtitle">ՌԵՔՈՐԴ ԼԵՅԲԼ ԹԱՅԹԼ</h2>
+        <h2 className="album-subtitle">ՌԵՔՈՐԴ ԼԵՅԲԼ ԹԱՅԹԼ
 
-        {/* Catalog Number */}
-        <span className="catalog-number">
+<br/>
+                  <span className="catalog-number">
           {currentRecord["record_catalog_number"] ?? "Unknown Catalog Number"}
         </span>
+        </h2>
+
+        {/* Catalog Number */}
+
       </div>
 
       {/* Main Info Section */}
