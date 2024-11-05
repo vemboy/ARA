@@ -1,3 +1,5 @@
+// filter-menu.js
+
 import React, { useState } from "react";
 
 interface FilterMenuProps {
@@ -5,7 +7,7 @@ interface FilterMenuProps {
   instruments: string[];
   regions: string[];
   artists: string[];
-  labels: any[]; // labels array containing objects with id and name
+  labels: any[];
   labelIdToNameMap: { [key: string]: string };
   filters: { [key: string]: Set<string> };
   setFilter: React.Dispatch<React.SetStateAction<{ [key: string]: Set<string> }>>;
@@ -17,7 +19,6 @@ interface FilterMenuProps {
     record_label: Set<string>;
   };
   resultCounts: { [key: string]: number };
-  
 }
 
 const FilterMenu: React.FC<FilterMenuProps> = ({
@@ -35,13 +36,6 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
   const [activeFilter, setActiveFilter] = useState<string>("genres");
   const [language, setLanguage] = useState("EN");
 
-  // Remove local state for availableFilters and resultCounts
-  // const [availableFilters, setAvailableFilters] = useState<...>(...);
-  // const [resultCounts, setResultCounts] = useState<...>(...);
-
-  // Remove fetchAvailableOptions and useEffect from FilterMenu
-
-  // Handle when a user clicks on a filter item
   const handleSubItemClick = (filterType: string, itemName: string) => {
     const newFilters = structuredClone(filters);
     newFilters[filterType] ??= new Set();
@@ -55,27 +49,26 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
     setFilter(newFilters);
   };
 
-  // Clear all selected filters
   const handleClearAll = () => {
     setFilter({});
   };
 
-const translations: Record<string, Record<string, string>> = {
-  EN: {
-    artist_original: "Artist",
-    genres: "Genre",
-    instruments: "Instrument",
-    record_label: "Label",
-    regions: "Region",
-  },
-  HY: {
-    artist_original: "Արտիստ",
-    genres: "Ժանր",
-    instruments: "Նվագարան",
-    record_label: "Պիտակ",
-    regions: "Մարզ",
-  },
-};
+  const translations: Record<string, Record<string, string>> = {
+    EN: {
+      artist_original: "Artist",
+      genres: "Genre",
+      instruments: "Instrument",
+      record_label: "Label",
+      regions: "Region",
+    },
+    HY: {
+      artist_original: "Արտիստ",
+      genres: "Ժանր",
+      instruments: "Նվագարան",
+      record_label: "Պիտակ",
+      regions: "Մարզ",
+    },
+  };
 
   return (
     <div className="filter-menu-hm">
@@ -114,7 +107,6 @@ const translations: Record<string, Record<string, string>> = {
         ))}
       </div>
 
-      {/* Selected Filters Pills */}
       <div className="selected-filters-pills-hm">
         {Object.entries(filters).map(([filterType, selectedItems]) =>
           Array.from(selectedItems).map((item) => (
@@ -136,7 +128,6 @@ const translations: Record<string, Record<string, string>> = {
         )}
       </div>
 
-      {/* Render the active filter's options */}
       {activeFilter === "genres" && (
         <ul className="sub-list-hm active" id="list-genres-hm">
           {genres.map((genre) => (
@@ -219,26 +210,26 @@ const translations: Record<string, Record<string, string>> = {
         </ul>
       )}
 
-{activeFilter === "record_label" && (
-    <ul className="sub-list-hm active" id="list-record_label-hm">
-      {labels.map((label) => (
-        <li
-          key={label.id}
-          className={`${
-            availableFilters.record_label.has(label.name) ? "" : "disabled"
-          } ${filters.record_label?.has(label.name) ? "active" : ""}`}
-          data-item={label.name}
-          onClick={() =>
-            availableFilters.record_label.has(label.name) &&
-            handleSubItemClick("record_label", label.name)
-          }
-        >
-          <span className="icon-circle-hm"></span>
-          {`${label.name} (${resultCounts[label.name] || 0})`}
-        </li>
-      ))}
-    </ul>
-  )}
+      {activeFilter === "record_label" && (
+        <ul className="sub-list-hm active" id="list-record_label-hm">
+          {labels.map((label) => (
+            <li
+              key={label.id}
+              className={`${
+                availableFilters.record_label.has(label.label_en) ? "" : "disabled"
+              } ${filters.record_label?.has(label.label_en) ? "active" : ""}`}
+              data-item={label.label_en}
+              onClick={() =>
+                availableFilters.record_label.has(label.label_en) &&
+                handleSubItemClick("record_label", label.label_en)
+              }
+            >
+              <span className="icon-circle-hm"></span>
+              {`${label.label_en} (${resultCounts[label.label_en] || 0})`}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
