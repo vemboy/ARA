@@ -93,7 +93,7 @@ export default function Collection() {
     setLanguage(lang);
   };
 
-  function getUrlWithFilters() {
+  function getUrlWithFilters(additionalFilter?: object) {
     const filterObj: { _or?: object[]; _and?: object[] } = {
       _or: [],
       _and: [],
@@ -141,12 +141,17 @@ export default function Collection() {
       }
     });
 
+    if (additionalFilter) {
+      if (!filterObj._and) filterObj._and = [];
+      filterObj._and.push(additionalFilter);
+    }
+
     console.log("filterObj:", filterObj);
 
     const stringifiedFilterObj = JSON.stringify(filterObj);
     console.log("stringifiedFilter", stringifiedFilterObj);
 
-    return `https://ara.directus.app/items/record_archive?limit=200&fields=*,record_label.*&filter=${encodeURIComponent(
+    return `https://ara.directus.app/items/record_archive?limit=-1&fields=*,record_label.*&filter=${encodeURIComponent(
       stringifiedFilterObj
     )}`;
   }
@@ -221,12 +226,16 @@ export default function Collection() {
   const [regions, setRegions] = useState<string[]>([]);
   const [artists, setArtists] = useState<string[]>([]);
   const [labels, setLabels] = useState<any[]>([]);
-  const [labelIdToNameMap, setLabelIdToNameMap] = useState<{ [key: string]: string }>({});
+  const [labelIdToNameMap, setLabelIdToNameMap] = useState<{
+    [key: string]: string;
+  }>({});
   const [isMenuExpanded, setMenuExpanded] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState<
     Record<string, string[]>
   >({});
-  const [resultCounts, setResultCounts] = useState<{ [key: string]: number }>({});
+  const [resultCounts, setResultCounts] = useState<{ [key: string]: number }>(
+    {}
+  );
   const [availableFilters, setAvailableFilters] = useState<{
     genres: Set<string>;
     instruments: Set<string>;
@@ -245,48 +254,32 @@ export default function Collection() {
     setMenuExpanded(!isMenuExpanded);
   };
 
+  // Fetch initial data (labels, genres, instruments, regions, artists)
   useEffect(() => {
-    console.log("RENDER");
-    const url = getUrlWithFilters();
-
-    const newResultCounts: { [key: string]: number } = {};
-    const newAvailableFilters = {
-      genres: new Set<string>(),
-      instruments: new Set<string>(),
-      regions: new Set<string>(),
-      artists: new Set<string>(),
-      record_label: new Set<string>(),
-    };
-
+    // Fetch labels
     axios
-      .get("https://ara.directus.app/items/record_archive?groupBy[]=instruments")
+      .get("https://ara.directus.app/items/record_labels?fields=id,label_en")
       .then((response) => {
-        const uniqueInstruments: Set<string> = new Set();
-        _.forEach(response.data.data, (instrumentsArray: any) => {
-          if (Array.isArray(instrumentsArray.instruments)) {
-            _.forEach(instrumentsArray.instruments, (instrument: string) =>
-              uniqueInstruments.add(instrument as string)
-            );
-          }
+        console.log("********** LABELS FETCHED **********");
+        console.log("Response data:", response.data);
+        const labelsData = response.data.data;
+        console.log("labelsData:", labelsData);
+        const labelIdToNameMap: { [key: string]: string } = {};
+        labelsData.forEach((label: any) => {
+          console.log("Processing label:", label);
+          labelIdToNameMap[label.id] = label.label_en;
         });
-        setInstruments(Array.from(uniqueInstruments));
+        console.log("labelIdToNameMap:", labelIdToNameMap);
+        setLabels(labelsData);
+        setLabelIdToNameMap(labelIdToNameMap);
       })
       .catch((error) => {
-        console.log("Error fetching instruments:", error);
-        setInstruments(
-          Array.from([
-            "guitar",
-            "piano",
-            "drums",
-            "violin",
-            "bass",
-            "saxophone",
-            "oud",
-            "darabuka",
-          ])
-        );
+        console.log("Error fetching labels:", error);
+        setLabels([]);
+        setLabelIdToNameMap({});
       });
 
+    // Fetch genres
     axios
       .get("https://ara.directus.app/fields/record_archive/genres")
       .then((response) => {
@@ -327,6 +320,7 @@ export default function Collection() {
         ]);
       });
 
+    // Fetch regions
     axios
       .get("https://ara.directus.app/fields/record_archive/regions")
       .then((response) => {
@@ -356,6 +350,26 @@ export default function Collection() {
         ]);
       });
 
+    // Fetch instruments
+    axios
+      .get("https://ara.directus.app/items/record_archive?limit=-1&fields=instruments")
+      .then((response) => {
+        const uniqueInstruments: Set<string> = new Set();
+        response.data.data.forEach((item: any) => {
+          if (Array.isArray(item.instruments)) {
+            item.instruments.forEach((instrument: string) => {
+              uniqueInstruments.add(instrument);
+            });
+          }
+        });
+        setInstruments(Array.from(uniqueInstruments));
+      })
+      .catch((error) => {
+        console.log("Error fetching instruments:", error);
+        setInstruments([]);
+      });
+
+    // Fetch artists
     axios
       .get("https://ara.directus.app/items/record_archive?groupBy[]=artist_original")
       .then((response) => {
@@ -371,78 +385,21 @@ export default function Collection() {
         console.log("Error fetching artists:", error);
         setArtists([]);
       });
+  }, []);
+
+  // Fetch records and calculate counts based on current filters
+  useEffect(() => {
+    console.log("Fetching records and calculating counts based on current filters");
+    const url = getUrlWithFilters();
 
     axios
-      .get("https://ara.directus.app/items/record_labels?fields=id,label_en")
-      .then((response) => {
-        console.log("********** LABELS FETCHED **********");
-        console.log("Response data:", response.data);
-        const labelsData = response.data.data;
-        console.log("labelsData:", labelsData);
-        const labelIdToNameMap: { [key: string]: string } = {};
-        labelsData.forEach((label: any) => {
-          console.log("Processing label:", label);
-          labelIdToNameMap[label.id] = label.label_en;
-        });
-        console.log("labelIdToNameMap:", labelIdToNameMap);
-        setLabels(labelsData);
-        setLabelIdToNameMap(labelIdToNameMap);
-      })
-      .catch((error) => {
-        console.log("Error fetching labels:", error);
-        setLabels([]);
-        setLabelIdToNameMap({});
-      });
-
-    axios
-      .get(`${url}`)
+      .get(url)
       .then((response) => {
         console.log("********** RECORDS FETCHED **********");
         console.log("Response data:", response.data);
         const data = response.data.data;
 
-        data.forEach((record: any) => {
-          if (Array.isArray(record.regions)) {
-            record.regions.forEach((region: string) => {
-              newResultCounts[region] = (newResultCounts[region] || 0) + 1;
-              newAvailableFilters.regions.add(region);
-            });
-          }
-
-          if (Array.isArray(record.genres)) {
-            record.genres.forEach((genre: string) => {
-              newResultCounts[genre] = (newResultCounts[genre] || 0) + 1;
-              newAvailableFilters.genres.add(genre);
-            });
-          }
-
-          if (Array.isArray(record.instruments)) {
-            record.instruments.forEach((instrument: string) => {
-              newResultCounts[instrument] = (newResultCounts[instrument] || 0) + 1;
-              newAvailableFilters.instruments.add(instrument);
-            });
-          }
-
-          if (record.artist_original) {
-            const artist = record.artist_original;
-            newResultCounts[artist] = (newResultCounts[artist] || 0) + 1;
-            newAvailableFilters.artists.add(artist);
-          }
-
-          console.log("Processing record:", record);
-          console.log("Record label:", record.record_label);
-          if (record.record_label && record.record_label.label_en) {
-            const labelName = record.record_label.label_en;
-            newResultCounts[labelName] = (newResultCounts[labelName] || 0) + 1;
-            newAvailableFilters.record_label.add(labelName);
-          } else {
-            console.log("Record label is missing or label_en is undefined");
-          }
-        });
-
-        setResultCounts(newResultCounts);
-        setAvailableFilters(newAvailableFilters);
-
+        // Update records
         const records = data.map((record: any) => {
           console.log("Mapping record:", record);
           return {
@@ -461,9 +418,61 @@ export default function Collection() {
         });
 
         console.log("Final records:", records);
-
         setRecords(records);
         console.log(records);
+
+        // Calculate counts and available filters based on current records
+        const newResultCounts: { [key: string]: number } = {};
+        const newAvailableFilters = {
+          genres: new Set<string>(),
+          instruments: new Set<string>(),
+          regions: new Set<string>(),
+          artists: new Set<string>(),
+          record_label: new Set<string>(),
+        };
+
+        data.forEach((record: any) => {
+          // Process genres
+          if (Array.isArray(record.genres)) {
+            record.genres.forEach((genre: string) => {
+              newResultCounts[genre] = (newResultCounts[genre] || 0) + 1;
+              newAvailableFilters.genres.add(genre);
+            });
+          }
+
+          // Process instruments
+          if (Array.isArray(record.instruments)) {
+            record.instruments.forEach((instrument: string) => {
+              newResultCounts[instrument] = (newResultCounts[instrument] || 0) + 1;
+              newAvailableFilters.instruments.add(instrument);
+            });
+          }
+
+          // Process regions
+          if (Array.isArray(record.regions)) {
+            record.regions.forEach((region: string) => {
+              newResultCounts[region] = (newResultCounts[region] || 0) + 1;
+              newAvailableFilters.regions.add(region);
+            });
+          }
+
+          // Process artists
+          if (record.artist_original) {
+            const artist = record.artist_original;
+            newResultCounts[artist] = (newResultCounts[artist] || 0) + 1;
+            newAvailableFilters.artists.add(artist);
+          }
+
+          // Process record labels
+          if (record.record_label && record.record_label.label_en) {
+            const labelName = record.record_label.label_en;
+            newResultCounts[labelName] = (newResultCounts[labelName] || 0) + 1;
+            newAvailableFilters.record_label.add(labelName);
+          }
+        });
+
+        setResultCounts(newResultCounts);
+        setAvailableFilters(newAvailableFilters);
       })
       .catch((error) => {
         console.log(error);
@@ -491,9 +500,7 @@ export default function Collection() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/etc">
-                    {language === "EN" ? "ETC" : "Այլ"}
-                  </Link>
+                  <Link href="/etc">{language === "EN" ? "ETC" : "Այլ"}</Link>
                 </li>
               </ul>
             </nav>
