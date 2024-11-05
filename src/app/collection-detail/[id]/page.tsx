@@ -54,7 +54,7 @@ const Album: React.FC = () => {
         // Fetch all records with the same ARAID (both tracks)
         axios
           .get(
-            `https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}&fields=*,audio.id`
+            `https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}&fields=*,audio.id,record_label.*`
           )
           .then((recordsResponse) => {
             let fetchedRecords = recordsResponse.data.data;
@@ -106,82 +106,86 @@ const Album: React.FC = () => {
 
   // Metadata entries
   const metadataEntries = [
-    {
-      title: "Title",
-      sideA: records[0]?.title ?? "INFO DOES NOT EXIST IN DB",
-      sideB: records[1]?.title ?? "INFO DOES NOT EXIST IN DB",
-    },
-    {
-      title: "Names",
-      sideA: records[0]?.artist_original ?? "Unknown artists",
-      sideB: records[1]?.artist_original ?? "Unknown artists",
-    },
-    {
-      title: "Genre",
-      sideA: records[0]?.genres
-        ? records[0].genres.join(", ")
-        : "No genre assigned",
-      sideB: records[1]?.genres
-        ? records[1].genres.join(", ")
-        : "No genre assigned",
-    },
-    {
-      title: "Recording Label",
-      sideA: records[0]?.record_label ?? "INFO DOES NOT EXIST IN DB",
-      sideB: records[1]?.record_label ?? "INFO DOES NOT EXIST IN DB",
-    },
-    {
-      title: "Recording Catalog Number",
-      sideA:
-        records[0]?.record_catalog_number ?? "No catalog number assigned",
-      sideB:
-        records[1]?.record_catalog_number ?? "No catalog number assigned",
-    },
-    {
-      title: "Recording Date",
-      sideA: records[0]?.track_year ?? "Unknown date",
-      sideB: records[1]?.track_year ?? "Unknown date",
-    },
-    {
-      title: "Composed by",
-      sideA: records[0]?.composed_by ?? "Unknown composer",
-      sideB: records[1]?.composed_by ?? "Unknown composer",
-    },
-    {
-      title: "Arranged by",
-      sideA: records[0]?.arranged_by ?? "Unknown",
-      sideB: records[1]?.arranged_by ?? "Unknown",
-    },
-    {
-      title: "Lyrics by",
-      sideA: records[0]?.lyrics_by ?? "Unknown",
-      sideB: records[1]?.lyrics_by ?? "Unknown",
-    },
-    {
-      title: "Conducted by",
-      sideA: records[0]?.conducted_by ?? "Unknown conductor",
-      sideB: records[1]?.conducted_by ?? "Unknown conductor",
-    },
-    {
-      title: "Language",
-      sideA: records[0]?.language ?? "Language not assigned",
-      sideB: records[1]?.language ?? "Language not assigned",
-    },
-    {
-      title: "Instruments",
-      sideA: records[0]?.instruments ?? "Instruments not assigned",
-      sideB: records[1]?.instruments ?? "Instruments not assigned",
-    },
-    {
-      title: "Recording Location",
-      sideA: records[0]?.regions
-        ? records[0].regions.join(", ")
-        : "Unknown location",
-      sideB: records[1]?.regions
-        ? records[1].regions.join(", ")
-        : "Unknown location",
-    },
-  ];
+  {
+    title: "Title",
+    sideA: records[0]?.title ?? "INFO DOES NOT EXIST IN DB",
+    sideB: records[1]?.title ?? "INFO DOES NOT EXIST IN DB",
+  },
+  {
+    title: "Names",
+    sideA: records[0]?.artist_original ?? "Unknown artists",
+    sideB: records[1]?.artist_original ?? "Unknown artists",
+  },
+  {
+    title: "Genre",
+    sideA: records[0]?.genres
+      ? records[0].genres.join(", ")
+      : "No genre assigned",
+    sideB: records[1]?.genres
+      ? records[1].genres.join(", ")
+      : "No genre assigned",
+  },
+  {
+    title: "Recording Label",
+    sideA: records[0]?.record_label?.label_en ?? "INFO DOES NOT EXIST IN DB",
+    sideB: records[1]?.record_label?.label_en ?? "INFO DOES NOT EXIST IN DB",
+  },
+  {
+    title: "Recording Catalog Number",
+    sideA:
+      records[0]?.record_catalog_number ?? "No catalog number assigned",
+    sideB:
+      records[1]?.record_catalog_number ?? "No catalog number assigned",
+  },
+  {
+    title: "Recording Date",
+    sideA: records[0]?.track_year ?? "Unknown date",
+    sideB: records[1]?.track_year ?? "Unknown date",
+  },
+  {
+    title: "Composed by",
+    sideA: records[0]?.composed_by ?? "Unknown composer",
+    sideB: records[1]?.composed_by ?? "Unknown composer",
+  },
+  {
+    title: "Arranged by",
+    sideA: records[0]?.arranged_by ?? "Unknown",
+    sideB: records[1]?.arranged_by ?? "Unknown",
+  },
+  {
+    title: "Lyrics by",
+    sideA: records[0]?.lyrics_by ?? "Unknown",
+    sideB: records[1]?.lyrics_by ?? "Unknown",
+  },
+  {
+    title: "Conducted by",
+    sideA: records[0]?.conducted_by ?? "Unknown conductor",
+    sideB: records[1]?.conducted_by ?? "Unknown conductor",
+  },
+  {
+    title: "Language",
+    sideA: records[0]?.language ?? "Language not assigned",
+    sideB: records[1]?.language ?? "Language not assigned",
+  },
+  {
+    title: "Instruments",
+    sideA: records[0]?.instruments
+      ? records[0].instruments.join(", ")
+      : "Instruments not assigned",
+    sideB: records[1]?.instruments
+      ? records[1].instruments.join(", ")
+      : "Instruments not assigned",
+  },
+  {
+    title: "Recording Location",
+    sideA: records[0]?.regions
+      ? records[0].regions.join(", ")
+      : "Unknown location",
+    sideB: records[1]?.regions
+      ? records[1].regions.join(", ")
+      : "Unknown location",
+  },
+];
 
   // Function to handle image click
   const handleImageClick = (
@@ -227,13 +231,13 @@ const Album: React.FC = () => {
       {/* Header Section */}
       <div className="header">
         {/* Main Title */}
-        <h1>Record Label Title</h1>
-
+        <h1>{currentRecord.record_label?.label_en || 'Unknown Label'}</h1>
+        
         {/* Share Text */}
         <span className="share-button">share</span>
 
         {/* Album Subtitle */}
-        <h2 className="album-subtitle">ՌԵՔՈՐԴ ԼԵՅԲԼ ԹԱՅԹԼ
+        <h2 className="album-subtitle">{currentRecord.record_label?.am || 'Անհայտ պիտակ'}
 
 <br/>
                   <span className="catalog-number">
