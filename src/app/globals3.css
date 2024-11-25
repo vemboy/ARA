@@ -1927,7 +1927,8 @@
     "images tracklist"
     "images info"
     "metadata metadata"
-    "carousel carousel"; /* Added this line */
+    "carousel carousel"
+    "lyrics lyrics"; /* Added this line */
   grid-template-columns: 35vw 2fr;
 }
 
@@ -2253,4 +2254,21 @@ h5 {
   position: relative; /* Change position to relative */
   margin-top: 20px;   /* Adjust spacing as needed */
   /* ... other styles to fit under the details section */
+}
+
+.lyrics-section {
+  grid-area: lyrics; /* Assign to grid area */
+  text-align: center;
+  margin: 20px 0; /* Adds margin at top and bottom */
+}
+
+.lyrics-section h3 {
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.lyrics-section p {
+  margin-bottom: 20px;
+  font-size: 16px;
+  white-space: pre-wrap; /* Preserve line breaks */
 }

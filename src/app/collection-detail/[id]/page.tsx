@@ -484,29 +484,43 @@ const Album: React.FC = () => {
       </div>
 
       {/* Carousel Section - Added under meta-section */}
-      <div className="carousel-container">
-        <Flickity
-          className={"carousel"}
-          elementType={"div"}
-          flickityRef={(c) => (flickityRef.current = c)} // Assign the ref
-          options={{
-            wrapAround: true,
-            cellAlign: "left",
-            autoPlay: false,
-            pageDots: false,
-            arrowShape: "M 10,50 L 70,100 L 70,50 L 70,50 L 70,50 L 70,0 Z",
-          }}
-          disableImagesLoaded={false}
-          reloadOnUpdate={false}
-          static={false}
-        >
-          {images.map((imageSrc, index) => (
-            <div className="carousel-cell" key={index}>
-              <img src={imageSrc} alt={`Slide ${index}`} />
-            </div>
-          ))}
-        </Flickity>
+<div className="carousel-container">
+  <Flickity
+    className={"carousel"}
+    elementType={"div"}
+    flickityRef={(c) => (flickityRef.current = c)} // Assign the ref
+    options={{
+      wrapAround: true,
+      cellAlign: "left",
+      autoPlay: false,
+      pageDots: false,
+      arrowShape: "M 10,50 L 70,100 L 70,50 L 70,50 L 70,50 L 70,0 Z",
+    }}
+    disableImagesLoaded={false}
+    reloadOnUpdate={false}
+    static={false}
+  >
+    {images.map((imageSrc, index) => (
+      <div className="carousel-cell" key={index}>
+        <img src={imageSrc} alt={`Slide ${index}`} />
       </div>
+    ))}
+  </Flickity>
+</div>
+
+{/* Lyrics Section */}
+<div className="lyrics-section">
+  {records.map((record, index) => (
+    <div key={index}>
+      <h3>{record.track_side ?? `Side ${index === 0 ? 'A' : 'B'}`}</h3>
+      {record.song_lyrics ? (
+        <p>{record.song_lyrics}</p>
+      ) : (
+        <p>No lyrics available</p>
+      )}
+    </div>
+  ))}
+</div>
     </div>
   );
 };
