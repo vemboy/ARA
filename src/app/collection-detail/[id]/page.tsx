@@ -108,6 +108,11 @@ const Album: React.FC = () => {
   // Metadata entries
   const metadataEntries = [
     {
+      title: "ARA ID",
+      sideA: records[0]?.ARAID ?? "Unknown ARA ID",
+      sideB: records[1]?.ARAID ?? "Unknown ARA ID",
+    },
+    {
       title: "Title",
       sideA: records[0]?.title ?? "INFO DOES NOT EXIST IN DB",
       sideB: records[1]?.title ?? "INFO DOES NOT EXIST IN DB",
