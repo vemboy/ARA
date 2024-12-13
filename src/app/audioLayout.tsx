@@ -1,3 +1,5 @@
+// audioLayout.tsx
+
 import {
   Dispatch,
   RefObject,
@@ -18,6 +20,7 @@ export const AudioContext = createContext<{
   setName: Dispatch<SetStateAction<string>>;
   setArtistName: Dispatch<SetStateAction<string>>;
   setSongId: Dispatch<SetStateAction<string>>;
+  setAlbumArt: Dispatch<SetStateAction<string>>;
   audioPlayerRef: RefObject<AudioPlayer>;
 } | null>(null);
 
@@ -27,9 +30,13 @@ export function AudioLayout({
   children: React.ReactNode;
 }>) {
   const [currentSong, setSong] = useState("");
-  const [currentName, setName] = useState(""); // Keep this to display the name
+  const [currentName, setName] = useState("");
   const [currentArtistName, setArtistName] = useState("");
-  const [currentSongId, setSongId] = useState(""); // Add songId state
+  const [currentSongId, setSongId] = useState("");
+  const [currentAlbumArt, setAlbumArt] = useState("");
+
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   const audioPlayerRef = useRef<AudioPlayer>(null);
 
@@ -37,7 +44,8 @@ export function AudioLayout({
     setSong,
     setName,
     setArtistName,
-    setSongId, // Pass down setSongId
+    setSongId,
+    setAlbumArt,
     audioPlayerRef,
   };
 
@@ -64,56 +72,81 @@ export function AudioLayout({
     }
   }, [currentSong]);
 
-  return (
-    <>
-      <html lang="en">
-        <AudioContext.Provider value={audioProps}>
-          <body className={inter.className}>
-            {children}
+  useEffect(() => {
+    const player = audioPlayerRef.current?.audio?.current;
+    if (!player) return;
 
-            {/* Audio Player */}
-            {currentSong.length === 0 ? (
-              <div className="audio-player-wrapper-hidden">
-                <AudioPlayer
-                  ref={audioPlayerRef}
-                  src={currentSong}
-                  className="audio-player-hidden"
-                />
-              </div>
-            ) : (
-              <div className="audio-player-wrapper">
-                <Link
-                  href={`collection-detail/${currentSongId}`}
-                  className="current-song-info-wrapper"
-                >
-                  {/* Album Art */}
+    const timeUpdateHandler = () => {
+      setCurrentTime(player.currentTime);
+      setDuration(player.duration || 0);
+    };
+
+    player.addEventListener("timeupdate", timeUpdateHandler);
+    player.addEventListener("loadedmetadata", timeUpdateHandler);
+
+    return () => {
+      player.removeEventListener("timeupdate", timeUpdateHandler);
+      player.removeEventListener("loadedmetadata", timeUpdateHandler);
+    };
+  }, [currentSong]);
+
+  const formatTime = (time: number) => {
+    if (!time || isNaN(time)) return "00:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    const mm = minutes < 10 ? `0${minutes}` : minutes;
+    const ss = seconds < 10 ? `0${seconds}` : seconds;
+    return `${mm}:${ss}`;
+  };
+
+  const displayCurrentTime = formatTime(currentTime);
+  const displayDuration = formatTime(duration);
+
+  return (
+    <html lang="en">
+      <AudioContext.Provider value={audioProps}>
+        <body className={inter.className}>
+          {children}
+
+          {currentSong && currentSong.length > 0 && (
+            <div className="ara-record-player-wrapper">
+              <div className="ara-record-player-info">
+                <div className="ara-record-player-image">
                   <img
-                    src="https://via.placeholder.com/50"
-                    alt="Album Art"
-                    className="album-art"
-                  />
-                  {/* Song Info */}
-                  <div className="current-song-info">
-                    <p className="song-title">
-                      {currentName || "Unknown Song"}
-                    </p>
-                    <p className="song-artist">
-                      {currentArtistName || "Unknown Artist"}
-                    </p>
-                  </div>
-                </Link>
-                <div className="audio-player-container">
-                  <AudioPlayer
-                    ref={audioPlayerRef}
-                    src={currentSong}
-                    className="audio-player"
+                    src={currentAlbumArt || "https://via.placeholder.com/50"}
+                    alt="Image"
+                    className="ara-record-player-thumbnail-img"
                   />
                 </div>
+
+                <div className="ara-record-player-song-info">
+                  <div className="ara-record-player-song-title">
+                    {currentName || "Unknown Song"}
+                  </div>
+                  <div className="ara-record-player-artist-name">
+                    {currentArtistName || "Unknown Artist"}
+                  </div>
+                </div>
               </div>
-            )}
-          </body>
-        </AudioContext.Provider>
-      </html>
-    </>
+
+              <div className="ara-record-player-audio-section">
+                <div className="ara-record-player-progress-bar"></div>
+                <div className="ara-record-player-time">
+                  {displayCurrentTime} | {displayDuration}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div style={{ display: "none" }}>
+            <AudioPlayer
+              ref={audioPlayerRef}
+              src={currentSong}
+              autoPlay={false}
+            />
+          </div>
+        </body>
+      </AudioContext.Provider>
+    </html>
   );
 }

@@ -1,5 +1,4 @@
 // filter-menu.js
-
 import React, { useState } from "react";
 
 interface FilterMenuProps {
@@ -19,6 +18,7 @@ interface FilterMenuProps {
     record_label: Set<string>;
   };
   resultCounts: { [key: string]: number };
+  language: string; // now receive language from parent
 }
 
 const FilterMenu: React.FC<FilterMenuProps> = ({
@@ -32,26 +32,9 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
   setFilter,
   availableFilters,
   resultCounts,
+  language
 }) => {
   const [activeFilter, setActiveFilter] = useState<string>("genres");
-  const [language, setLanguage] = useState("EN");
-
-  const handleSubItemClick = (filterType: string, itemName: string) => {
-    const newFilters = structuredClone(filters);
-    newFilters[filterType] ??= new Set();
-
-    if (newFilters[filterType].has(itemName)) {
-      newFilters[filterType].delete(itemName);
-    } else {
-      newFilters[filterType].add(itemName);
-    }
-
-    setFilter(newFilters);
-  };
-
-  const handleClearAll = () => {
-    setFilter({});
-  };
 
   const translations: Record<string, Record<string, string>> = {
     EN: {
@@ -70,50 +53,135 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
     },
   };
 
-  return (
-    <div className="filter-menu-hm">
-      <div className="filters-header-hm">
-        <h2>Filters</h2>
-        <div className="language-toggle-hm">
-          <span
-            id="lang-en-hm"
-            className={`lang-option-hm ${language === "EN" ? "active" : ""}`}
-            onClick={() => setLanguage("EN")}
-          >
-            English
-          </span>{" "}
-          |{" "}
-          <span
-            id="lang-arm-hm"
-            className={`lang-option-hm ${language === "HY" ? "active" : ""}`}
-            onClick={() => setLanguage("HY")}
-          >
-            Հայերեն
-          </span>
-        </div>
-      </div>
+  const handleSubItemClick = (filterType: string, itemName: string) => {
+    const newFilters = structuredClone(filters);
+    newFilters[filterType] ??= new Set();
 
-      <div className="filter-grid-hm">
-        {Object.entries(translations[language]).map(([filterKey, filterName]) => (
+    if (newFilters[filterType].has(itemName)) {
+      newFilters[filterType].delete(itemName);
+    } else {
+      newFilters[filterType].add(itemName);
+    }
+
+    setFilter(newFilters);
+  };
+
+  const handleClearAll = () => {
+    setFilter({});
+  };
+
+  const filterOrder = ["genres", "instruments", "record_label", "regions", "artist_original"];
+
+  return (
+    <>
+      <div className="ara-filter-options-wrapper">
+        {filterOrder.map((fKey) => (
           <div
-            key={filterKey}
-            id={`filter-${filterKey}`}
-            className={`filter-item-hm ${activeFilter === filterKey ? "active" : ""}`}
-            data-filter={filterKey}
-            onClick={() => setActiveFilter(filterKey)}
+            key={fKey}
+            className={`ara-filter-option ${activeFilter === fKey ? "selected" : ""}`}
+            data-filter={fKey}
+            onClick={() => setActiveFilter(fKey)}
           >
-            {filterName}
+            {translations[language][fKey]}
           </div>
         ))}
       </div>
 
-      <div className="selected-filters-pills-hm">
-        {Object.entries(filters).map(([filterType, selectedItems]) =>
+      <div className="ara-filter-items-wrapper">
+        {activeFilter === "genres" && (
+          <div className="ara-filter-items ara-filter-items-selected" data-filter="genre">
+            {genres.map((genre) => (
+              <div
+                key={genre}
+                className={`filter-item ${availableFilters.genres.has(genre) ? "" : "disabled"} ${
+                  filters.genres?.has(genre) ? "active" : ""
+                }`}
+                onClick={() => availableFilters.genres.has(genre) && handleSubItemClick("genres", genre)}
+              >
+                <span className="ara-filter-icon-circle"></span> {genre} ({resultCounts[genre] || 0})
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeFilter === "instruments" && (
+          <div className="ara-filter-items" data-filter="instrument">
+            {instruments.map((instrument) => (
+              <div
+                key={instrument}
+                className={`filter-item ${availableFilters.instruments.has(instrument) ? "" : "disabled"} ${
+                  filters.instruments?.has(instrument) ? "active" : ""
+                }`}
+                onClick={() =>
+                  availableFilters.instruments.has(instrument) && handleSubItemClick("instruments", instrument)
+                }
+              >
+                <span className="ara-filter-icon-circle"></span> {instrument} ({resultCounts[instrument] || 0})
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeFilter === "record_label" && (
+          <div className="ara-filter-items" data-filter="label">
+            {labels.map((label) => (
+              <div
+                key={label.id}
+                className={`filter-item ${
+                  availableFilters.record_label.has(label.label_en) ? "" : "disabled"
+                } ${filters.record_label?.has(label.label_en) ? "active" : ""}`}
+                onClick={() =>
+                  availableFilters.record_label.has(label.label_en) &&
+                  handleSubItemClick("record_label", label.label_en)
+                }
+              >
+                <span className="ara-filter-icon-circle"></span> {label.label_en} ({resultCounts[label.label_en] || 0})
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeFilter === "regions" && (
+          <div className="ara-filter-items" data-filter="region">
+            {regions.map((region) => (
+              <div
+                key={region}
+                className={`filter-item ${availableFilters.regions.has(region) ? "" : "disabled"} ${
+                  filters.regions?.has(region) ? "active" : ""
+                }`}
+                onClick={() => availableFilters.regions.has(region) && handleSubItemClick("regions", region)}
+              >
+                <span className="ara-filter-icon-circle"></span> {region} ({resultCounts[region] || 0})
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeFilter === "artist_original" && (
+          <div className="ara-filter-items" data-filter="artist">
+            {artists.map((artist) => (
+              <div
+                key={artist}
+                className={`filter-item ${availableFilters.artists.has(artist) ? "" : "disabled"} ${
+                  filters.artist_original?.has(artist) ? "active" : ""
+                }`}
+                onClick={() => availableFilters.artists.has(artist) && handleSubItemClick("artist_original", artist)}
+              >
+                <span className="ara-filter-icon-circle"></span> {artist} ({resultCounts[artist] || 0})
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Selected Filters and Clear All */}
+      <div style={{ marginTop: "10px" }}>
+        {Object.entries(filters).flatMap(([filterType, selectedItems]) =>
           Array.from(selectedItems).map((item) => (
-            <span className="pill-hm" key={item}>
+            <span className="filter-item" key={item} style={{ fontWeight: "bold" }}>
               {item}
               <button
-                className="x-button-hm"
+                style={{ marginLeft: "5px" }}
                 onClick={() => handleSubItemClick(filterType, item)}
               >
                 ×
@@ -122,115 +190,19 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
           ))
         )}
         {Object.keys(filters).length > 0 && (
-          <a href="#" className="clear-all-hm" onClick={handleClearAll}>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              handleClearAll();
+            }}
+            style={{ marginLeft: "10px", textDecoration: "underline", cursor: "pointer" }}
+          >
             Clear All
           </a>
         )}
       </div>
-
-      {activeFilter === "genres" && (
-        <ul className="sub-list-hm active" id="list-genres-hm">
-          {genres.map((genre) => (
-            <li
-              key={genre}
-              className={`${
-                availableFilters.genres.has(genre) ? "" : "disabled"
-              } ${filters.genres?.has(genre) ? "active" : ""}`}
-              data-item={genre}
-              onClick={() =>
-                availableFilters.genres.has(genre) && handleSubItemClick("genres", genre)
-              }
-            >
-              <span className="icon-circle-hm"></span>
-              {`${genre} (${resultCounts[genre] || 0})`}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {activeFilter === "instruments" && (
-        <ul className="sub-list-hm active" id="list-instruments-hm">
-          {instruments.map((instrument) => (
-            <li
-              key={instrument}
-              className={`${
-                availableFilters.instruments.has(instrument) ? "" : "disabled"
-              } ${filters.instruments?.has(instrument) ? "active" : ""}`}
-              data-item={instrument}
-              onClick={() =>
-                availableFilters.instruments.has(instrument) &&
-                handleSubItemClick("instruments", instrument)
-              }
-            >
-              <span className="icon-circle-hm"></span>
-              {`${instrument} (${resultCounts[instrument] || 0})`}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {activeFilter === "regions" && (
-        <ul className="sub-list-hm active" id="list-regions-hm">
-          {regions.map((region) => (
-            <li
-              key={region}
-              className={`${
-                availableFilters.regions.has(region) ? "" : "disabled"
-              } ${filters.regions?.has(region) ? "active" : ""}`}
-              data-item={region}
-              onClick={() =>
-                availableFilters.regions.has(region) && handleSubItemClick("regions", region)
-              }
-            >
-              <span className="icon-circle-hm"></span>
-              {`${region} (${resultCounts[region] || 0})`}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {activeFilter === "artist_original" && (
-        <ul className="sub-list-hm active" id="list-artist_original-hm">
-          {artists.map((artist) => (
-            <li
-              key={artist}
-              className={`${
-                availableFilters.artists.has(artist) ? "" : "disabled"
-              } ${filters.artist_original?.has(artist) ? "active" : ""}`}
-              data-item={artist}
-              onClick={() =>
-                availableFilters.artists.has(artist) &&
-                handleSubItemClick("artist_original", artist)
-              }
-            >
-              <span className="icon-circle-hm"></span>
-              {`${artist} (${resultCounts[artist] || 0})`}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {activeFilter === "record_label" && (
-        <ul className="sub-list-hm active" id="list-record_label-hm">
-          {labels.map((label) => (
-            <li
-              key={label.id}
-              className={`${
-                availableFilters.record_label.has(label.label_en) ? "" : "disabled"
-              } ${filters.record_label?.has(label.label_en) ? "active" : ""}`}
-              data-item={label.label_en}
-              onClick={() =>
-                availableFilters.record_label.has(label.label_en) &&
-                handleSubItemClick("record_label", label.label_en)
-              }
-            >
-              <span className="icon-circle-hm"></span>
-              {`${label.label_en} (${resultCounts[label.label_en] || 0})`}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    </>
   );
 };
 

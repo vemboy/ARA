@@ -1,99 +1,71 @@
-// Collection.js
+// Collection.tsx
 
 "use client";
 
-import Head from "next/head";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import RecordCollectionRow from "./record-collection-row";
-import RecordCollectionRowDifferent from "./record-collection-row-different";
-import RecordListView from "./record-list-view";
-import PageNumbers from "./page-numbers";
-import AudioPlayer from "react-h5-audio-player";
-import "react-h5-audio-player/lib/styles.css";
-import { AudioContext } from "./audioLayout";
 import Link from "next/link";
-import SingleRecordView from "./record-single";
 import _ from "lodash";
+import { AudioContext } from "./audioLayout";
 import FilterMenu from "./filter-menu";
-
-interface FilterProp {
-  buttonName: string;
-  filterName: string;
-  filters: { [key: string]: Set<string> };
-  setFilter: React.Dispatch<
-    React.SetStateAction<{
-      [key: string]: Set<string>;
-    }>
-  >;
-}
-
-function FilterButton(filterProp: FilterProp) {
-  const [selected, setSelected] = useState(false);
-
-  const selectFilter = () => {
-    const newFilters = structuredClone(filterProp.filters);
-    newFilters[filterProp.filterName] ??= new Set();
-    if (!selected) {
-      newFilters[filterProp.filterName].add(filterProp.buttonName);
-    } else {
-      newFilters[filterProp.filterName].delete(filterProp.buttonName);
-    }
-    console.log("New Filters:", newFilters);
-
-    setSelected(!selected);
-    filterProp.setFilter(newFilters);
-  };
-
-  const buttonClass = selected
-    ? "brutalist-button-clicked"
-    : "brutalist-button";
-
-  return (
-    <button
-      type="button"
-      className={buttonClass}
-      key={filterProp.buttonName}
-      onClick={selectFilter}
-    >
-      {filterProp.buttonName}
-    </button>
-  );
-}
+import RecordListView from "./record-list-view";
 
 export default function Collection() {
-  const audioContext = React.useContext(AudioContext);
-  const setSong = audioContext?.setSong;
-  const setName = audioContext?.setName;
-  const setAristName = audioContext?.setArtistName;
-  const setSongId = audioContext?.setSongId;
-  const audioPlayerRef = audioContext?.audioPlayerRef;
-
-  console.log("PAGE:", audioPlayerRef);
-
-  const updateSearchString = (e: any) => {
-    console.log("Searching...:", e.target.value);
-    setSearchString(e.target.value);
-  };
-
-  const updateSearchYear = (e: any) => {
-    console.log("Searching year...:", e.target.value);
-    setSearchYear(e.target.value);
-  };
-
-  const updateSearchArtist = (e: any) => {
-    console.log("Searching artist...:", e.target.value);
-    setSearchArtist(e.target.value);
-  };
+const audioContext = React.useContext(AudioContext);
+const setSong = audioContext?.setSong;
+const setName = audioContext?.setName;
+const setArtistName = audioContext?.setArtistName;
+const setSongId = audioContext?.setSongId;
+const setAlbumArt = audioContext?.setAlbumArt;
+const audioPlayerRef = audioContext?.audioPlayerRef;
 
   const [filters, setFilter] = useState<{ [key: string]: Set<string> }>({});
   const [language, setLanguage] = useState("EN");
+  const [currentPage, setPage] = useState(2);
+  const [records, setRecords] = useState<any[]>([]);
+  const [searchString, setSearchString] = useState<string>("");
+  const [searchYear, setSearchYear] = useState<string>("");
+  const [searchArtist, setSearchArtist] = useState<string>("");
+  const [selectedRecord, setSelectedRecord] = useState<any | null>(null);
+
+  const [instruments, setInstruments] = useState<string[]>([]);
+  const [genres, setGenres] = useState<string[]>([]);
+  const [regions, setRegions] = useState<string[]>([]);
+  const [artists, setArtists] = useState<string[]>([]);
+  const [labels, setLabels] = useState<any[]>([]);
+  const [labelIdToNameMap, setLabelIdToNameMap] = useState<{ [key: string]: string }>({});
+
+  const [resultCounts, setResultCounts] = useState<{ [key: string]: number }>({});
+  const [availableFilters, setAvailableFilters] = useState<{
+    genres: Set<string>;
+    instruments: Set<string>;
+    regions: Set<string>;
+    artists: Set<string>;
+    record_label: Set<string>;
+  }>({
+    genres: new Set(),
+    instruments: new Set(),
+    regions: new Set(),
+    artists: new Set(),
+    record_label: new Set(),
+  });
+
+  // Landing page and menu refs
+  const landingRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const menuLinksWrapperRef = useRef<HTMLDivElement>(null);
+  const menuIconRef = useRef<HTMLDivElement>(null);
+  const introRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLImageElement>(null);
+
+  const [isMenuVisible, setIsMenuVisible] = useState(true);
+  const [userToggledMenu, setUserToggledMenu] = useState(false);
 
   const changeLanguage = (lang: string) => {
     setLanguage(lang);
   };
 
-  function getUrlWithFilters(additionalFilter?: object) {
+  const getUrlWithFilters = (additionalFilter?: object) => {
     const filterObj: { _or?: object[]; _and?: object[] } = {
       _or: [],
       _and: [],
@@ -146,132 +118,25 @@ export default function Collection() {
       filterObj._and.push(additionalFilter);
     }
 
-    console.log("filterObj:", filterObj);
-
     const stringifiedFilterObj = JSON.stringify(filterObj);
-    console.log("stringifiedFilter", stringifiedFilterObj);
-
     return `https://ara.directus.app/items/record_archive?limit=-1&fields=*,record_label.*&filter=${encodeURIComponent(
       stringifiedFilterObj
     )}`;
-  }
-
-  const nextPage = () => {
-    setPage(currentPage + 1);
-    const url = getUrlWithFilters();
-    axios.get(`${url}&page=${currentPage}`).then((response) => {
-      console.log("Hello");
-      console.log(response);
-
-      const records = response.data.data.map((record: any) => {
-        return {
-          songId: record.audio,
-          author: record.artist_original,
-          title: record.title,
-          image: record.record_image,
-          id: record.id,
-          genre: record.genre,
-          year: record.year,
-          title_armenian: record.title_armenian,
-          color: record.hex_color,
-          display_title: record.display_title,
-        };
-      });
-
-      setRecords(records);
-      console.log(records);
-    });
   };
 
-  const previousPage = () => {
-    console.log(currentPage);
-    if (currentPage - 2 > 0) {
-      setPage(currentPage - 1);
-    } else {
-      console.log("At start");
-    }
-    const url = getUrlWithFilters();
-    axios.get(`${url}&page=${currentPage}`).then((response) => {
-      console.log("Hello");
-      console.log(response);
-
-      const records = response.data.data.map((record: any) => {
-        return {
-          songId: record.audio,
-          author: record.artist_original,
-          title: record.title,
-          image: record.record_image,
-          id: record.id,
-          genre: record.genre,
-          year: record.year,
-          title_armenian: record.title_armenian,
-          color: record.hex_color,
-          display_title: record.display_title,
-        };
-      });
-
-      setRecords(records);
-      console.log(records);
-    });
-  };
-
-  const [currentPage, setPage] = useState(2);
-  const [records, setRecords] = useState<any[]>([]);
-  const [searchString, setSearchString] = useState<string>("");
-  const [searchYear, setSearchYear] = useState<string>("");
-  const [searchArtist, setSearchArtist] = useState<string>("");
-  const [selectedRecord, setSelectedRecord] = useState<any | null>(null);
-  const [instruments, setInstruments] = useState<string[]>([]);
-  const [genres, setGenres] = useState<string[]>([]);
-  const [regions, setRegions] = useState<string[]>([]);
-  const [artists, setArtists] = useState<string[]>([]);
-  const [labels, setLabels] = useState<any[]>([]);
-  const [labelIdToNameMap, setLabelIdToNameMap] = useState<{
-    [key: string]: string;
-  }>({});
-  const [isMenuExpanded, setMenuExpanded] = useState(false);
-  const [selectedFilters, setSelectedFilters] = useState<
-    Record<string, string[]>
-  >({});
-  const [resultCounts, setResultCounts] = useState<{ [key: string]: number }>(
-    {}
-  );
-  const [availableFilters, setAvailableFilters] = useState<{
-    genres: Set<string>;
-    instruments: Set<string>;
-    regions: Set<string>;
-    artists: Set<string>;
-    record_label: Set<string>;
-  }>({
-    genres: new Set(),
-    instruments: new Set(),
-    regions: new Set(),
-    artists: new Set(),
-    record_label: new Set(),
-  });
-
-  const toggleMenu = () => {
-    setMenuExpanded(!isMenuExpanded);
-  };
-
-  // Fetch initial data (labels, genres, instruments, regions, artists)
+  // Fetch initial data
   useEffect(() => {
     // Fetch labels
     axios
       .get("https://ara.directus.app/items/record_labels?fields=id,label_en")
       .then((response) => {
-        console.log("********** LABELS FETCHED **********");
-        console.log("Response data:", response.data);
         const labelsData = response.data.data;
-        console.log("labelsData:", labelsData);
-        const labelIdToNameMap: { [key: string]: string } = {};
+        const labelIdMap: { [key: string]: string } = {};
         labelsData.forEach((label: any) => {
-          console.log("Processing label:", label);
-          labelIdToNameMap[label.id] = label.label_en;
+          labelIdMap[label.id] = label.label_en;
         });
-        console.log("labelIdToNameMap:", labelIdToNameMap);
         setLabels(labelsData);
-        setLabelIdToNameMap(labelIdToNameMap);
+        setLabelIdToNameMap(labelIdMap);
       })
       .catch((error) => {
         console.log("Error fetching labels:", error);
@@ -283,71 +148,38 @@ export default function Collection() {
     axios
       .get("https://ara.directus.app/fields/record_archive/genres")
       .then((response) => {
-        console.log("Response from /fields/record_archive/genres:", response.data);
-
         const fieldData = response.data.data;
         const interfaceOptions = fieldData.meta.options;
         let allGenres: string[] = [];
 
         if (Array.isArray(interfaceOptions.presets)) {
           allGenres = interfaceOptions.presets;
-          console.log("Extracted genres from 'presets':", allGenres);
-        } else {
-          console.error("No genres found in 'presets' of interface options");
         }
-
         setGenres(allGenres);
       })
       .catch((error) => {
         console.error("Error fetching genres field options:", error);
-        setGenres([
-          "religious",
-          "folk",
-          "instrumental",
-          "vocal",
-          "dance",
-          "patriotic",
-          "national",
-          "opera",
-          "kef",
-          "children",
-          "lullaby",
-          "choral",
-          "symphony",
-          "chamber",
-          "prayer",
-          "taqsim",
-        ]);
+        // fallback genres
+        setGenres(["religious", "folk", "instrumental", "vocal", "dance", "patriotic", "national", "opera", "kef", "children", "lullaby", "choral", "symphony", "chamber", "prayer", "taqsim"]);
       });
 
     // Fetch regions
     axios
       .get("https://ara.directus.app/fields/record_archive/regions")
       .then((response) => {
-        console.log("Response from /fields/record_archive/regions:", response.data);
-
         const fieldData = response.data.data;
         const interfaceOptions = fieldData.meta.options;
         let allRegions: string[] = [];
 
         if (Array.isArray(interfaceOptions.presets)) {
           allRegions = interfaceOptions.presets;
-          console.log("Extracted regions from 'presets':", allRegions);
-        } else {
-          console.error("No regions found in 'presets' of interface options");
         }
-
         setRegions(allRegions);
       })
       .catch((error) => {
         console.error("Error fetching regions field options:", error);
-        setRegions([
-          "Europe",
-          "North America",
-          "South America",
-          "Soviet Union",
-          "Middle East",
-        ]);
+        // fallback regions
+        setRegions(["Europe", "North America", "South America", "Soviet Union", "Middle East"]);
       });
 
     // Fetch instruments
@@ -387,197 +219,285 @@ export default function Collection() {
       });
   }, []);
 
-  // Fetch records and calculate counts based on current filters
+  // Fetch records and update available filters
   useEffect(() => {
-    console.log("Fetching records and calculating counts based on current filters");
     const url = getUrlWithFilters();
-
-    axios
-      .get(url)
-      .then((response) => {
-        console.log("********** RECORDS FETCHED **********");
-        console.log("Response data:", response.data);
-        const data = response.data.data;
-
-        // Update records
-        const records = data.map((record: any) => {
-          console.log("Mapping record:", record);
-          return {
-            songId: record.audio,
-            author: record.artist_original,
-            title: record.title,
-            image: record.record_image,
-            id: record.id,
-            genre: record.genre,
-            year: record.year,
-            title_armenian: record.title_armenian,
-            color: record.hex_color,
-            display_title: record.display_title,
-            record_label: record.record_label?.label_en || null,
-          };
-        });
-
-        console.log("Final records:", records);
-        setRecords(records);
-        console.log(records);
-
-        // Calculate counts and available filters based on current records
-        const newResultCounts: { [key: string]: number } = {};
-        const newAvailableFilters = {
-          genres: new Set<string>(),
-          instruments: new Set<string>(),
-          regions: new Set<string>(),
-          artists: new Set<string>(),
-          record_label: new Set<string>(),
+    axios.get(url).then((response) => {
+      const data = response.data.data;
+      const records = data.map((record: any) => {
+        return {
+          songId: record.audio,
+          author: record.artist_original,
+          title: record.title,
+          image: record.record_image,
+          id: record.id,
+          genre: record.genre,
+          year: record.year,
+          title_armenian: record.title_armenian,
+          color: record.hex_color,
+          display_title: record.display_title,
+          record_label: record.record_label?.label_en || null,
         };
-
-        data.forEach((record: any) => {
-          // Process genres
-          if (Array.isArray(record.genres)) {
-            record.genres.forEach((genre: string) => {
-              newResultCounts[genre] = (newResultCounts[genre] || 0) + 1;
-              newAvailableFilters.genres.add(genre);
-            });
-          }
-
-          // Process instruments
-          if (Array.isArray(record.instruments)) {
-            record.instruments.forEach((instrument: string) => {
-              newResultCounts[instrument] = (newResultCounts[instrument] || 0) + 1;
-              newAvailableFilters.instruments.add(instrument);
-            });
-          }
-
-          // Process regions
-          if (Array.isArray(record.regions)) {
-            record.regions.forEach((region: string) => {
-              newResultCounts[region] = (newResultCounts[region] || 0) + 1;
-              newAvailableFilters.regions.add(region);
-            });
-          }
-
-          // Process artists
-          if (record.artist_original) {
-            const artist = record.artist_original;
-            newResultCounts[artist] = (newResultCounts[artist] || 0) + 1;
-            newAvailableFilters.artists.add(artist);
-          }
-
-          // Process record labels
-          if (record.record_label && record.record_label.label_en) {
-            const labelName = record.record_label.label_en;
-            newResultCounts[labelName] = (newResultCounts[labelName] || 0) + 1;
-            newAvailableFilters.record_label.add(labelName);
-          }
-        });
-
-        setResultCounts(newResultCounts);
-        setAvailableFilters(newAvailableFilters);
-      })
-      .catch((error) => {
-        console.log(error);
       });
+      setRecords(records);
+
+      // Calculate counts and available filters
+      const newResultCounts: { [key: string]: number } = {};
+      const newAvailableFilters = {
+        genres: new Set<string>(),
+        instruments: new Set<string>(),
+        regions: new Set<string>(),
+        artists: new Set<string>(),
+        record_label: new Set<string>(),
+      };
+
+      data.forEach((record: any) => {
+        // genres
+        if (Array.isArray(record.genres)) {
+          record.genres.forEach((genre: string) => {
+            newResultCounts[genre] = (newResultCounts[genre] || 0) + 1;
+            newAvailableFilters.genres.add(genre);
+          });
+        }
+
+        // instruments
+        if (Array.isArray(record.instruments)) {
+          record.instruments.forEach((instrument: string) => {
+            newResultCounts[instrument] = (newResultCounts[instrument] || 0) + 1;
+            newAvailableFilters.instruments.add(instrument);
+          });
+        }
+
+        // regions
+        if (Array.isArray(record.regions)) {
+          record.regions.forEach((region: string) => {
+            newResultCounts[region] = (newResultCounts[region] || 0) + 1;
+            newAvailableFilters.regions.add(region);
+          });
+        }
+
+        // artists
+        if (record.artist_original) {
+          const artist = record.artist_original;
+          newResultCounts[artist] = (newResultCounts[artist] || 0) + 1;
+          newAvailableFilters.artists.add(artist);
+        }
+
+        // labels
+        if (record.record_label) {
+          const labelName = record.record_label;
+          newResultCounts[labelName] = (newResultCounts[labelName] || 0) + 1;
+          newAvailableFilters.record_label.add(labelName);
+        }
+      });
+
+      setResultCounts(newResultCounts);
+      setAvailableFilters(newAvailableFilters);
+    });
   }, [searchString, searchYear, filters, searchArtist]);
+
+  // Rotate logo on scroll (for landing page)
+  useEffect(() => {
+    const rotateLogoOnScroll = () => {
+      if (!logoRef.current || !landingRef.current) return;
+      const splashHeight = landingRef.current.offsetHeight;
+      const scrollY = window.scrollY;
+      const rotationAngle = (scrollY / splashHeight) * 360;
+      logoRef.current.style.transform = `rotate(${rotationAngle}deg)`;
+    };
+    window.addEventListener("scroll", rotateLogoOnScroll);
+    return () => {
+      window.removeEventListener("scroll", rotateLogoOnScroll);
+    };
+  }, []);
+
+  // Handle scrolling and menu animation
+  useEffect(() => {
+    const handleScroll = () => {
+      if (userToggledMenu) return;
+
+      if (!introRef.current || !menuRef.current || !menuLinksWrapperRef.current || !menuIconRef.current) return;
+
+      const introWrapper = introRef.current;
+      const menu = menuRef.current;
+      const menuLinks = menuLinksWrapperRef.current;
+      const menuIcon = menuIconRef.current;
+
+      const introRect = introWrapper.getBoundingClientRect();
+      const menuRect = menu.getBoundingClientRect();
+      const introMiddle = (introRect.top + introRect.bottom) / 2;
+      const menuBottom = menuRect.bottom;
+
+      if (introMiddle <= menuBottom) {
+        // Hide menu links
+        if (isMenuVisible) {
+          menuLinks.classList.remove('expanded');
+          menuIcon.classList.remove('clicked');
+          setIsMenuVisible(false);
+        }
+      } else {
+        // Show menu links
+        if (!isMenuVisible) {
+          menuLinks.classList.add('expanded');
+          menuIcon.classList.add('clicked');
+          setIsMenuVisible(true);
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [userToggledMenu, isMenuVisible]);
+
+  const toggleMenu = () => {
+    setUserToggledMenu(true);
+    if (!menuLinksWrapperRef.current || !menuIconRef.current) return;
+    const menuLinks = menuLinksWrapperRef.current;
+    const menuIcon = menuIconRef.current;
+    if (isMenuVisible) {
+      menuLinks.classList.remove("expanded");
+      menuIcon.classList.remove("clicked");
+    } else {
+      menuLinks.classList.add("expanded");
+      menuIcon.classList.add("clicked");
+    }
+    setIsMenuVisible(!isMenuVisible);
+    setTimeout(() => {
+      setUserToggledMenu(false);
+    }, 300);
+  };
 
   return (
     <>
-      <div className="page-container">
-        <div className="side-bar">
-          <div className="logo-section">
-            <h1 className="logo-text">ARA</h1>
+      {/* Landing Page */}
+      <div className="ara-landing-page" id="ara-landing-page" ref={landingRef}>
+        <img
+          src="/ara_logo_test_2.png"
+          alt="ARA logo"
+          id="logo"
+          ref={logoRef}
+          onClick={() => {
+            const main = document.getElementById('ara-main');
+            if (main) {
+              window.scrollTo({ top: main.offsetTop - 20, behavior: 'smooth' });
+            }
+          }}
+        />
+      </div>
+
+      {/* Main Container */}
+      <div className="ara-main" id="ara-main">
+        {/* MENU */}
+        <div className="ara-menu" id="ara-menu" ref={menuRef}>
+          <div className="ara-menu-title" id="ara-menu-title">ARMENIAN RECORD ARCHIVE</div>
+          <div className="ara-menu-links-wrapper expanded" id="ara-menu-links-wrapper" ref={menuLinksWrapperRef}>
+            <Link href="#collection">COLLECTION <br/> ՀԱՎԱՔԱՑՈՒ</Link> ●
+            <Link href="#about">ABOUT US <br/> ՄԵՐ ՄԱՍԻՆ</Link>
           </div>
-          <div className="brutalist-container">
-            <nav className="navigation-menu">
-              <ul>
-                <li>
-                  <Link href="/">
-                    {language === "EN" ? "Home" : "Գլխավոր"}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about">
-                    {language === "EN" ? "About Us" : "Մեր Մասին"}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/etc">{language === "EN" ? "ETC" : "Այլ"}</Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-          <div className="mini-footer">
-            <div className="language-selector">
-              <label className="footer-label">
-                {language === "EN" ? "Language" : "Լեզու"}:
-              </label>
-              <div className="footer-language-toggle">
-                <button
-                  className={`brutalist-toggle-button ${
-                    language === "EN" ? "selected" : ""
-                  }`}
-                  onClick={() => changeLanguage("EN")}
-                >
-                  EN
-                </button>
-                <button
-                  className={`brutalist-toggle-button ${
-                    language === "HY" ? "selected" : ""
-                  }`}
-                  onClick={() => changeLanguage("HY")}
-                >
-                  HY
-                </button>
-              </div>
-            </div>
-            <div className="subscribe-section">
-              <label className="footer-label">
-                {language === "EN"
-                  ? "Subscribe for updates:"
-                  : "Բաժանորդագրվել:"}
-              </label>
-              <input
-                type="email"
-                name="email"
-                className="footer-input"
-                placeholder={
-                  language === "EN"
-                    ? "Enter your email"
-                    : "Մուտքագրեք ձեր էլ․ հասցեն"
-                }
-              />
-              <button className="subscribe-button">
-                {language === "EN" ? "Subscribe" : "Բաժանորդագրվել"}
-              </button>
-            </div>
-            <div className="footer-copyright">
-              <p>© 2024 ARA. All rights reserved. Fueled by Costco 🍗</p>
+          <div className="ara-menu-toggle" id="ara-menu-toggle" onClick={toggleMenu}>
+            <div className="ara-menu-icon" id="menu-icon" ref={menuIconRef}>
+              <div className="ara-menu-icon-sleeve"></div>
+              <div className="ara-menu-icon-record"></div>
             </div>
           </div>
         </div>
 
-        <FilterMenu
-          genres={genres}
-          instruments={instruments}
-          regions={regions}
-          artists={artists}
-          labels={labels}
-          filters={filters}
-          setFilter={setFilter}
-          availableFilters={availableFilters}
-          resultCounts={resultCounts}
-          labelIdToNameMap={labelIdToNameMap}
-        />
+        {/* INTRO */}
+        <div className="ara-intro" ref={introRef}>
+          <div className="ara-intro-text-english">
+            <div>֎ Welcome to the Armenian Record Archive, where we preserve and celebrate the rich history of Armenian music and culture.</div>
+          </div>
+          <div className="ara-intro-text-armenian">
+            <div>Բարի գալուստ Հայկական ձայնագրությունների արխիվ, որտեղ մենք պահպանում և տոնում ենք Հայկական երաժշտության և մշակույթի հարուստ պատմությունը: ֍</div>
+          </div>
+        </div>
 
-        <RecordListView
-          setCurrentSong={setSong}
-          setCurrentName={setName}
-          setCurrentArtistName={setAristName}
-          setSongId={setSongId}
-          audioPlayerRef={audioPlayerRef}
-          records={records}
-        />
-        <div id="audio-player-container"></div>
+        {/* COLLECTION */}
+        <div className="ara-collection-wrapper" id="collection">
+          {/* Search Bar */}
+          <div className="ara-search-bar">
+            <span className="search-icon">⌕</span>
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search • Փնտռէ"
+              value={searchString}
+              onChange={(e) => setSearchString(e.target.value)}
+            />
+          </div>
+
+          {/* Filters Section */}
+          <div className="ara-filters-section">
+            <div className="ara-filters-header">
+              <div className="ara-filters-title">Filters ▼</div>
+              <div className="ara-filters-language-switcher">
+                <span 
+                  onClick={() => changeLanguage("EN")} 
+                  className={language === "EN" ? "language-selected" : ""}
+                  style={{cursor:'pointer'}}
+                >
+                  ENG
+                </span> 
+                | 
+                <span 
+                  onClick={() => changeLanguage("HY")} 
+                  className={language === "HY" ? "language-selected" : ""}
+                  style={{cursor:'pointer'}}
+                >
+                  ՀԱՅ
+                </span>
+              </div>
+            </div>
+
+            <div className="ara-filter-menu-wrapper">
+              <FilterMenu
+                genres={genres}
+                instruments={instruments}
+                regions={regions}
+                artists={artists}
+                labels={labels}
+                filters={filters}
+                setFilter={setFilter}
+                availableFilters={availableFilters}
+                resultCounts={resultCounts}
+                labelIdToNameMap={labelIdToNameMap}
+                language={language}  // pass language down
+              />
+            </div>
+          </div>
+
+          {/* Records Grid */}
+          <RecordListView
+            setCurrentSong={setSong}
+            setCurrentName={setName}
+            setCurrentArtistName={setArtistName}
+            setSongId={setSongId}
+            setAlbumArt={setAlbumArt} // pass this down
+            audioPlayerRef={audioPlayerRef}
+            records={records}
+          />
+        </div>
       </div>
+
+      {/* Static Player at the bottom */}
+      <div className="ara-record-player-wrapper">
+        <div className="ara-record-player-info">
+          <div className="ara-record-player-image">
+            <img src="/ARA_armenaphone_05.jpg" alt="Image" className="ara-record-player-thumbnail-img" />
+          </div>
+          <div className="ara-record-player-song-info">
+            <div className="ara-record-player-song-title">Kroung</div>
+            <div className="ara-record-player-artist-name">Shara Talian</div>
+          </div>
+        </div>
+        <div className="ara-record-player-audio-section">
+          <div className="ara-record-player-progress-bar"></div>
+          <div className="ara-record-player-time">00:00 | 03:47</div>
+        </div>
+      </div>
+
+      <footer>
+        {/* Footer content as needed */}
+      </footer>
     </>
   );
 }
