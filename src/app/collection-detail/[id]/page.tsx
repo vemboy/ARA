@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { usePathname } from "next/navigation";
 import {
@@ -8,36 +8,20 @@ import {
   getImageDetailUrl,
 } from "@/utils/assetUtils";
 
-import Flickity from "react-flickity-component";
-import "flickity/css/flickity.css"; // Import Flickity CSS
-import imagesLoaded from "imagesloaded"; // Using default import if you adjusted the declaration
-
-import { AudioContext } from "../../audioLayout"; // Import AudioContext from '../../audioLayout'
-
 interface RecordType {
   [key: string]: any;
 }
 
-const Album: React.FC = () => {
+const CollectionDetail: React.FC = () => {
   const [records, setRecords] = useState<RecordType[]>([]);
   const pathName = usePathname();
   const recordId = pathName.split("/").slice(-1)[0];
 
   const [images, setImages] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
-
-  const flickityRef = useRef<any>(null); // Create a ref for Flickity
-
-  // Access the AudioContext
-  const audioContext = useContext(AudioContext);
-
-  if (!audioContext) {
-    // Handle null context
-    return null;
-  }
-
-  // Extract setter functions from AudioContext
-  const { setSong, setName, setArtistName, setSongId } = audioContext;
+  
+  // Add state to control menu visibility
+  const [isMenuVisible, setIsMenuVisible] = useState(true);
 
   useEffect(() => {
     axios
@@ -46,7 +30,7 @@ const Album: React.FC = () => {
         const initialRecord = response.data.data;
         const ARAID = initialRecord["ARAID"];
 
-        // Fetch all records with the same ARAID (both tracks)
+        // Fetch all records with the same ARAID (both sides)
         axios
           .get(
             `https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}&fields=*,audio.id,record_label.*`
@@ -54,7 +38,7 @@ const Album: React.FC = () => {
           .then((recordsResponse) => {
             let fetchedRecords = recordsResponse.data.data;
 
-            // **Sort the records to ensure Side A comes before Side B**
+            // Sort the records to ensure Side A comes before Side B
             fetchedRecords.sort((a: RecordType, b: RecordType) => {
               const sideA = a.track_side || "A";
               const sideB = b.track_side || "B";
@@ -73,7 +57,7 @@ const Album: React.FC = () => {
 
             setRecords(fetchedRecords);
 
-            // Prepare images array for the image slider
+            // Prepare images array
             const recordImages = fetchedRecords.map((record: RecordType) =>
               record["record_image"]
                 ? getImageDetailUrl(record["record_image"])
@@ -82,30 +66,21 @@ const Album: React.FC = () => {
             setImages(recordImages);
           });
       });
-  }, []);
-
-  // Use useEffect to handle images loading
-  useEffect(() => {
-    if (images.length > 0 && flickityRef.current) {
-      imagesLoaded(".carousel", () => {
-        flickityRef.current.resize();
-      });
-    }
-  }, [images]);
+  }, [recordId]);
 
   if (records.length === 0) {
     return null;
   }
 
-  const currentRecord = records[0]; // Use the first record as the current record
+  const currentRecord = records[0];
 
-  // Compute catalog numbers for both sides
+  // Compute catalog numbers
   const catalogNumbers =
-    [records[0]?.["record_catalog_number"], records[1]?.["record_catalog_number"]]
+    [records[0]?.record_catalog_number, records[1]?.record_catalog_number]
       .filter(Boolean)
-      .join(" / ") || "Unknown Catalog Number";
+      .join("|") || "Unknown Cat#";
 
-  // Metadata entries
+  // Metadata entries (Dynamically generated as before)
   const metadataEntries = [
     {
       title: "ARA ID",
@@ -114,8 +89,8 @@ const Album: React.FC = () => {
     },
     {
       title: "Title",
-      sideA: records[0]?.title ?? "INFO DOES NOT EXIST IN DB",
-      sideB: records[1]?.title ?? "INFO DOES NOT EXIST IN DB",
+      sideA: records[0]?.title ?? "Unknown title",
+      sideB: records[1]?.title ?? "Unknown title",
     },
     {
       title: "Names",
@@ -126,15 +101,15 @@ const Album: React.FC = () => {
       title: "Genre",
       sideA: records[0]?.genres
         ? records[0].genres.join(", ")
-        : "No genre assigned",
+        : "Unknown genre",
       sideB: records[1]?.genres
         ? records[1].genres.join(", ")
-        : "No genre assigned",
+        : "Unknown genre",
     },
     {
       title: "Recording Label",
-      sideA: records[0]?.record_label?.label_en ?? "INFO DOES NOT EXIST IN DB",
-      sideB: records[1]?.record_label?.label_en ?? "INFO DOES NOT EXIST IN DB",
+      sideA: records[0]?.record_label?.label_en ?? "Unknown Label",
+      sideB: records[1]?.record_label?.label_en ?? "Unknown Label",
     },
     {
       title: "Recording Catalog Number",
@@ -193,7 +168,7 @@ const Album: React.FC = () => {
     },
   ];
 
-  // Function to handle image click
+  // Handle main image click to switch images
   const handleImageClick = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
@@ -211,321 +186,268 @@ const Album: React.FC = () => {
     }
   };
 
-  const instruments = records[0]["instruments"] ?? ["Unknown instrument"];
-  const instrumentsDisplay = Array.isArray(instruments)
-    ? instruments
-        .map(
-          (instr) => instr.charAt(0).toUpperCase() + instr.slice(1) // Capitalize each instrument
-        )
-        .join(", ") // Join them with commas
-    : instruments;
+  const sideA = records[0];
+  const sideB = records[1];
 
-  // Function to play song
-  const playSong = (record: RecordType) => {
-    if (record.audioUrl) {
-      setSong(record.audioUrl); // Set the audio URL
-      setName(record.title || "Unknown Song"); // Set the song title
-      setArtistName(record.artist_original || "Unknown Artist"); // Set the artist name
-      setSongId(record.id || ""); // Set the song ID
-    } else {
-      console.log("No audio URL available for this song.");
-    }
+  // Handle menu toggle (Change #1)
+  const handleMenuToggle = () => {
+    setIsMenuVisible((prev) => !prev);
   };
 
   return (
-    <div className="album-container">
-      {/* Header Section */}
-      <div className="header">
-        {/* Main Title */}
-        <h1>{currentRecord.record_label?.label_en || "Unknown Label"}</h1>
-
-        {/* Share Text */}
-        <span className="share-button">share</span>
-
-        {/* Album Subtitle */}
-        <h2 className="album-subtitle">
-          {currentRecord.record_label?.am || "Անհայտ պիտակ"}
-          <br />
-          <span className="catalog-number">{catalogNumbers}</span>
-        </h2>
+    <div className="ara-main" id="ara-main">
+      <div className="ara-menu" id="ara-menu">
+        <div className="ara-menu-title" id="ara-menu-title">
+          ARMENIAN RECORD ARCHIVE
+        </div>
+        <div
+          className={`ara-menu-links-wrapper ${isMenuVisible ? "expanded" : ""}`}
+          id="ara-menu-links-wrapper"
+        >
+          {/* Change #2: bilingual menu items */}
+          <a href="#collection">COLLECTION<br/>ՀԱՎԱԿԱՁՈՒ</a> ● 
+          <a href="#about">ABOUT US<br/>ՄԵՐ ՄԱՍԻՆ</a>
+        </div>
+        <div className="ara-menu-toggle" id="ara-menu-toggle" onClick={handleMenuToggle}>
+          <div className={`ara-menu-icon ${isMenuVisible ? "clicked" : ""}`} id="menu-icon">
+            <div className="ara-menu-icon-sleeve"></div>
+            <div className="ara-menu-icon-record"></div>
+          </div>
+        </div>
       </div>
 
-      {/* Main Info Section */}
-      <div className="main-info">
-        {/* Left: Image Carousel */}
-        <div className="album-info" onClick={handleImageClick}>
-          <div className="main-image-container">
+      <div className="container">
+        {/* Header Section */}
+        <div className="ara-record-header">
+          <div className="ara-header__recording-label">
+            {currentRecord.record_label?.label_en ?? "Unknown Label"}
+          </div>
+          <div className="ara-header__share">SHARE</div>
+          <div className="ara-header__recording-catalog-number">{catalogNumbers}</div>
+        </div>
+
+        {/* Left: Image + Thumbnails */}
+        <div className="ara-record-image" onClick={handleImageClick}>
+          <div className="ara-record-image__container">
             <img
               src={images[currentImageIndex]}
-              alt="Main Image"
-              className="main-image"
+              alt="Record"
+              className="ara-record-image__main"
               draggable="false"
             />
           </div>
-          <div className="dots-container">
-            {images.map((_, index) => (
+          <div className="ara-record-image__dots-container">
+            {images.map((_, idx) => (
               <span
-                key={index}
-                className={`dot ${index === currentImageIndex ? "active" : ""}`}
-                data-image={index}
+                key={idx}
+                className={
+                  "ara-record-image__dot" + (idx === currentImageIndex ? " active" : "")
+                }
               ></span>
             ))}
           </div>
         </div>
 
         {/* Right: Text Information */}
-        <div className="text-info">
+        <div className="ara-record-info">
           {/* Track List */}
-          <div className="side-section">
+          <div className="ara-record-info__side-section">
             {/* Side A */}
-            {records[0] && (
-              <div className="side">
-                <h4>{records[0]["track_side"] ?? "Side A"}</h4>
-                <div className="track-list">
-                  <div className="track-entry">
-                    <div className="track-number">
-                      {records[0]["track_number"] ?? "1A"}
+            {sideA && (
+              <div className="ara-record-info__side">
+                <h4 className="ara-record-info__side-title">
+                  {sideA.track_side
+                    ? `▶ Side ${sideA.track_side.toUpperCase()}`
+                    : "▶ Side A"}
+                </h4>
+                <div className="ara-record-info__track-list">
+                  <div className="ara-record-info__track-entry">
+                    <div className="ara-record-info__track-number">
+                      {sideA.track_number ?? "1A"}
                     </div>
-                    <div className="song-title-container">
-                      <div className="song-title">
-                        {records[0]["title"] ?? "Unknown title"}
+                    <div className="ara-record-info__song-title-container">
+                      <div className="ara-record-info__song-title">
+                        {sideA.title ?? "Unknown title"}
                       </div>
-                      <div className="transliteration">
-                        {records[0]["title_armenian"] ??
-                          "Unknown Armenian title"}
-                      </div>
-                      {/* Play Text */}
-                      <div
-                        className="play-text"
-                        onClick={() => playSong(records[0])}
-                        style={{ cursor: "pointer", color: "blue" }}
-                      >
-                        Play
+                      <div className="ara-record-info__transliteration">
+                        {sideA.title_armenian ?? "Unknown Armenian title"}
                       </div>
                     </div>
-                    <div className="song-length">
-                      {records[0]["duration"] ?? "3:00"}
+                    <div className="ara-record-info__song-length">
+                      {sideA.duration ?? "3:00"}
                     </div>
                   </div>
-                  {/* Add more tracks if available */}
                 </div>
               </div>
             )}
 
             {/* Side B */}
-            {records.length > 1 && records[1] && (
-              <div className="side">
-                <h4>{records[1]["track_side"] ?? "Side B"}</h4>
-                <div className="track-list">
-                  <div className="track-entry">
-                    <div className="track-number">
-                      {records[1]["track_number"] ?? "1B"}
+            {sideB && (
+              <div className="ara-record-info__side">
+                <h4 className="ara-record-info__side-title">
+                  {sideB.track_side
+                    ? `▶ Side ${sideB.track_side.toUpperCase()}`
+                    : "▶ Side B"}
+                </h4>
+                <div className="ara-record-info__track-list">
+                  <div className="ara-record-info__track-entry">
+                    <div className="ara-record-info__track-number">
+                      {sideB.track_number ?? "1B"}
                     </div>
-                    <div className="song-title-container">
-                      <div className="song-title">
-                        {records[1]["title"] ?? "Unknown title"}
+                    <div className="ara-record-info__song-title-container">
+                      <div className="ara-record-info__song-title">
+                        {sideB.title ?? "Unknown title"}
                       </div>
-                      <div className="transliteration">
-                        {records[1]["title_armenian"] ??
-                          "Unknown Armenian title"}
-                      </div>
-                      {/* Play Text */}
-                      <div
-                        className="play-text"
-                        onClick={() => playSong(records[1])}
-                        style={{ cursor: "pointer", color: "blue" }}
-                      >
-                        Play
+                      <div className="ara-record-info__transliteration">
+                        {sideB.title_armenian ?? "Unknown Armenian title"}
                       </div>
                     </div>
-                    <div className="song-length">
-                      {records[1]["duration"] ?? "3:00"}
+                    <div className="ara-record-info__song-length">
+                      {sideB.duration ?? "3:00"}
                     </div>
                   </div>
-                  {/* Add more tracks if available */}
                 </div>
               </div>
             )}
           </div>
 
           {/* Details Section */}
-          <div className="details-section">
-            {records[0] && (
-              <div className="details-entry">
-                <div className="details-title">
-                  {records[0]["track_side"] ?? "Side A"} — DETAILS
+          <div className="ara-record-info__details-section">
+            {/* Side A Details */}
+            {sideA && (
+              <div className="ara-record-info__details-entry">
+                <div className="ara-record-info__details-title">
+                  {sideA.track_side
+                    ? `SIDE ${sideA.track_side.toUpperCase()} — DETAILS`
+                    : "SIDE A — DETAILS"}
                 </div>
-                <div className="details-content">
-                  <p>
-                    <h5>Artist:</h5>{" "}
-                    {records[0]["artist_original"] ?? "Unknown artist"}
-                  </p>
-                  <p>
-                    <h5>Instrument Used:</h5> {instrumentsDisplay}
-                  </p>
-                  <p>
-                    <h5>Genre:</h5>{" "}
-                    {records[0]["genres"]
-                      ? records[0]["genres"].join(", ")
-                      : "Unknown genre"}
-                  </p>
-                  <p>
-                    <h5>Region:</h5>{" "}
-                    {records[0]["regions"]
-                      ? records[0]["regions"].join(", ")
-                      : "Unknown region"}
-                  </p>
-                  <p>
-                    <h5>Year Composed:</h5>{" "}
-                    {records[0]["track_year"] ?? "Unknown year"}
-                  </p>
-
-                  {/* Conditionally Rendered Fields */}
-                  {records[0]["composed_by"] && (
-                    <p>
-                      <h5>Composer:</h5> {records[0]["composed_by"]}
-                    </p>
-                  )}
-                  {records[0]["arranged_by"] && (
-                    <p>
-                      <h5>Arranger:</h5> {records[0]["arranged_by"]}
-                    </p>
-                  )}
-                  {records[0]["lyrics_by"] && (
-                    <p>
-                      <h5>Lyricist:</h5> {records[0]["lyrics_by"]}
-                    </p>
-                  )}
-                  {records[0]["director"] && (
-                    <p>
-                      <h5>Director:</h5> {records[0]["director"]}
-                    </p>
-                  )}
+                <div className="ara-record-info__details-content">
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Artist:</span>
+                    <span className="ara-record-info__pill">
+                      {sideA.artist_original ?? "Unknown artist"}
+                    </span>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Instrument Used:</span>
+                    <span className="ara-record-info__pill">
+                      {sideA.instruments
+                        ? sideA.instruments.join(", ")
+                        : "Unknown instrument"}
+                    </span>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Genre:</span>
+                    <span className="ara-record-info__pill">
+                      {sideA.genres ? sideA.genres.join(", ") : "Unknown genre"}
+                    </span>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Region:</span>
+                    <span className="ara-record-info__pill">
+                      {sideA.regions ? sideA.regions.join(", ") : "Unknown region"}
+                    </span>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Year Composed:</span>
+                    <span className="ara-record-info__pill">
+                      {sideA.track_year ?? "Unknown year"}
+                    </span>
+                  </div>
                 </div>
               </div>
             )}
-            {records.length > 1 && records[1] && (
-              <div className="details-entry">
-                <div className="details-title">
-                  {records[1]["track_side"] ?? "Side B"} — DETAILS
+            {/* Side B Details */}
+            {sideB && (
+              <div className="ara-record-info__details-entry">
+                <div className="ara-record-info__details-title">
+                  {sideB.track_side
+                    ? `SIDE ${sideB.track_side.toUpperCase()} — DETAILS`
+                    : "SIDE B — DETAILS"}
                 </div>
-                <div className="details-content">
-                  <p>
-                    <h5>Artist:</h5>{" "}
-                    {records[1]["artist_original"] ?? "Unknown artist"}
-                  </p>
-                  <p>
-                    <h5>Instrument Used:</h5> {instrumentsDisplay}
-                  </p>
-                  <p>
-                    <h5>Genre:</h5>{" "}
-                    {records[1]["genres"]
-                      ? records[1]["genres"].join(", ")
-                      : "Unknown genre"}
-                  </p>
-                  <p>
-                    <h5>Region:</h5>{" "}
-                    {records[1]["regions"]
-                      ? records[1]["regions"].join(", ")
-                      : "Unknown region"}
-                  </p>
-                  <p>
-                    <h5>Year Composed:</h5>{" "}
-                    {records[1]["track_year"] ?? "Unknown year"}
-                  </p>
-
-                  {/* Conditionally Rendered Fields */}
-                  {records[1]["composed_by"] && (
-                    <p>
-                      <h5>Composer:</h5> {records[1]["composed_by"]}
-                    </p>
-                  )}
-                  {records[1]["arranged_by"] && (
-                    <p>
-                      <h5>Arranger:</h5> {records[1]["arranged_by"]}
-                    </p>
-                  )}
-                  {records[1]["lyrics_by"] && (
-                    <p>
-                      <h5>Lyricist:</h5> {records[1]["lyrics_by"]}
-                    </p>
-                  )}
-                  {records[1]["director"] && (
-                    <p>
-                      <h5>Director:</h5> {records[1]["director"]}
-                    </p>
-                  )}
+                <div className="ara-record-info__details-content">
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Artist:</span>
+                    <span className="ara-record-info__pill">
+                      {sideB.artist_original ?? "Unknown artist"}
+                    </span>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Instrument Used:</span>
+                    <span className="ara-record-info__pill">
+                      {sideB.instruments
+                        ? sideB.instruments.join(", ")
+                        : "Unknown instrument"}
+                    </span>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Genre:</span>
+                    <span className="ara-record-info__pill">
+                      {sideB.genres ? sideB.genres.join(", ") : "Unknown genre"}
+                    </span>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Region:</span>
+                    <span className="ara-record-info__pill">
+                      {sideB.regions ? sideB.regions.join(", ") : "Unknown region"}
+                    </span>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Year Composed:</span>
+                    <span className="ara-record-info__pill">
+                      {sideB.track_year ?? "Unknown year"}
+                    </span>
+                  </div>
                 </div>
               </div>
             )}
           </div>
-          <div id="audio-player-container"></div>
-        </div>
-      </div>
-
-      {/* Metadata Section */}
-      <div className="meta-section">
-        <br />
-        <h4 style={{ fontWeight: "bold" }}>METADATA</h4>
-        <br />
-        <div className="metadata-row">
-          <div className="metadata-title">DATA TITLE</div>
-          <div className="metadata-side">SIDE A DATA</div>
-          <div className="metadata-side">SIDE B DATA</div>
         </div>
 
-        {/* Render metadata entries */}
-        {metadataEntries.map((entry, index) => (
-          <div className="metadata-row" key={index}>
-            <div className="metadata-title">{entry.title}</div>
-            <div className="metadata-content">{entry.sideA}</div>
-            <div className="metadata-content">{entry.sideB}</div>
+        {/* Metadata Section */}
+        <div className="ara-record-meta-section">
+          <div className="ara-record-meta-section__metadata-row">
+            <div className="ara-record-meta-section__data-title">DATA CATEGORY</div>
+            <div className="ara-record-meta-section__side-a-data">SIDE A DATA</div>
+            <div className="ara-record-meta-section__side-b-data">SIDE B DATA</div>
           </div>
-        ))}
-      </div>
 
-      {/* Carousel Section - Added under meta-section */}
-      <div className="carousel-container">
-        <Flickity
-          className={"carousel"}
-          elementType={"div"}
-          flickityRef={(c) => (flickityRef.current = c)} // Assign the ref
-          options={{
-            wrapAround: true,
-            cellAlign: "left",
-            autoPlay: false,
-            pageDots: false,
-            arrowShape: "M 10,50 L 70,100 L 70,50 L 70,50 L 70,50 L 70,0 Z",
-          }}
-          disableImagesLoaded={false}
-          reloadOnUpdate={false}
-          static={false}
-        >
-          {images.map((imageSrc, index) => (
-            <div className="carousel-cell" key={index}>
-              <img src={imageSrc} alt={`Slide ${index}`} />
+          {metadataEntries.map((entry, idx) => (
+            <div className="ara-record-meta-section__metadata-row" key={idx}>
+              <div className="ara-record-meta-section__data-title">{entry.title}</div>
+              <div className="ara-record-meta-section__side-a-data">{entry.sideA}</div>
+              <div className="ara-record-meta-section__side-b-data">{entry.sideB}</div>
             </div>
           ))}
-        </Flickity>
+        </div>
       </div>
 
-      {/* Lyrics Section */}
-      <div className="lyrics-section">
-        {records.map((record, index) => (
-          <div key={index}>
-            <h3>{record.track_side ?? `Side ${index === 0 ? "A" : "B"}`}</h3>
-            {record.song_lyrics ? (
-              <p>{record.song_lyrics}</p>
-            ) : (
-              <p>No lyrics available</p>
-            )}
+      {/* Bottom Player (static for now, no audio context) */}
+      <div className="ara-record-player-wrapper">
+        <div className="ara-record-player-info">
+          <div className="ara-record-player-image">
+            <img
+              src={images[0]}
+              alt="Player Thumbnail"
+              className="ara-record-player-thumbnail-img"
+            />
           </div>
-        ))}
+          <div className="ara-record-player-song-info">
+            <div className="ara-record-player-song-title">
+              {records[0]?.title ?? "Unknown Song"}
+            </div>
+            <div className="ara-record-player-artist-name">
+              {records[0]?.artist_original ?? "Unknown Artist"}
+            </div>
+          </div>
+        </div>
+        <div className="ara-record-player-audio-section">
+          <div className="ara-record-player-progress-bar"></div>
+          <div className="ara-record-player-time">00:00 | {records[0]?.duration ?? "3:00"}</div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default function CollectionDetail() {
-  return <Album />;
-}
+export default CollectionDetail;

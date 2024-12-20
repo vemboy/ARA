@@ -161,6 +161,8 @@ strong {
   margin: 0 10px;
   text-decoration: none;
   font-weight: bold;
+    display: inline-block;
+  text-align: center;
 }
 
 .ara-menu-toggle {
@@ -561,7 +563,7 @@ strong {
 }
 
 footer {
-  height:300px;
+  height: 300px;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
@@ -569,7 +571,7 @@ footer {
   border-right: 20px solid var(--ara-blue);
   background-color: var(--ara-blue);
   color: white;
-  margin-top: 20rem;
+  margin-top: 20rem; /* Adds the large spacing under the metadata section */
 }
 
 a, a:visited, a:hover, a:active {
@@ -760,172 +762,307 @@ a, a:visited, a:hover, a:active {
 
 
 
-/* COLLECTION DETAIL PAGE */
-
-/* Reset and global styles */
-/* Scoped Styles for Album Page */
-:root {
-  --image-zoom-percentage: 2.2; /* Adjust this value to change the zoom level */
+@font-face {
+  font-family: 'FitVariable';
+  src: url('FitVariable-NormalVF.ttf') format('truetype');
 }
 
-.album-container {
+:root {
+  --ara-blue: #091133;
+  --circle-size: 30%;
+  --main-border-thickness: 20px;
+  --menu-title-font-size: 5rem;
+  --menu-icon-size: 3.7rem;
+  --menu-links-font-size: 1rem;
+
+  --intro-text-font-size: 2.2rem;
+  --search-icon-font-size: 5rem;
+  --search-input-font-size: 1.8rem;
+  --search-bar-line-height: 1.2;
+
+  --filter-title-font-size: 2rem;
+  --filter-option-font-size: 1.2rem;    
+  --filter-item-font-size: 1rem;
+  --filter-icon-circle-size: .8rem;
+
+  --grid-item-title-armenian-font-size: 1rem;
+  --grid-item-title-transliteration-font-size: .9rem;
+  --filter-language-switcher-font-size: 1rem;
+
+  --player-song-title-font-size: 1rem;
+  --player-artist-name-font-size: .8rem;
+  --player-time-font-size: 1rem;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #091133;
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  padding: 20px;
-  margin: 0 auto;
+}
+
+.ara-main {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  border-left: var(--main-border-thickness) solid var(--ara-blue);
+  border-right: var(--main-border-thickness) solid var(--ara-blue);
+  background-color: white;
+  color: var(--ara-blue);
+  padding: 2rem;
+}
+
+.ara-menu {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: min-content auto;
+  text-align: center;
+  background-color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.ara-menu-title {
+  grid-column: 1 / span 2;
+  font-family: 'FitVariable';
+  font-size: var(--menu-title-font-size);
+  font-weight: bold;
+  color: var(--ara-blue);
+  font-variation-settings: 'wdth' 500, 'wght' 1000;
+}
+
+.ara-menu-links-wrapper {
+  grid-column: 1 / span 2;
+  font-size: var(--menu-links-font-size);
+  color: var(--ara-blue);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.ara-menu-links-wrapper.expanded {
+  max-height: 100px;
+  opacity: 1;
+}
+
+.ara-menu-links-wrapper a {
+  color: var(--ara-blue);
+  margin: 0 10px;
+  text-decoration: none;
+  font-weight: bold;
+  display: inline-block;
+  text-align: center;
+}
+
+.ara-menu-toggle {
+  font-size: 5rem;
+  margin-right: 1rem;
+  display: grid;
+}
+
+.ara-menu-icon {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.ara-menu-icon-sleeve,
+.ara-menu-icon-record {
+  grid-row: 1;
+  grid-column: 1;
+  width: var(--menu-icon-size);
+  height: var(--menu-icon-size);
+}
+
+.ara-menu-icon-sleeve {
+  background-color: var(--ara-blue);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.ara-menu-icon-sleeve::after {
+  content: '';
+  width: var(--circle-size);
+  height: var(--circle-size);
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.ara-menu-icon-record {
+  background-color: var(--ara-blue);
+  border-radius: 50%;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.ara-menu-icon-record::after {
+  content: '';
+  width: var(--circle-size);
+  height: var(--circle-size);
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ara-menu-icon.clicked .ara-menu-icon-record {
+  transform: translateX(50%);
+}
+
+/* CONTAINER LAYOUT */
+.container {
+  border-top: 5px solid var(--ara-blue);
+  padding-top: 2rem;
   display: grid;
   gap: 50px;
   grid-template-areas:
     "images heading"
     "images tracklist"
     "images info"
-    "metadata metadata"
-    "carousel carousel"
-    "lyrics lyrics"; /* Added this line */
+    "metadata metadata";
   grid-template-columns: 35vw 2fr;
 }
 
-.album-container * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@media (max-width: 768px) {
+  .container {
+    grid-template-areas:
+      "heading"
+      "images"
+      "tracklist"
+      "info"
+      "metadata";
+    grid-template-columns: 1fr;
+  }
 }
 
-/* Main Info Section */
-.main-info {
-  display: contents;
-}
-
-/* Left: Image + Thumbnails */
-.album-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center content horizontally */
-  gap: 10px;
-  grid-area: images;
-  border-radius: 20%;
-  background-color: lightgray;
-  /* Remove or adjust padding to prevent interference */
-  /* padding: 50px; */
-  position: relative;
-  aspect-ratio: 1 / 1; /* Ensure the container is square */
-  overflow: hidden;
-}
-
-.main-image-container {
-  position: relative;
-  width: 80%;
-  cursor: default;
-  margin-top: 8.5%;
-  overflow: hidden; /* Ensure overflow is hidden */
-  border-radius: 50%; /* Make the container circular */
-  aspect-ratio: 1 / 1; /* Ensure the container is square */
-}
-
-.album-info::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' fill='white'><path d='M35 45l-15-15 15-15v30z'/></svg>")
-      30 30,
-    auto;
-  z-index: 10;
-}
-
-.album-info::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' fill='white'><path d='M25 45l15-15-15-15v30z'/></svg>")
-      30 30,
-    auto;
-  z-index: 10;
-}
-
-.dots-container {
-  text-align: center;
-  margin-top: 10px;
-}
-
-.dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  background-color: #ccc;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.dot.active {
-  background-color: #333;
-}
-
-.main-image {
-  width: 102.5%;
-  height: 98%;
-  object-fit: cover; /* Ensures the image covers the container */
-  user-select: none;
-  -webkit-user-drag: none;
-  transform: scale(var(--image-zoom-percentage));
-  transform-origin: center center;
-  /* Removed border-radius from here */
-}
-
-/* Right: Text Section */
-.text-info {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* Header Section */
-.header {
+/* HEADER SECTION */
+.ara-record-header {
   display: grid;
   grid-template-columns: max-content 1fr;
   border-bottom: 2px solid black;
   padding-bottom: 10px;
   grid-area: heading;
+  grid-gap: .5rem;
 }
 
-.header h1 {
+.ara-header__recording-label {
   font-size: 32px;
   text-transform: uppercase;
 }
 
-.header span {
-  font-family: monospace;
+.ara-header__share {
   font-size: 16px;
   justify-self: end;
 }
 
-.album-subtitle {
-  font-size: 24px;
-  font-weight: lighter;
+.ara-header__recording-catalog-number {
+  font-family: monospace;
+  font-size: 16px;
 }
 
-/* Side Section */
-.side-section {
+/* MAIN IMAGE SECTION */
+.ara-record-image {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  grid-area: images;
+  border-radius: 20%;
+  background-color: lightgray;
+  padding: 50px;
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.ara-record-image__container {
+  position: relative;
+  width: 100%;
+  cursor: default;
+}
+
+.ara-record-image__main {
+  display: block;
+  border-radius: 100%;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.ara-record-image::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="white"><path d="M35 45l-15-15 15-15v30z"/></svg>') 30 30, auto;
+  z-index: 10;
+}
+
+.ara-record-image::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="white"><path d="M25 45l15-15-15-15v30z"/></svg>') 30 30, auto;
+  z-index: 10;
+}
+
+.ara-record-image__dots-container {
+  text-align: center;
+  user-select: none;
+  cursor: default;
+}
+
+.ara-record-image__dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: #ccc;
+  border-radius: 50%;
+}
+
+.ara-record-image__dot.active {
+  background-color: #333;
+}
+
+/* TRACKLIST SECTION */
+.ara-record-info__side-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 30px;
   grid-area: tracklist;
+  padding-bottom: 1rem;
 }
 
-.side h4 {
+.ara-record-info__side-title {
   text-transform: uppercase;
   margin-bottom: 5px;
   font-size: 16px;
-  font-weight: bold;
 }
 
-/* Song List */
-.track-list {
+.ara-record-info__track-list {
   display: grid;
   grid-template-columns: 2ch 1fr 6ch;
   gap: 10px;
@@ -934,49 +1071,48 @@ a, a:visited, a:hover, a:active {
   padding-top: 10px;
 }
 
-.track-entry {
+.ara-record-info__track-entry {
   display: contents;
+  cursor: pointer;
 }
 
-.track-number {
+.ara-record-info__track-entry:hover .ara-record-info__track-number,
+.ara-record-info__track-entry:hover .ara-record-info__song-title,
+.ara-record-info__track-entry:hover .ara-record-info__song-length {
+  font-weight: bold;
+}
+
+.ara-record-info__track-number {
   font-size: 16px;
 }
 
-.song-title-container {
+.ara-record-info__song-title-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-.song-title {
+.ara-record-info__song-title {
   font-size: 24px;
   text-align: start;
   text-transform: uppercase;
-  font-weight: 400;
 }
 
-.transliteration {
+.ara-record-info__transliteration {
   font-style: italic;
   font-size: 16px;
   color: #555;
   text-align: start;
 }
 
-.song-length {
+.ara-record-info__song-length {
   font-family: monospace;
   text-align: right;
   font-size: 18px;
 }
 
-/* Hover Effects */
-.track-entry:hover .track-number,
-.track-entry:hover .song-title,
-.track-entry:hover .song-length {
-  font-weight: bold;
-}
-
-/* Details Section */
-.details-section {
+/* DETAILS SECTION */
+.ara-record-info__details-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
@@ -985,143 +1121,148 @@ a, a:visited, a:hover, a:active {
   grid-area: info;
 }
 
-.details-entry {
-  display: grid;
-  grid-template-columns: 1fr;
+@media (max-width: 768px) {
+  .ara-record-info__side-section {
+    grid-template-columns: 1fr;
+  }
+
+  .ara-record-info__details-section {
+    grid-template-columns: 1fr;
+  }
 }
 
-.details-title {
-  grid-row: 1;
+.ara-record-info__details-title {
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 10px;
 }
 
-.details-content {
-  grid-row: 2;
+.ara-record-info__details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   font-size: 14px;
-  margin-bottom: 20px;
 }
 
-.details-content p {
-  margin-bottom: 8px;
+.ara-record-info__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-/* Metadata Section */
-.meta-section {
+.ara-record-info__label {
+  font-weight: bold;
+}
+
+.ara-record-info__pill {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.ara-record-info__pill:hover {
+  background-color: var(--ara-blue);
+  color: white;
+  cursor: pointer;
+}
+
+/* METADATA SECTION */
+.ara-record-meta-section {
   display: grid;
   grid-template-columns: 1fr;
   border-top: 2px solid black;
   border-bottom: 2px solid black;
-  padding-bottom: 10px;
   grid-area: metadata;
 }
 
-.metadata-row {
+.ara-record-meta-section__metadata-row {
   display: grid;
   grid-template-columns: 250px 1fr 1fr;
-  border-top: 1px solid lightgray;
   grid-gap: 10px;
+  border-top: 1px solid lightgray;
 }
 
-/* Carousel Styles */
-.carousel-container {
-  grid-area: carousel; /* Assign to the carousel grid area */
-  width: 100%; /* Set carousel width to full */
-  max-width: 100vw; /* Ensure it doesn't exceed viewport width */
-  margin: 0 auto; /* Center the carousel */
+.ara-record-meta-section__metadata-row > div {
+  padding: 10px;
 }
 
-.carousel {
-  width: 100%; /* Full width */
-}
-
-.carousel-cell {
-  width: 50%; /* Each cell takes up half of the carousel width */
-  aspect-ratio: 1 / 1; /* Make cells square */
-  overflow: hidden; /* Ensure content doesn't overflow */
-}
-
-/* Image styles */
-.carousel-cell img {
-  width: 100%; /* Make the image fill the cell */
-  height: 100%; /* Make the image fill the cell */
-  object-fit: cover; /* Cover the cell while maintaining aspect ratio */
-}
-
-/* Style the arrows */
-.flickity-button {
-  background: transparent; /* Remove background */
-  border: none; /* Remove border */
-  color: white; /* Change arrow color to white */
-}
-
-.flickity-button:hover {
-  background: transparent;
-  border: none;
-  color: white;
-}
-
-.flickity-button:focus {
-  outline: none;
-}
-
-.flickity-prev-next-button svg {
-  fill: white; /* Set SVG fill color to white */
-}
-
-h5 {
-  display: inline-block;
+.ara-record-meta-section__data-title {
   font-weight: bold;
+  border-right: 1px solid #ddd;
 }
 
-/* Media Queries */
-@media (max-width: 1024px) {
-  .album-container {
-    grid-template-columns: 35vw 1fr;
+.ara-record-meta-section__side-a-data {
+  border-right: 1px solid #ddd;
+}
+
+/* PLAYER SECTION */
+.ara-record-player-wrapper {
+  position: fixed;
+  bottom: 0;
+  height: 10vh;
+  width: 100vw;
+  background-color: var(--ara-blue);
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  padding-left:2rem;
+  color:white;
+  z-index: 999;
+}
+
+.ara-record-player-info {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  align-items: center;
+  padding-right: 2rem;
+}
+
+.ara-record-player-thumbnail-img {
+  height: 50px;
+  padding-right: 1rem;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.ara-record-player-song-info {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  line-height: 1.2;
+}
+
+.ara-record-player-song-title {
+  text-transform: uppercase;
+  font-size: var(--player-song-title-font-size);
+}
+
+.ara-record-player-artist-name {
+  font-size: var(--player-artist-name-font-size);
+}
+
+.ara-record-player-audio-section {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  align-items: center;
+}
+
+.ara-record-player-progress-bar {
+  background-color: white;
+  height: 5%;
+}
+
+.ara-record-player-time {
+  font-size: var(--player-time-font-size);
+  text-align: right;
+  padding-left:2rem;
+  padding-right:2rem;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --menu-title-font-size: 3rem;
+    --menu-icon-size:2.3rem;
+    --intro-text-font-size: 1.5rem;
   }
-
-  .side-section {
-    grid-template-columns: 1fr;
-  }
-
-  .details-section {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 800px) {
-  .album-container {
-    grid-template-areas:
-      "heading"
-      "images"
-      "tracklist"
-      "info"
-      "metadata"
-      "carousel"; /* Include carousel in mobile layout */
-    grid-template-columns: 1fr;
-  }
-}
-
-.album-container .audio-player-wrapper {
-  position: relative; /* Change position to relative */
-  margin-top: 20px;   /* Adjust spacing as needed */
-  /* ... other styles to fit under the details section */
-}
-
-.lyrics-section {
-  grid-area: lyrics; /* Assign to grid area */
-  text-align: center;
-  margin: 20px 0; /* Adds margin at top and bottom */
-}
-
-.lyrics-section h3 {
-  margin-bottom: 10px;
-  font-size: 24px;
-}
-
-.lyrics-section p {
-  margin-bottom: 20px;
-  font-size: 16px;
-  white-space: pre-wrap; /* Preserve line breaks */
 }
