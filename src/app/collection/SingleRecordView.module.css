@@ -1,0 +1,112 @@
+.revolutionary-box {
+  width: 405px; /* 1.35 times 300px */
+  height: 425.25px; /* 1.35 times 315px */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #091133; /* Dark background for contrast */
+  border: 5px solid #000; /* Bold border for brutalist effect */
+  box-shadow: 13.5px 13.5px 0px 0px #000; /* 1.35 times 10px */
+  padding: 13.5px; /* 1.35 times 10px */
+}
+
+.daring-header {
+  font-family: 'fit-variable'; /* Match the font style */
+  font-size: 67.5px; /* 1.35 times 50px */
+  color: #fff; /* White color for contrast */
+  text-transform: uppercase; /* Make text uppercase */
+  margin-bottom: 13.5px; /* 1.35 times 10px */
+  font-stretch: 100%;
+  margin-left: 4.725px; /* 1.35 times 3.5px */
+  margin-top: -6.75px; /* 1.35 times -5px */
+}
+
+.adventurous-play-icon {
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 23.625px; /* 1.35 times 17.5px */
+  right: 20.25px; /* 1.35 times 15px */
+  border-top: 13.5px solid transparent; /* 1.35 times 10px */
+  border-left: 20.25px solid #fff; /* 1.35 times 15px */
+  border-bottom: 13.5px solid transparent; /* 1.35 times 10px */
+}
+
+.pioneering-pause-icon {
+  position: absolute;
+  top: 23.625px; /* 1.35 times 17.5px */
+  right: 20.25px; /* 1.35 times 15px */
+  width: 20.25px; /* 1.35 times 15px */
+  height: 20.25px; /* 1.35 times 15px */
+  display: flex;
+  justify-content: space-between;
+}
+
+.pioneering-pause-icon::before,
+.pioneering-pause-icon::after {
+  content: "";
+  width: 6.75px; /* 1.35 times 5px */
+  height: 27px; /* 1.35 times 20px */
+  background-color: #fff; /* White color for pause button bars */
+}
+
+.rebellious-photo-frame {
+  flex: 1;
+  background-color: #fff; /* White background for the image area */
+  width: 249.75px; /* 1.35 times 185px */
+  height: 249.75px; /* 1.35 times 185px */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%; /* Circular image container */
+  overflow: hidden;
+  border: 4.05px solid #000; /* 1.35 times 3px */
+}
+
+.maverick-caption {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+  margin-bottom: 6.75px; /* 1.35 times 5px */
+  text-align: center;
+  color: #fff; /* White text color */
+  font-family: 'arm-reg', sans-serif; /* Match the font style */
+  font-weight: 400;
+
+  /* Responsive font size with clamp */
+  font-size: clamp(16.2px, 5.4vw, 21.6px); /* 1.35 times the original sizes */
+  
+  /* Prevent text from wrapping and add ellipsis for overflow */
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}
+
+.maverick-caption a {
+  color: inherit; /* Inherit color from parent */
+  text-decoration: none; /* Remove underline */
+}
+
+.daring-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border: 0;
+}
+
+.daring-photo-rotating {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border: 0;
+  animation: rotate 5s linear infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,1385 @@
+/* styles.css */
+/* Copy the provided CSS from the designer's code here verbatim. 
+   The spinning of the landing page image is controlled by JavaScript (rotateLogoOnScroll),
+   not by CSS. The CSS just sets the layout and styling. */
+
+/* ============================== FONT SETTINGS ============================== */
+@font-face {
+  font-family: 'FitVariable';
+  src: url('FitVariable-NormalVF.ttf') format('truetype');
+}
+
+/* ============================== ROOT VARIABLES ============================== */
+:root {
+  --ara-blue: #091133;
+  --circle-size: 30%;
+  --border-thickness-debug: 0px;
+
+  --main-border-thickness:20px;
+  --menu-title-font-size: 5rem;
+  --menu-icon-size:3.7rem;
+  --menu-links-font-size: 1rem;
+
+  --intro-text-font-size: 2.2rem;
+  --search-icon-font-size: 5rem;
+  --search-input-font-size: 1.8rem;
+  --search-bar-line-height:1.2;
+
+  --filter-title-font-size: 2rem;
+  --filter-option-font-size: 1.2rem;	  
+  --filter-item-font-size: 1rem;
+  --filter-icon-circle-size: .8rem;  
+
+  --grid-item-title-armenian-font-size: 1rem;
+  --grid-item-title-transliteration-font-size: .9rem;
+  --filter-language-switcher-font-size: 1rem;
+
+  --player-song-title-font-size: 1rem;
+  --player-artist-name-font-size: .8rem;
+  --player-time-font-size: 1rem;
+}
+
+/* ============================== GLOBAL STYLES ============================== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #091133;
+  font-family: Arial, sans-serif;
+}
+
+p {
+  font-family: sans-serif;
+  font-size: 2rem;
+  text-transform: none;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+strong {
+  font-weight: bold;
+}
+
+/* Selection */
+::selection {
+  color: white;
+  background-color: var(--ara-blue);
+}
+
+::-webkit-selection {
+  color: white;
+  background-color: var(--ara-blue);
+}
+
+/* ============================== LANDING PAGE STYLES ============================== */
+.ara-landing-page {
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--ara-blue);
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.ara-landing-page img {
+  width: 50vw;
+  height: 50vh;
+  object-fit: contain;
+  transition: transform 0.1s ease-out;
+  cursor: pointer;
+}
+
+/* ============================== MAIN CONTAINER STYLES ============================== */
+.ara-main {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  border-left: var(--main-border-thickness) solid var(--ara-blue);
+  border-right: var(--main-border-thickness) solid var(--ara-blue);
+  background-color: white;
+  color: var(--ara-blue);
+  padding: 2rem;
+}
+
+/* ============================== MENU STYLES ============================== */
+.ara-menu {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: min-content auto;
+  text-align: center;
+  background-color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.ara-menu-title {
+  grid-column: 1 / span 2;
+  grid-row: 1;
+  font-family: 'FitVariable';
+  font-size: var(--menu-title-font-size);
+  font-weight: bold;
+  color: var(--ara-blue);
+  font-variation-settings: 'wdth' 500, 'wght' 1000;
+}
+
+.ara-menu-links-wrapper {
+  grid-column: 1 / span 2;
+  font-size: var(--menu-links-font-size);
+  color: var(--ara-blue);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  max-height: 0;
+  opacity: 0;
+}
+
+.ara-menu-links-wrapper.expanded {
+  max-height: 100px;
+  opacity: 1;
+}
+
+.ara-menu-links-wrapper a {
+  color: var(--ara-blue);
+  margin: 0 10px;
+  text-decoration: none;
+  font-weight: bold;
+    display: inline-block;
+  text-align: center;
+}
+
+
+.ara-search-bar {
+  /* If you haven't already, 3 columns: [search-icon] [input] [clear button] */
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+}
+
+.clear-search-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+.clear-search-button:hover {
+  color: lightgray;
+}
+
+/*
+   ================================
+   FILTER ITEM RULES
+   ================================
+*/
+.filter-item {
+  /* Normal item = regular text */
+  font-weight: normal;
+  font-style: normal;
+  color: var(--ara-blue);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem; /* space between items, optional */
+}
+
+/* The circle on the left */
+.filter-item .ara-filter-icon-circle {
+  width: var(--filter-icon-circle-size);
+  height: var(--filter-icon-circle-size);
+  border-radius: 50%;
+  border: 2px solid var(--ara-blue);
+  background-color: transparent;
+  margin-right: 10px;
+  transition: background-color 0.2s ease, border 0.2s ease;
+}
+
+/* 
+   1) SELECTED => "active" 
+      => bold text, filled circle 
+*/
+.filter-item.active {
+  font-weight: bold;
+}
+.filter-item.active .ara-filter-icon-circle {
+  background-color: var(--ara-blue);
+  border: none;
+}
+
+/* 
+   2) NON-SELECTABLE => "disabled"
+      => italic, partial opacity, no pointer 
+*/
+.filter-item.disabled {
+  font-style: italic;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.filter-item.disabled .ara-filter-icon-circle {
+  border-color: #aaa;
+}
+
+/* 
+   3) Regular => normal 
+      => covered by .filter-item, 
+         (hover effect optional)
+*/
+.filter-item:not(.active):not(.disabled):hover {
+  font-weight: bold;
+}
+.ara-menu-toggle {
+  font-size: 5rem;
+  margin-right: 1rem;
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+}
+
+.ara-menu-icon {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.ara-menu-icon-sleeve,
+.ara-menu-icon-record {
+  grid-row: 1;
+  grid-column: 1;
+  width: var(--menu-icon-size);
+  height: var(--menu-icon-size);
+}
+
+.ara-menu-icon-sleeve {
+  background-color: var(--ara-blue);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.ara-menu-icon-sleeve::after {
+  content: '';
+  width: var(--circle-size);
+  height: var(--circle-size);
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.ara-menu-icon-record {
+  background-color: var(--ara-blue);
+  border-radius: 50%;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.ara-menu-icon-record::after {
+  content: '';
+  width: var(--circle-size);
+  height: var(--circle-size);
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ara-menu-icon.clicked .ara-menu-icon-record {
+  transform: translateX(50%);
+}
+
+/* ============================== INTRO SECTION STYLES ============================== */
+.ara-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+  border-top: 5px solid var(--ara-blue);
+}
+
+.ara-intro-text-english, .ara-intro-text-armenian {
+  font-size: var(--intro-text-font-size);
+  font-weight: bold;
+  line-height: 1.1;
+  max-width: 40ch;
+  align-self: start;
+  padding-top: 1rem;
+}
+
+/* ============================== SEARCH BAR STYLES ============================== */
+.ara-search-bar {
+  grid-column: 1 / span 1;
+  display: grid;
+  /* Change from 2 columns → 3 columns */
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  border-bottom: 10px solid var(--ara-blue);
+  line-height: var(--search-bar-line-height);
+  background-color: var(--ara-blue);
+  padding-top: 0.5rem;
+}
+
+.search-icon {
+  font-size: var(--search-icon-font-size);
+  color: white;
+  padding-right: 1.5rem;
+  padding-left: 2rem;
+}
+
+.search-input {
+  font-size: var(--search-input-font-size);
+  color: white;
+  border: none;
+  outline: none;
+  background: none;
+  width: 100%;
+  line-height: var(--search-bar-line-height);
+}
+
+::placeholder {
+  color:lightgray;
+  opacity: 1;
+}
+
+/* ============================== FILTER SECTION STYLES ============================== */
+.ara-filters-section {
+  display: grid;
+  margin-top: 2rem;
+}
+
+.filter-arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.filter-arrow.open {
+  transform: rotate(180deg);
+}
+.ara-filters-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: baseline;
+}
+
+.ara-filters-title {
+  font-size: var(--filter-title-font-size);
+  font-weight: bold;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.ara-filters-language-switcher {
+  font-size: var(--filter-language-switcher-font-size);
+  justify-self: end;
+}
+
+.ara-filters-language-switcher span:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.language-selected {
+  font-weight: bold;
+  color: var(--ara-blue);
+}
+
+.ara-filter-menu-wrapper {
+  margin-top: 1rem;
+}
+
+.ara-filter-options-wrapper {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  padding-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+.ara-filter-option {
+  font-size: var(--filter-option-font-size);
+  color: var(--ara-blue);
+  text-align: left;
+  font-weight: normal;
+}
+
+.ara-filter-option.selected {
+  font-weight: bold;
+}
+
+.ara-filter-option:hover{
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.ara-filter-items-wrapper {
+  border-top: 3px solid var(--ara-blue);
+  border-bottom: 3px solid var(--ara-blue);
+}
+
+.ara-filter-items {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(auto, 1fr);
+  grid-auto-flow: row;
+  gap: 1rem;
+  list-style: none;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.filter-item {
+  font-size: var(--filter-item-font-size);
+  color: var(--ara-blue);
+  cursor: pointer;
+}
+
+.filter-item:hover {
+  font-weight: bold;
+}
+
+.ara-filter-icon-circle {
+  display: inline-block;
+  width: var(--filter-icon-circle-size);
+  height: var(--filter-icon-circle-size);
+  border-radius: 50%;
+  border: 2px solid #000;
+  margin-right: 10px;
+}
+
+.filter-item:hover  .ara-filter-icon-circle {
+  background-color: var(--ara-blue);
+}
+
+/* ============================== GRID STYLES ============================== */
+.ara-grid-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  max-width: 100%;
+  background-color: white;
+  margin-top: 2rem;
+}
+
+.ara-grid-item {
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
+  background-color: #ddd;
+  color: var(--ara-blue);
+  aspect-ratio: 1;
+  justify-items: center;
+  align-items: center;
+  border-radius: .2rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.ara-grid-item-circle {
+  width: 70%;
+  height: 0;
+  padding-bottom: 70%;
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ara-grid-item-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: transform 0.3s ease, mix-blend-mode 0.3s ease;
+  mix-blend-mode: normal;
+  /* Remove position: absolute; top:50%; left:50%; transform: ... */
+}
+
+.ara-grid-item:hover .ara-grid-item-circle img {
+  mix-blend-mode: luminosity;
+}
+
+.ara-grid-item-circle:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--ara-blue);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ara-grid-item:hover .ara-grid-item-circle:before {
+  opacity: 1;
+}
+
+.ara-grid-item-circle-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.6rem;
+  color: white;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.ara-grid-item:hover .ara-grid-item-circle-overlay {
+  opacity: 1;
+}
+
+.ara-grid-item:hover .ara-grid-item-circle img {
+  filter: blur(.5px);
+}
+
+.ara-grid-item-title {
+  text-align: center;
+}
+
+.ara-grid_item_title_armenian {
+  text-transform: uppercase;
+  font-size: var(--grid-item-title-armenian-font-size);
+  font-weight: bold;
+}
+
+.ara-grid_item_title_transliteration {
+  font-style: italic;
+  font-size: var(--grid-item-title-transliteration-font-size);
+}
+
+.ara-grid-icons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 90%;
+  padding-top: .5rem;
+}
+
+.grid_item_info {
+  text-align: left;
+}
+
+.grid_item_playing {
+  text-align: right;
+  opacity: 0;
+}
+
+.ara-grid-item:hover .grid_item_playing {
+  opacity: 1;
+}
+
+/* ============================== PLAYER STYLES ============================== */
+.ara-record-player-wrapper {
+  position: fixed;
+  bottom: 0;
+  height: 10vh;
+  width: 100vw;
+  background-color: var(--ara-blue);
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  padding-left: 0;
+  color:white;
+  z-index: 999;
+}
+
+.ara-record-player-info {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  align-items: center;
+  padding-right: 2rem;
+}
+
+.ara-record-player-thumbnail-img {
+}
+
+.ara-record-player-song-info {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  line-height: 1.2;
+  margin-left: 2.25vw;
+}
+
+.ara-record-player-song-title {
+  text-transform: uppercase;
+  font-size: var(--player-song-title-font-size);
+}
+
+.ara-record-player-artist-name {
+  font-size: var(--player-artist-name-font-size);
+}
+
+.ara-record-player-audio-section {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  align-items: center;
+}
+
+.ara-record-player-progress-bar {
+  background-color: white;
+  height: 5%;
+}
+
+.ara-record-player-time {
+  font-size: var(--player-time-font-size);
+  text-align: right;
+  padding-left:2rem;
+  padding-right:2rem;
+}
+
+footer {
+  height: 300px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  border-left: 20px solid var(--ara-blue);
+  border-right: 20px solid var(--ara-blue);
+  background-color: var(--ara-blue);
+  color: white;
+  margin-top: 20rem; /* Adds the large spacing under the metadata section */
+}
+
+a, a:visited, a:hover, a:active {
+  color: var(--ara-blue);
+  text-decoration: none;
+}
+
+/* Mobile layout: Single column */
+@media (max-width: 768px) {
+  :root {
+    --menu-title-font-size: 3rem;
+    --menu-icon-size:2.3rem;
+    --intro-text-font-size: 1.5rem;
+  }
+
+  .ara-intro {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .ara-intro-text-english, .ara-intro-text-armenian {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+}
+
+
+
+
+
+
+	footer {
+		height:300px;
+		display: grid;
+		grid-template-columns: 1fr;
+		grid-template-rows: auto 1fr;
+		border-left: 20px solid var(--ara-blue);
+		border-right: 20px solid var(--ara-blue);
+		background-color: var(--ara-blue);
+		color: white;
+		margin-top: 20rem;
+
+	}
+
+	/* Mobile layout: Single column */
+	@media (max-width: 768px) {
+		:root {
+			--menu-title-font-size: 3rem;
+			--menu-icon-size:2.3rem;
+			--intro-text-font-size: 1.5rem;
+		}
+
+		.ara-intro {
+			display: grid;
+			grid-template-columns: 1fr;
+		}
+
+		.ara-intro-text-english, .ara-intro-text-armenian {
+			width: 100%;  /* Full width for each section */
+			margin-bottom: 15px;  /* Space between the sections */
+		}
+	}
+
+/* ============================== PLAYER STYLES ============================== */
+
+.audio-player-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%; /* Full width for the wrapper */
+  max-width: 1200px; /* Limit the max width of the player */
+  margin: 0 auto; /* Center the player */
+  background-color: #fff;
+  padding: 15px;
+  box-sizing: border-box;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  animation: slideIn 1s ease forwards; /* Slide in animation */
+}
+
+.audio-player-wrapper-hidden {
+  display: none !important;
+}
+
+.current-song-info-wrapper {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.album-art {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 2px solid #000;
+  object-fit: cover;
+}
+
+.current-song-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.song-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+}
+
+.song-artist {
+  font-size: 14px;
+  color: #666;
+}
+
+.audio-player-container {
+  flex: 1;
+}
+
+.audio-player-hidden {
+  display: none !important;
+}
+
+.audio-player {
+  width: 100%;
+}
+
+.rhap_main {
+  background-color: #fff;
+  font-family: 'arm-heavy', sans-serif;
+  color: #000;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.rhap_container {
+  width: 100% !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Custom styles for controls */
+.rhap_main .rhap_play-pause-button,
+.rhap_main .rhap_volume,
+.rhap_main .rhap_progress-bar,
+.rhap_main .rhap_current-time,
+.rhap_main .rhap_duration,
+.rhap_main .rhap_fullscreen,
+.rhap_main .rhap_download {
+  color: #000;
+}
+
+.rhap_main .rhap_progress-bar .rhap_progress-bar-fill {
+  background-color: #000;
+}
+
+.rhap_time {
+  font-feature-settings: "tnum" on;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(100vw); /* Start off-screen to the right */
+  }
+  100% {
+    transform: translateX(0); /* End at the normal position */
+  }
+}
+
+/* The container gets the inline transform from containerStyle */
+.record-image-container {
+  position: relative; /* or absolute if you prefer, but we set that inline */
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* ensure no spillover */
+}
+
+/* The actual <img> is given a circle shape */
+.record-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transform-origin: 50% 50%;
+}
+
+/* The spinning-record class does rotation only */
+.spinning-record {
+  animation: spin 1.5s linear infinite;
+}
+
+/* Keyframes for continuous rotation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+@font-face {
+  font-family: 'FitVariable';
+  src: url('FitVariable-NormalVF.ttf') format('truetype');
+}
+
+:root {
+  --ara-blue: #091133;
+  --circle-size: 30%;
+  --main-border-thickness: 20px;
+  --menu-title-font-size: 5rem;
+  --menu-icon-size: 3.7rem;
+  --menu-links-font-size: 1rem;
+
+  --intro-text-font-size: 2.2rem;
+  --search-icon-font-size: 5rem;
+  --search-input-font-size: 1.8rem;
+  --search-bar-line-height: 1.2;
+
+  --filter-title-font-size: 2rem;
+  --filter-option-font-size: 1.2rem;    
+  --filter-item-font-size: 1rem;
+  --filter-icon-circle-size: .8rem;
+
+  --grid-item-title-armenian-font-size: 1rem;
+  --grid-item-title-transliteration-font-size: .9rem;
+  --filter-language-switcher-font-size: 1rem;
+
+  --player-song-title-font-size: 1rem;
+  --player-artist-name-font-size: .8rem;
+  --player-time-font-size: 1rem;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #091133;
+  font-family: Arial, sans-serif;
+}
+
+.ara-main {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  border-left: var(--main-border-thickness) solid var(--ara-blue);
+  border-right: var(--main-border-thickness) solid var(--ara-blue);
+  background-color: white;
+  color: var(--ara-blue);
+  padding: 2rem;
+}
+
+.ara-menu {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: min-content auto;
+  text-align: center;
+  background-color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.ara-menu-title {
+  grid-column: 1 / span 2;
+  font-family: 'FitVariable';
+  font-size: var(--menu-title-font-size);
+  font-weight: bold;
+  color: var(--ara-blue);
+  font-variation-settings: 'wdth' 500, 'wght' 1000;
+}
+
+.ara-menu-links-wrapper {
+  grid-column: 1 / span 2;
+  font-size: var(--menu-links-font-size);
+  color: var(--ara-blue);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.ara-menu-links-wrapper.expanded {
+  max-height: 100px;
+  opacity: 1;
+}
+
+.ara-menu-links-wrapper a {
+  color: var(--ara-blue);
+  margin: 0 10px;
+  text-decoration: none;
+  font-weight: bold;
+  display: inline-block;
+  text-align: center;
+}
+
+.ara-menu-toggle {
+  font-size: 5rem;
+  margin-right: 1rem;
+  display: grid;
+}
+
+.ara-menu-icon {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.ara-menu-icon-sleeve,
+.ara-menu-icon-record {
+  grid-row: 1;
+  grid-column: 1;
+  width: var(--menu-icon-size);
+  height: var(--menu-icon-size);
+}
+
+.ara-menu-icon-sleeve {
+  background-color: var(--ara-blue);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.ara-menu-icon-sleeve::after {
+  content: '';
+  width: var(--circle-size);
+  height: var(--circle-size);
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.ara-menu-icon-record {
+  background-color: var(--ara-blue);
+  border-radius: 50%;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.ara-menu-icon-record::after {
+  content: '';
+  width: var(--circle-size);
+  height: var(--circle-size);
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ara-menu-icon.clicked .ara-menu-icon-record {
+  transform: translateX(50%);
+}
+
+/* CONTAINER LAYOUT */
+.container {
+  border-top: 5px solid var(--ara-blue);
+  padding-top: 2rem;
+  display: grid;
+  gap: 50px;
+  grid-template-areas:
+    "images heading"
+    "images tracklist"
+    "images info"
+    "metadata metadata";
+  grid-template-columns: 35vw 2fr;
+}
+
+@media (max-width: 768px) {
+  .container {
+    grid-template-areas:
+      "heading"
+      "images"
+      "tracklist"
+      "info"
+      "metadata";
+    grid-template-columns: 1fr;
+  }
+}
+
+/* HEADER SECTION */
+.ara-record-header {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  border-bottom: 2px solid black;
+  padding-bottom: 10px;
+  grid-area: heading;
+  grid-gap: .5rem;
+}
+
+.ara-header__recording-label {
+  font-size: 32px;
+  text-transform: uppercase;
+}
+
+.ara-header__share {
+  font-size: 16px;
+  justify-self: end;
+}
+
+.ara-header__recording-catalog-number {
+  font-family: monospace;
+  font-size: 16px;
+}
+
+/* MAIN IMAGE SECTION */
+.ara-record-image {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  grid-area: images;
+  border-radius: 20%;
+  background-color: lightgray;
+  padding: 50px;
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.ara-record-image__container {
+  position: relative;
+  width: 100%;
+  cursor: default;
+}
+
+.ara-record-image__main {
+  display: block;
+  border-radius: 100%;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.ara-record-image::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="white"><path d="M35 45l-15-15 15-15v30z"/></svg>') 30 30, auto;
+  z-index: 10;
+}
+
+.ara-record-image::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="white"><path d="M25 45l15-15-15-15v30z"/></svg>') 30 30, auto;
+  z-index: 10;
+}
+
+.ara-record-image__dots-container {
+  text-align: center;
+  user-select: none;
+  cursor: default;
+}
+
+.ara-record-image__dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: #ccc;
+  border-radius: 50%;
+}
+
+.ara-record-image__dot.active {
+  background-color: #333;
+}
+
+/* TRACKLIST SECTION */
+.ara-record-info__side-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  grid-area: tracklist;
+  padding-bottom: 1rem;
+}
+
+.ara-record-info__side-title {
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+.ara-record-info__track-list {
+  display: grid;
+  grid-template-columns: 2ch 1fr 6ch;
+  gap: 10px;
+  align-items: baseline;
+  border-top: 1px solid black;
+  padding-top: 10px;
+}
+
+.ara-record-info__track-entry {
+  display: contents;
+  cursor: pointer;
+}
+
+.ara-record-info__track-entry:hover .ara-record-info__track-number,
+.ara-record-info__track-entry:hover .ara-record-info__song-title,
+.ara-record-info__track-entry:hover .ara-record-info__song-length {
+  font-weight: bold;
+}
+
+.ara-record-info__track-number {
+  font-size: 16px;
+}
+
+.ara-record-info__song-title-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ara-record-info__song-title {
+  font-size: 24px;
+  text-align: start;
+  text-transform: uppercase;
+}
+
+.ara-record-info__transliteration {
+  font-style: italic;
+  font-size: 16px;
+  color: #555;
+  text-align: start;
+}
+
+.ara-record-info__song-length {
+  font-family: monospace;
+  text-align: right;
+  font-size: 18px;
+}
+
+/* DETAILS SECTION */
+.ara-record-info__details-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding-top: 20px;
+  border-top: 1px solid black;
+  grid-area: info;
+}
+
+@media (max-width: 768px) {
+  .ara-record-info__side-section {
+    grid-template-columns: 1fr;
+  }
+
+  .ara-record-info__details-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ara-record-info__details-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.ara-record-info__details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 14px;
+}
+
+.ara-record-info__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ara-record-info__label {
+  font-weight: bold;
+}
+
+.ara-record-info__pill {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.ara-record-info__pill:hover {
+  background-color: var(--ara-blue);
+  color: white;
+  cursor: pointer;
+}
+
+/* METADATA SECTION */
+.ara-record-meta-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  grid-area: metadata;
+}
+
+.ara-record-meta-section__metadata-row {
+  display: grid;
+  grid-template-columns: 250px 1fr 1fr;
+  grid-gap: 10px;
+  border-top: 1px solid lightgray;
+}
+
+.ara-record-meta-section__metadata-row > div {
+  padding: 10px;
+}
+
+.ara-record-meta-section__data-title {
+  font-weight: bold;
+  border-right: 1px solid #ddd;
+}
+
+.ara-record-meta-section__side-a-data {
+  border-right: 1px solid #ddd;
+}
+
+/* PLAYER SECTION */
+.ara-record-player-wrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0; 
+  right: 0; 
+  height: 10vh;
+  max-width: 100vw; 
+  margin: 0 auto; 
+  background-color: var(--ara-blue);
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  padding-left:0;
+  color:white;
+  z-index: 999;
+}
+
+.ara-record-player-info {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  align-items: center;
+  padding-right: 2rem;
+}
+
+.ara-record-player-thumbnail-img {
+  height: 50px;
+  margin-left: 1.5rem;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+
+
+.ara-record-player-song-title {
+  text-transform: uppercase;
+  font-size: var(--player-song-title-font-size);
+}
+
+.ara-record-player-artist-name {
+  font-size: var(--player-artist-name-font-size);
+}
+
+.ara-record-player-audio-section {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  align-items: center;
+}
+
+.ara-record-player-progress-bar {
+  background-color: white;
+  height: 5%;
+}
+
+.ara-record-player-time {
+  font-size: var(--player-time-font-size);
+  text-align: right;
+  padding-left:2rem;
+  padding-right:2rem;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --menu-title-font-size: 3rem;
+    --menu-icon-size:2.3rem;
+    --intro-text-font-size: 1.5rem;
+  }
+}

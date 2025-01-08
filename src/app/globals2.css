@@ -1,0 +1,743 @@
+/* screen - macbook-pro-81 */
+
+.my_title {
+    font-family: 'Fit-Variable';
+    font-size: 105px;
+    margin-top: 3vh;
+    color: #091133;
+  }
+  
+  .my_title_2 {
+    font-family: 'Fit-Variable';
+    font-size: 250px;
+    margin-right: 3vw;
+    line-height: 235px;
+    color: #091133;
+    font-stretch: 200%;
+  }
+  
+  .stat-page-container {
+    width: 1440px;
+    height: 750px;
+    overflow: hidden;
+    background-color: #091133;
+    margin-top: 650px;
+    position: absolute;
+    pointer-events:none;
+  }
+  
+  .about-us-container {
+    width: 1440px;
+    height: 500px;
+    overflow: hidden;
+    background-color: white;
+    margin-top: 1400px;
+    position: absolute;
+  }
+  
+  .footer-container {
+    width: 1440px;
+    height: 750px;
+    overflow: hidden;
+    background-color: #091133;
+    margin-top: 1945px;
+    position: absolute;
+  }
+  
+  .footer-container-1 {
+    width: 1440px;
+    height: 300px;
+    overflow: hidden;
+  
+  }
+
+
+  
+  .footer-container-1-1 {
+    width: 440px;
+    height: 300px;
+    overflow: hidden;
+    background-color: #091133;
+    float: left;
+  }
+  
+  .footer-container-1-2 {
+    width: 500px;
+    height: 300px;
+    overflow: hidden;
+    background-color: #091133;
+    float: left;
+  }
+  
+  .footer-container-1-3 {
+    width: 500px;
+    height: 300px;
+    overflow: hidden;
+    background-color: #091133;
+  }
+  
+  .footer-container-2 {
+    width: 1440px;
+    height: 450px;
+    overflow: hidden;
+    background-color: #091133;
+  }
+  
+  .footer-container-1-1-title {
+    color: white;
+    margin-top: 50px;
+    margin-left: 115px;
+    font-size:50px;
+    position: absolute;
+    font-family: 'arm-light';
+  }
+  
+  .footer-container-1-1-title-2 {
+    color: white;
+    margin-top: 100px;
+    margin-left: 115px;
+    font-size: 50px;
+    position: absolute;
+    font-family: 'arm-light';
+  }
+  
+  .footer-container-1-1-title-3 {
+    color: white;
+    margin-top: 150px;
+    margin-left: 115px;
+    font-size: 50px;
+    position: absolute;
+    font-family: 'arm-light';
+  }
+  .footer-container-1-1-title-4 {
+    color: white;
+    margin-top: 200px;
+    margin-left: 115px;
+    font-size: 50px;
+    position: absolute;
+    font-family: 'arm-light';
+  }
+  .footer-container-1-1-title-5 {
+    color: white;
+    margin-top: 250px;
+    margin-left: 115px;
+    font-size: 50px;
+    position: absolute;
+    font-family: 'arm-light';
+  }
+  
+  .footer-container-2-title {
+    color: white;
+    font-size: 400px;
+    font-family: 'Fit-variable';
+    font-stretch: 400%;
+    margin-left: 115px;
+  }
+
+
+
+
+  .divider {
+
+    width: 100vw;
+    height: 60vh;
+    overflow: hidden;
+  }
+  
+  .divider_1 {
+    width: 50vw;
+    float: left;
+    
+    
+    height: 60vh;
+  }
+  
+  .divider_2 {
+    width: 50vw;
+    float: left;
+    
+    
+    
+    height: 60vh;
+  }
+  
+  .about-us-page-1 {
+    height: 500px;
+    width: 640px;
+    float: left;
+    overflow: hidden;
+    
+  }
+  
+  .about-us-page-2 {
+    height: 500px;
+    width: 800px;
+    float: left;
+    overflow: hidden;
+    background-color: white;
+  }
+  
+  .about-us-title {
+    color: #091133;
+    margin-top: 100px;
+    margin-left: 100px;
+    font-family: 'fit-variable';
+    font-size: 200px;
+    position: absolute;
+    font-stretch: 225%;
+  }
+  .about-us-title-2 {
+    color: #091133;
+    margin-top: 275px;
+    margin-left: 100px;
+    font-family: 'fit-variable';
+    font-size: 200px;
+    position: absolute;
+    font-stretch: 600%;
+  }
+  
+  .about-us-text {
+    margin-top: 107.5px;
+    margin-left: 75px;
+    color: #091133;
+    font-family: "arm-light";
+    font-size: 40px;
+    width: 650px;
+  }
+  .stat-page-1 {
+    width: 720px;
+    height: 750px;
+    float: left;
+    overflow: hidden;
+    
+  }
+  
+  .stat-page-2 {
+    width: 720px;
+    height: 750px;
+    float: left;
+    overflow: hidden;
+    
+  }
+  
+  .stat-text-1 {
+    color: white;
+    margin-top: 25px;
+    margin-left: 100px;
+    font-family: 'fit-variable';
+    font-size: 250px;
+    position: absolute;
+    font-stretch: 225%;
+  }
+  
+  .stat-text-2 {
+    color: white;
+    margin-left: 300px;
+    margin-top: 250px;
+    position: absolute;
+    font-family: 'fit-variable';
+    font-size: 250px;
+    font-stretch: 225%;
+  }
+  
+  .stat-text-3 {
+    color: white;
+  
+    margin-top: 475px;
+    margin-left: 380px;
+    font-family: 'fit-variable';
+    font-size: 250px;
+    position: absolute;
+    font-stretch: 225%;
+  }
+  
+  .stat-text-4 {
+    color: white;
+    
+    font-family: 'arm-bold';
+    font-size: 50px;
+    position: absolute;
+    margin-top: 150px;
+  }
+  
+  .stat-text-5 {
+    color: white;
+    font-family: 'arm-bold';
+    
+    position: absolute;
+    font-size: 50px;
+    margin-top: 375px;
+  }
+  
+  .stat-text-6 {
+    color: white;
+    font-family: 'arm-bold';
+   
+  
+    margin-top: 600px;
+    font-size: 50px;
+    position: absolute;
+  }
+  
+  .macbook-pro-81 {
+    align-items: flex-end;
+    background-color: var(--coloursecondarywhite-100-general);
+    display: flex;
+    flex-direction: column;
+   
+    overflow: hidden;
+    width: 1440px;
+  }
+  
+  .macbook-pro-81 .overlap-group1 {
+    height: 151px;
+    position: relative;
+    width: 1440px;
+  }
+  
+  .macbook-pro-81 .rectangle-33 {
+    background-color: var(--coloursecondarywhite-100-general);
+    height: 144px;
+    left: 0;
+    top: 0;
+  }
+  
+  .macbook-pro-81 .group-6 {
+    align-items: flex-end;
+    background-color: var(--logo-color);
+    height: 70px;
+    justify-content: flex-end;
+    left: 1313px;
+    min-width: 70px;
+    padding: 24.0px 24.0px;
+    top: 63px;
+  }
+  
+  .macbook-pro-81 .ellipse-1 {
+    background-color: var(--coloursecondarywhite-100-general);
+    border-radius: 10.64px;
+    height: 21px;
+    width: 21px;
+  }
+  
+  .macbook-pro-81 .group-4 {
+    align-items: flex-start;
+    height: 60px;
+    left: 762px;
+    min-width: 533px;
+    top: 91px;
+  }
+  
+  .macbook-pro-81 .flex-container-1 {
+    width: 137px;
+  }
+  
+  .macbook-pro-81 .text {
+    align-self: stretch;
+    letter-spacing: 0.68px;
+    line-height: 6.8px;
+    position: relative;
+  }
+  
+  .macbook-pro-81 .flex-container-12 {
+    margin-left: 8px;
+    width: 119px;
+  }
+  
+  .macbook-pro-81 .flex-container-1-1 {
+    margin-left: 20px;
+    width: 125px;
+  }
+  
+  .macbook-pro-81 .flex-container-1-2 {
+    margin-left: 15px;
+    width: 101px;
+  }
+  
+  .macbook-pro-81 .rectangle-32 {
+    background-color: var(--logo-color);
+    height: 3px;
+    left: 0;
+    top: 144px;
+  }
+  
+  .macbook-pro-81 .hello-body-container {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    align-self: center;
+    justify-content: center;
+    display: flex;
+    gap: 52px;
+    height: 750px;
+    margin-left: 34.0px;
+    margin-top: 110px;
+    min-width: 1260px;
+  }
+  
+  .macbook-pro-81 .hello-body {
+    color: var(--logo-color);
+    font-family: 'arm-extra-b';
+    font-size: 25px;
+    margin-right: 20px;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 43px;
+    min-height: 258px;
+    width: 604px;
+    
+  }
+  
+  .macbook-pro-81 .hello-body-1 {
+    color: var(--red);
+    font-family: 'arm-extra-b';
+    font-size: 30px;
+    font-weight: 800;
+    height: 68px;
+    letter-spacing: 0;
+    line-height: 34px;
+    margin-right: 86px;
+    margin-top: 200px;
+    width: 289px;
+  }
+  
+  .macbook-pro-81 .overlap-group2 {
+    height: 993px;
+    margin-top: 32px;
+    position: relative;
+    width: 1440px;
+  }
+  
+  .macbook-pro-81 .rectangle-16 {
+    background-color: var(--coloursecondarywhite-100-general);
+    height: 900px;
+    left: 0;
+    top: 93px;
+  }
+  
+  .frame-1 .rectangle-137 {
+  background-color: white;
+  height: 150px;
+  left: 133px;
+  position: absolute;
+  top: 154px;
+  width: 1440px;
+}
+
+.frame-1 {
+  align-items: flex-start;
+  background-color: var(--coloursecondarywhite-100-general);
+  display: flex;
+  height: 200px;
+  width: 1440px;
+}
+
+.frame-1 .ellipse-1 {
+  background-color: white;
+  border-radius: 10.64px;
+  height: 21px;
+  width: 21px;
+}
+
+.line {
+  height: 5px;
+  border-radius: 20px;
+  width: 90vw;
+  margin-left: 5vw;
+  background-color: #091133;
+}
+  .adellesansarm-extra-extra-bold-white-16-3px {
+  color: #091133;
+  font-family: 'arm-reg';
+  font-size: var(--font-size-l);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.frame-1 .group-80 {
+  align-items: flex-start;
+  display: flex;
+  height: 60px;
+  margin-left: 200px;
+  min-width: 533px;
+  position: absolute;
+  top: 243px;
+}
+
+.frame-1 .full-page-armenian {
+  color: #091133;
+  font-family: 'Fit-variable';
+  font-size: 94.4px;
+  font-weight: 400;
+  height: 494px;
+  margin-left: 200px;
+  letter-spacing: 0.68px;
+  line-height: 78.4px;
+  position: absolute;
+  text-align: center;
+  top: -15px;
+  left: 222.5px;
+}
+
+.frame-1 .overlap-group2 {
+  position: relative;
+  margin-top: 25px;
+  align-items: flex-start;
+  background-color: #091133;
+  display: flex;
+  height: 70px;
+  min-width: 70px;
+  padding: 24px;
+}
+
+.frame-1 .group-79 {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 85px;
+  margin-left: 200px;
+  min-height: 608px;
+  position: absolute;
+  top: 175px;
+  width: 1300px;
+}
+  
+  .macbook-pro-81 .group-65 {
+    align-items: flex-start;
+    gap: 33px;
+    height: 612px;
+    left: 93px;
+      /* display: flex; */
+  flex-wrap: wrap;
+    min-width: 1254px;
+    top: 0;
+  }
+  
+
+  .macbook-pro-81 .airtable-gallery-container-1 {
+    width: 289px;
+    
+  }
+  
+  .macbook-pro-81 .airtable-gallery-2 {
+    background-color: var(--cloud);
+    height: 288px;
+    width: 289px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-3 {
+    background-color: var(--cloud);
+    height: 289px;
+    width: 289px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-container-2 {
+    width: 290px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-4 {
+    background-color: var(--cloud);
+    height: 288px;
+    width: 290px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-5 {
+    background-color: var(--cloud);
+    height: 289px;
+    width: 290px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-container {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    min-height: 612px;
+    width: 288px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery {
+    background-color: var(--cloud);
+    height: 288px;
+    width: 288px;
+    display: inline-block;
+
+  }
+  
+  .macbook-pro-81 .airtable-gallery-1 {
+    background-color: var(--cloud);
+    height: 289px;
+    width: 288px;
+  }
+  
+  .macbook-pro-81 .overlap-group {
+    height: 770px;
+    margin-top: 1000px;
+    position: relative;
+    width: 1573px;
+  }
+  
+  .macbook-pro-81 .rectangle-17 {
+    background-color: var(--coloursecondarywhite-100-general);
+    height: 900px;
+    left: 133px;
+    top: 151px;
+  }
+  
+  .macbook-pro-81 .group-8 {
+    align-items: flex-end;
+    background-color: var(--logo-color);
+    height: 70px;
+    justify-content: flex-end;
+    left: 1446px;
+    min-width: 70px;
+    padding: 24.0px 24.0px;
+    top: 214px;
+  }
+  
+  .macbook-pro-81 .full-page-armenian {
+    color: var(--logo-color);
+    font-family: var(--font-family-fit-regular);
+    font-size: var(--font-size-l);
+    font-weight: 400;
+    height: 494px;
+    left: 0;
+    letter-spacing: 0.68px;
+    line-height: 78.4px;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    width: 1081px;
+  }
+  
+  .macbook-pro-81 .group-9 {
+    align-items: flex-start;
+    height: 60px;
+    left: 895px;
+    min-width: 533px;
+    top: 242px;
+  }
+  
+  .macbook-pro-81 .airtable-gallery-container-3 {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    min-height: 612px;
+  }
+  
+  .macbook-pro-81 .flex-container {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 8.14px;
+    height: 60px;
+    position: relative;
+  }
+  
+  .macbook-pro-81 .flex-container-1-3 {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 8.14px;
+    height: 60px;
+    position: relative;
+  }
+  
+  .macbook-pro-81 .group {
+    display: flex;
+    position: absolute;
+  }
+  
+  .macbook-pro-81 .rectangle {
+    position: absolute;
+    width: 1440px;
+  }
+
+
+  .frame-1 .rectangle-137-2 {
+  background-color: var(--logo-color);
+  height: 900px;
+  left: 133px;
+  position: absolute;
+  top: 154px;
+  width: 1440px;
+}
+
+.frame-1 .group-79-2 {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 85px;
+  left: 228px;
+  min-height: 608px;
+  position: absolute;
+  top: 175px;
+  width: 1300px;
+}
+
+.frame-1 .overlap-group2-2 {
+  position: relative;
+  margin-top: 25px;
+  align-items: flex-start;
+  background-color: var(--coloursecondarywhite-100-general);
+  display: flex;
+  height: 70px;
+  min-width: 70px;
+  padding: 24px;
+}
+
+.frame-1 .full-page-armenian-2 {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'Fit-variable';
+  font-size: 94.4px;
+  font-weight: 400;
+  height: 494px;
+  left: -25px;
+  letter-spacing: 0.68px;
+  line-height: 78.4px;
+  position: absolute;
+  text-align: center;
+  top: -15px;
+  left: 222.5px;
+}
+
+.frame-1 .group-80-2 {
+  align-items: flex-start;
+  display: flex;
+  height: 60px;
+  left: 883px;
+  min-width: 533px;
+  position: absolute;
+  top: 243px;
+}
+
+.adellesansarm-extra-extra-bold-white-16-3px-2 {
+  color: white;
+  font-family: 'arm-reg';
+  font-size: var(--font-size-l);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.frame-1 .ellipse-1-2 {
+  background-color: var(--logo-color);
+  border-radius: 10.64px;
+  height: 21px;
+  width: 21px;
+}
+
+.frame-1 .flex-container-58-2 {
+  gap: 8.14px;
+  height: 60px;
+  position: relative;
+  width: 137px;
+}
+
+
+
+.collection_footer_title_continue {
+    font-family: "Fit-variable";
+  font-size: 109.5px;
+  font-stretch: 200%;
+  text-align: center;
+}

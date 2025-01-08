@@ -1,0 +1,799 @@
+/* screen - frame-1 */
+
+@font-face {
+  font-family: 'arm-reg';
+  src: url('../../public/fonts/AdelleSansARM-Regular.otf');
+}
+
+.frame-1 {
+  align-items: flex-start;
+  background-color: var(--coloursecondarywhite-100-general);
+  display: flex;
+  height: 700px;
+  width: 100vw;
+}
+
+.frame-1 .overlap-group3 {
+  height: 85vh;
+  margin-left: -133px;
+  margin-top: -154px;
+  position: relative;
+  width: 1573px;
+}
+
+.frame-1 .rectangle-137 {
+  background-color: var(--logo-color);
+  height: 900px;
+  left: 133px;
+  position: absolute;
+  top: 154px;
+  width: 1440px;
+}
+
+.frame-1 .group-79 {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 85px;
+  left: 228px;
+  min-height: 608px;
+  position: absolute;
+  top: 175px;
+  width: 1300px;
+}
+
+.frame-1 .overlap-group2 {
+  position: relative;
+  margin-top: 25px;
+  align-items: flex-start;
+  background-color: var(--coloursecondarywhite-100-general);
+  display: flex;
+  height: 70px;
+  min-width: 70px;
+  padding: 24px;
+}
+
+.frame-1 .ellipse-1 {
+  background-color: var(--logo-color);
+  border-radius: 10.64px;
+  height: 21px;
+  width: 21px;
+}
+
+.frame-1 .group-81 {
+  align-items: flex-start;
+  display: flex;
+  gap: 39px;
+  margin-right: 3px;
+  min-width: 1297px;
+}
+
+.frame-1 .overlap-group {
+  height: 453px;
+  position: relative;
+  width: 625px;
+}
+
+.frame-1 .armenian-record-arch {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-extra-b';
+  font-size: 36.3px;
+  font-weight: 800;
+  height: 175px;
+  left: 0;
+  letter-spacing: 0.68px;
+  line-height: 41.3px;
+  position: absolute;
+  top: 0;
+  width: 625px;
+}
+
+.frame-1 .flex-container-515 {
+  gap: 9.14px;
+  height: 290px;
+  left: 0;
+  position: absolute;
+  top: 163px;
+  width: 545px;
+}
+
+.frame-1 .text {
+  align-self: stretch;
+  letter-spacing: 0;
+  line-height: 35px;
+  position: relative;
+}
+
+.frame-1 .flex-container-517 {
+  gap: 9.14px;
+  height: 325px;
+  left: 0;
+  position: absolute;
+  top: 128px;
+  width: 609px;
+}
+
+.frame-1 .group-80 {
+  align-items: flex-start;
+  display: flex;
+  height: 60px;
+  left: 883px;
+  min-width: 533px;
+  position: absolute;
+  top: 243px;
+}
+
+.frame-1 .flex-container-58 {
+  gap: 8.14px;
+  height: 60px;
+  position: relative;
+  width: 137px;
+}
+
+.frame-1 .text-1 {
+  align-self: stretch;
+  letter-spacing: 0.68px;
+  line-height: 6.8px;
+  position: relative;
+}
+
+.frame-1 .flex-container-59 {
+  gap: 8.14px;
+  height: 60px;
+  margin-left: 8px;
+  position: relative;
+  width: 119px;
+}
+
+.frame-1 .flex-container-57 {
+  gap: 8.14px;
+  height: 60px;
+  margin-left: 20px;
+  position: relative;
+  width: 125px;
+}
+
+.frame-1 .flex-container-56 {
+  gap: 8.14px;
+  height: 60px;
+  margin-left: 15px;
+  position: relative;
+  width: 101px;
+}
+
+.frame-1 .full-page-armenian {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'Fit-variable';
+  font-size: 94.4px;
+  font-weight: 400;
+  height: 494px;
+  left: -25px;
+  letter-spacing: 0.68px;
+  line-height: 78.4px;
+  position: absolute;
+  text-align: center;
+  top: -15px;
+  left: 222.5px;
+}
+
+.frame-1 .flex-container {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+}
+
+
+:root { 
+  --black: #000000;
+  --cloud: #c4c4c4;
+  --colourmaingrey100: #e9ebec;
+  --colourmaingrey700: #454e54;
+  --coloursecondarywhite-100-general: #ffffff;
+  --landing-page-text-color: #ffffff;
+  --logo-color: #091133;
+  --red: #cd2032;
+ 
+  --font-size-l: 16.3px;
+  --font-size-m-special: 33px;
+  --font-size-m: 15px;
+  --font-size-s: 10px;
+  --font-size-xl: 19px;
+  --font-size-xxl: 23px;
+  --font-size-xxxl: 29px;
+  --font-size-xxxxl: 33px;
+ 
+  --font-family-adelle_sans_arm-bold: "Adelle Sans ARM-Bold", Helvetica;
+  --font-family-adelle_sans_arm-extrabold: "Adelle Sans ARM-ExtraBold", Helvetica;
+  --font-family-adelle_sans_arm-extrabolditalic: "Adelle Sans ARM-ExtraBoldItalic", Helvetica;
+  --font-family-adelle_sans_arm-heavy: "Adelle Sans ARM-Heavy", Helvetica;
+  --font-family-adelle_sans_arm-heavyitalic: "Adelle Sans ARM-HeavyItalic", Helvetica;
+  --font-family-adelle_sans_arm-light: "Adelle Sans ARM-Light", Helvetica;
+  --font-family-adelle_sans_arm-lightitalic: "Adelle Sans ARM-LightItalic", Helvetica;
+  --font-family-adelle_sans_arm-regular: "Adelle Sans ARM-Regular", Helvetica;
+  --font-family-adelle_sans_arm-semibold: "Adelle Sans ARM-SemiBold", Helvetica;
+  --font-family-fit-regular: "Fit-Regular", Helvetica;
+  --font-family-fit-skyline: "Fit-Skyline", Helvetica;
+  --font-family-fit-wide: "Fit-Wide", Helvetica;
+  --font-family-fit_variable-regular: "Fit Variable-Regular", Helvetica;
+}
+
+@font-face {
+  font-family: 'arm-reg';
+  src: url('../../public/fonts/AdelleSansARM-Regular.otf');
+}
+
+@font-face {
+  font-family: 'arm-light';
+  src: url('../../public/fonts/AdelleSansARM-Light.otf');
+}
+
+        @font-face {
+            font-family: 'FitFit';
+            src: url('../../src/app/collection/Fit[wdth].ttf') format('truetype'); 
+        }
+
+@font-face {
+  font-family: 'arm-extra-b';
+  src: url('../../public/fonts/AdelleSansARM-Extrabold.otf');
+}
+
+@font-face {
+  font-family: 'arm-semi-b';
+  src: url('../../public/fonts/AdelleSansARM-Semibold.otf');
+}
+
+
+
+@font-face {
+  font-family: 'arm-bold';
+  src: url('../../public/fonts/AdelleSansARM-Bold.otf');
+}
+
+@font-face {
+  font-family: 'arm-heavy';
+  src: url('../../public/fonts/AdelleSansARM-Heavy.otf');
+}
+
+@font-face {
+    src: url('../../public/fonts/FitVariable-VF.woff2') format("woff2"),
+         url('../../public/fonts/FitVariable-VF.woff') format("woff");
+    font-family: 'Fit-Variable';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../public/fonts/Fit-Skyline.woff2') format("woff2"),
+         url('../../public/fonts/Fit-Skyline.woff') format("woff");
+    font-family: 'Fit-Skyline';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../public/fonts/Fit-Compressed.woff2') format("woff2"),
+         url('../../public/fonts/Fit-Compressed.woff') format("woff");
+    font-family: 'Fit-Compressed';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../public/fonts/Fit-ExtraCondensed.woff2') format("woff2"),
+         url('../../public/fonts/Fit-ExtraCondensed.woff') format("woff");
+    font-family: 'Fit-ExtraCondensed';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../public/fonts/Fit-Condensed.woff2') format("woff2"),
+         url('../../public/fonts/Fit-Condensed.woff') format("woff");
+    font-family: 'Fit-Condensed';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../public/fonts/Fit-Regular.woff2') format("woff2"),
+         url('../../public/fonts/Fit-Regular.woff') format("woff");
+    font-family: 'Fit';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../public/fonts/Fit-Wide.woff2') format("woff2"),
+         url('../../public/fonts/Fit-Wide.woff') format("woff");
+    font-family: 'Fit-Wide';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../public/fonts/Fit-ExtraWide.woff2') format("woff2"),
+         url('../../public/fonts/Fit-ExtraWide.woff') format("woff");
+    font-family: 'Fit-ExtraWide';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../public/fonts/Fit-Extended.woff2') format("woff2"),
+         url('../../public/fonts/Fit-Extended.woff') format("woff");
+    font-family: 'Fit-Extended';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../public/fonts/Fit-ExtraExtended.woff2') format("woff2"),
+         url('../../public/fonts/Fit-ExtraExtended.woff') format("woff");
+    font-family: 'Fit-ExtraExtended';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+@font-face {
+    src: 
+         url('../../public/fonts/Fit-UltraExtended.woff2') format("woff2"),
+         url('../../public/fonts/Fit-UltraExtended.woff') format("woff");
+    font-family: 'Fit-UltraExtended';
+    font-style: normal;
+    font-weight: normal;
+    }
+
+
+.adellesansarm-semi-bold-mako-10px {
+  color: var(--colourmaingrey700);
+  font-family: 'arm-semi-b';
+  font-size: var(--font-size-s);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.adellesansarm-regular-normal-midnight-15px {
+  color: var(--logo-color);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 400;
+}
+
+
+
+.adellesansarm-extra-extra-bold-midnight-23px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: var(--font-size-xxl);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-extra-extra-bold-white-19px {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-extra-b';
+  font-size: var(--font-size-xl);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-extra-extra-bold-midnight-16-3px {
+  font-size: 16px;
+  font-family: 'arm-extra-b';
+  color: #091133;
+}
+
+.adellesansarm-light-midnight-45px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-light);
+  font-size: 45px;
+  font-style: normal;
+  font-weight: 300;
+}
+
+.adell.macbook-pro-81 .hello-body-1esansarm-extra-extra-bold-midnight-16-3px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: var(--font-size-l);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-regular-normal-midnight-23px {
+  color: var(--logo-color);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-xxl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.adellesansarm-light-midnight-15px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-light);
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 300;
+}
+
+.adellesansarm-extra-extra-bold-white-16-3px {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-l);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-heavy-normal-midnight-15px {
+  color: var(--logo-color);
+  font-family: 'arm-heavy';
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 400;
+
+}
+
+.adellesansarm-lightitalic-light-midnight-15px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-lightitalic);
+  font-size: var(--font-size-m);
+  font-style: italic;
+  font-weight: 300;
+}
+
+.adellesansarm-extra-extra-bold-midnight-15px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-bold-mako-10px {
+  color: var(--colourmaingrey700);
+  font-family: 'arm-bold';
+  font-size: var(--font-size-s);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.adellesansarm-extra-extra-bold-midnight-34px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-regular-normal-white-29px {
+  margin-top: 5vh;
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-xxxl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.adellesansarm-bold-black-33px {
+  color: var(--black);
+  font-family: 'arm-bold';
+  font-size: var(--font-size-xxxxl);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.adellesansarm-regular-normal-white-19px {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'arm-reg';
+  font-size: var(--font-size-xl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.fitvariable-regular-normal-white-222px {
+  color: var(--coloursecondarywhite-100-general);
+  font-family: 'Fit-variable';
+  font-size: 222px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.adellesansarm-heavyitalic-normal-midnight-15px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-heavyitalic);
+  font-size: var(--font-size-m);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.adellesansarm-semi-bold-black-33px {
+  color: var(--black);
+  font-family: 'arm-semi-b';
+  font-size: var(--font-size-xxxxl);
+  font-style: normal;
+  font-weight: 600;
+  margin-left: 1.5vw;
+}
+
+.adellesansarm-regular-normal-midnight-52px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: 52px;
+  font-style: normal;
+  font-weight: 400;
+  margin-top: 5vh;
+  margin-left: 1.5vw;
+}
+
+.adellesansarm-regular-normal-midnight-52px-1 {
+  color: var(--logo-color);
+  font-family: 'Fit-Variable';
+  font-size: 150px;
+  font-style: normal;
+  font-weight: 400;
+  margin-top: 7.50vh;
+  margin-left: 1.5vw;
+}
+
+.fitvariable-regular-normal-midnight-222px {
+  color: var(--logo-color);
+  font-family: 'Fit-Variable';
+  font-size: 222px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.adellesansarm-extra-extra-bold-midnight-45px {
+  color: var(--logo-color);
+  font-family: 'arm-extra-b';
+  font-size: 45px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.adellesansarm-extrabolditalic-extra-bold-midnight-15px {
+  color: var(--logo-color);
+  font-family: var(--font-family-adelle_sans_arm-extrabolditalic);
+  font-size: var(--font-size-m);
+  font-style: italic;
+  font-weight: 800;
+}
+
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+/* The following line is used to measure usage of this code. You can remove it if you want. */
+@import url("https://px.animaapp.com/6566122b79db752a5157befe.6566122d79db752a5157bf01.n4dCgYL.hcp.png");
+
+@font-face {
+  font-family: "Fit Variable-Regular";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../../public/fonts/Fit-Regular-Edu.woff") format("woff");
+}
+
+
+.screen a {
+  display: contents;
+  text-decoration: none;
+  decoration: none;
+  color:inherit;
+  
+}
+
+.container-center-horizontal {
+  margin-top: 9vh;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  pointer-events: none;
+  width: 100%;
+  
+}
+
+
+
+
+.container-center-horizontal > * {
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.valign-text-middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.valign-text-bottom {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline
+}
+
+.text-33 {
+  display: inline-block;
+
+}
+
+.text-33-wrapper {
+  top: 3px;
+  position: relative;
+text-align: center;
+}
+
+.next-button {
+  height: 50px;
+  width: 100px;
+
+  display: inline-block;
+}
+
+.previous-button {
+  height: 50px;
+  width: 100px;
+  margin-left: 450px;
+  margin-top: 50px;
+  display: inline-block;
+}
+
+
+
+  .record_divider {
+
+    width: 100vw;
+    height: 60vh;
+    overflow: hidden;
+  }
+  
+  .record_divider_1 {
+    width: 50vw;
+    float: left;
+    
+    
+    height: 60vh;
+  }
+  
+  .record_divider_2 {
+    position: absolute;
+    width: 50vw;
+    float: left;
+    margin-left: 50vw;
+    margin-top: 5vh;
+    
+    height: 60vh;
+  }
+
+/* Container for the audio player */
+.audio-player-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the player horizontally */
+  width: 100vw; /* Full width of the viewport */
+  position: sticky;
+  bottom: 30px;
+  z-index: 1000;
+  background-color: #fff;
+  padding: 15px;
+  box-sizing: border-box;
+  border: 5px solid #000;
+}
+
+.audio-player-wrapper a {
+  text-decoration: none;
+}
+
+.current-song-info-wrapper {
+  display: flex;
+  align-items: center;
+  margin-right: 15px; /* Spacing between info and the player */
+}
+
+.album-art {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 2px solid #000;
+  object-fit: cover;
+}
+
+.current-song-info {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: left;
+  color: #000;
+}
+
+.song-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.song-artist {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Keeping the current styles for the player */
+
+/* Style for the divider container */
+.divider3 {
+  width: 100vw; /* Full viewport width */
+  height: 5vh; /* Height as per requirement */
+  background-color: blue; /* Background color for visibility */
+  position: relative;
+
+  
+  
+}
+
+html, body {
+  -ms-overflow-style: none;  /* for Internet Explorer, Edge */
+  scrollbar-width: none;  /* for Firefox */
+}
+
+
+
+/* Style for the search form */
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between input and icon */
+  width: 75vw; /* Set width to 80% of the viewport width */
+  margin-left: 325px;
+  margin-top: 2.5vh;
+  
+  
+}
+
+/* Style for the search input */
+.search_bar {
+  padding: 15px;
+  border: 3px solid #000; /* Border color matching the brutalist theme */
+  background-color: #f0f0f0; /* Background color */
+  font-size: 20px;
+  font-family: 'arm-heavy', sans-serif; /* Font-family to match the menu */
+  color: #000; /* Text color */
+  width: 100%; /* Fill the available space */
+  box-sizing: border-box; /* Include padding and border in width */
+  transition: background-color 0.3s, border-color 0.3s;
+  z-index: 1; /* Ensure the input field is on top */
+}
+
+.search_bar:focus {
+  background-color: #fff; /* Change background color on focus */
+  border-color: #000; /* Change border color on focus */
+  outline: none;
+}
+
+/* Style for the search icon */
+.search-icon {
+  font-size: 25px; /* Adjust size of the icon */
+  color: #000; /* Color to match the brutalist theme */
+}
+
+
+
+
+
