@@ -1,5 +1,6 @@
+// Collection.tsx
+
 "use client";
-export const dynamic = "force-dynamic";
 
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
@@ -7,11 +8,9 @@ import Link from "next/link";
 import _ from "lodash";
 import { AudioContext } from "./audioLayout";
 
-// NEW import from next/navigation
-import { useSearchParams } from "next/navigation";
-
-// UPDATED: import FilterMenu
+// UPDATED: Import your new "filter-menu.js" here
 import FilterMenu from "./filter-menu";
+
 import RecordListView from "./record-list-view";
 
 export default function Collection() {
@@ -23,13 +22,7 @@ export default function Collection() {
   const setAlbumArt = audioContext?.setAlbumArt;
   const audioPlayerRef = audioContext?.audioPlayerRef;
 
-  // Parse query params
-  const searchParams = useSearchParams();
-
-  // Filter state
   const [filters, setFilter] = useState<{ [key: string]: Set<string> }>({});
-
-  // More states
   const [language, setLanguage] = useState("EN");
   const [currentPage, setPage] = useState(2);
   const [records, setRecords] = useState<any[]>([]);
@@ -60,7 +53,7 @@ export default function Collection() {
     record_label: new Set(),
   });
 
-  // Refs for menu stuff
+  // Landing page and menu refs
   const landingRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuLinksWrapperRef = useRef<HTMLDivElement>(null);
@@ -74,57 +67,11 @@ export default function Collection() {
   // NEW: State to toggle open/close of the filter menu
   const [isFilterOpen, setIsFilterOpen] = useState(true);
 
-  // -------------------------------------------
-  // 1) On mount, read any ?artist_original=, ?instruments=, etc.
-  //    and update filters accordingly
-  // -------------------------------------------
-  useEffect(() => {
-    // We can parse multiple categories
-    const paramArtist = searchParams.get("artist_original");
-    const paramInstrument = searchParams.get("instruments");
-    const paramGenre = searchParams.get("genres");
-    const paramRegion = searchParams.get("regions");
-    const paramLabel = searchParams.get("record_label");
-
-    // If ANY are present, build new filter state
-    if (
-      paramArtist ||
-      paramInstrument ||
-      paramGenre ||
-      paramRegion ||
-      paramLabel
-    ) {
-      const newFilters: { [key: string]: Set<string> } = {};
-
-      if (paramArtist) {
-        newFilters["artist_original"] = new Set([paramArtist]);
-      }
-      if (paramInstrument) {
-        newFilters["instruments"] = new Set([paramInstrument]);
-      }
-      if (paramGenre) {
-        newFilters["genres"] = new Set([paramGenre]);
-      }
-      if (paramRegion) {
-        newFilters["regions"] = new Set([paramRegion]);
-      }
-      if (paramLabel) {
-        newFilters["record_label"] = new Set([paramLabel]);
-      }
-
-      setFilter(newFilters);
-    }
-  }, [searchParams]); // re-run if query changes
-
-  // Language toggler
   const changeLanguage = (lang: string) => {
     setLanguage(lang);
   };
 
-  // -------------------------------------------
-  // Builds the query URL with the current filters & search inputs
-  // (Unchanged from your existing logic, except limit=20 for brevity)
-  // -------------------------------------------
+  /** Builds the query URL with the current filters & search inputs */
   const getUrlWithFilters = (additionalFilter?: object) => {
     const filterObj: { _or?: object[]; _and?: object[] } = {
       _or: [],
@@ -159,7 +106,6 @@ export default function Collection() {
       const filterArray = Array.from(filtersSet);
       if (filterArray.length > 0) {
         if (filterName === "record_label") {
-          // handle label IDs
           const labelIds = labels
             .filter((label) => filtersSet.has(label.label_en))
             .map((label) => label.id);
@@ -167,7 +113,6 @@ export default function Collection() {
           if (!filterObj._and) filterObj._and = [];
           filterObj._and.push({ record_label: { _in: labelIds } });
         } else {
-          // normal case
           filterArray.forEach((filterVal) => {
             if (!filterObj._and) filterObj._and = [];
             filterObj._and.push({ [filterName]: { _contains: filterVal } });
@@ -182,15 +127,12 @@ export default function Collection() {
     }
 
     const stringifiedFilterObj = JSON.stringify(filterObj);
-    // limit=20 or whatever you want
     return `https://ara.directus.app/items/record_archive?limit=-1&fields=*,record_label.*&filter=${encodeURIComponent(
       stringifiedFilterObj
     )}`;
   };
 
-  // -------------------------------------------
-  // 2) Fetch initial data (labels, etc.) once
-  // -------------------------------------------
+  // Fetch initial data (labels, genres, regions, instruments, artists)
   useEffect(() => {
     // Fetch labels
     axios
@@ -210,13 +152,14 @@ export default function Collection() {
         setLabelIdToNameMap({});
       });
 
-    // Fetch genres (unchanged)
+    // Fetch genres
     axios
       .get("https://ara.directus.app/fields/record_archive/genres")
       .then((response) => {
         const fieldData = response.data.data;
         const interfaceOptions = fieldData.meta.options;
         let allGenres: string[] = [];
+
         if (Array.isArray(interfaceOptions.presets)) {
           allGenres = interfaceOptions.presets;
         }
@@ -224,16 +167,18 @@ export default function Collection() {
       })
       .catch((error) => {
         console.error("Error fetching genres field options:", error);
-        setGenres(["religious","folk","instrumental","vocal","dance","patriotic","national","opera","kef","children","lullaby","choral","symphony","chamber","prayer","taqsim"]);
+        // fallback
+        setGenres(["religious", "folk", "instrumental", "vocal", "dance", "patriotic", "national", "opera", "kef", "children", "lullaby", "choral", "symphony", "chamber", "prayer", "taqsim"]);
       });
 
-    // Fetch regions (unchanged)
+    // Fetch regions
     axios
       .get("https://ara.directus.app/fields/record_archive/regions")
       .then((response) => {
         const fieldData = response.data.data;
         const interfaceOptions = fieldData.meta.options;
         let allRegions: string[] = [];
+
         if (Array.isArray(interfaceOptions.presets)) {
           allRegions = interfaceOptions.presets;
         }
@@ -241,7 +186,8 @@ export default function Collection() {
       })
       .catch((error) => {
         console.error("Error fetching regions field options:", error);
-        setRegions(["Europe","North America","South America","Soviet Union","Middle East"]);
+        // fallback
+        setRegions(["Europe", "North America", "South America", "Soviet Union", "Middle East"]);
       });
 
     // Fetch instruments
@@ -281,9 +227,7 @@ export default function Collection() {
       });
   }, []);
 
-  // -------------------------------------------
-  // 3) Fetch records each time filters / searchString changes
-  // -------------------------------------------
+  // Fetch records + update available filters
   useEffect(() => {
     const url = getUrlWithFilters();
     axios.get(url).then((response) => {
@@ -327,26 +271,30 @@ export default function Collection() {
             newAvailableFilters.genres.add(genre);
           });
         }
+
         // instruments
         if (Array.isArray(rec.instruments)) {
-          rec.instruments.forEach((inst: string) => {
-            newResultCounts[inst] = (newResultCounts[inst] || 0) + 1;
-            newAvailableFilters.instruments.add(inst);
+          rec.instruments.forEach((instrument: string) => {
+            newResultCounts[instrument] = (newResultCounts[instrument] || 0) + 1;
+            newAvailableFilters.instruments.add(instrument);
           });
         }
+
         // regions
         if (Array.isArray(rec.regions)) {
-          rec.regions.forEach((reg: string) => {
-            newResultCounts[reg] = (newResultCounts[reg] || 0) + 1;
-            newAvailableFilters.regions.add(reg);
+          rec.regions.forEach((region: string) => {
+            newResultCounts[region] = (newResultCounts[region] || 0) + 1;
+            newAvailableFilters.regions.add(region);
           });
         }
+
         // artists
         if (rec.artist_original) {
           const artist = rec.artist_original;
           newResultCounts[artist] = (newResultCounts[artist] || 0) + 1;
           newAvailableFilters.artists.add(artist);
         }
+
         // labels
         if (rec.record_label) {
           const labelName = rec.record_label;
@@ -360,10 +308,74 @@ export default function Collection() {
     });
   }, [searchString, searchYear, filters, searchArtist]);
 
-  // ...some layout code (logo rotation, menu toggle)...
+  // Rotate logo on scroll
+  useEffect(() => {
+    const rotateLogoOnScroll = () => {
+      if (!logoRef.current || !landingRef.current) return;
+      const splashHeight = landingRef.current.offsetHeight;
+      const scrollY = window.scrollY;
+      const rotationAngle = (scrollY / splashHeight) * 360;
+      logoRef.current.style.transform = `rotate(${rotationAngle}deg)`;
+    };
+    window.addEventListener("scroll", rotateLogoOnScroll);
+    return () => {
+      window.removeEventListener("scroll", rotateLogoOnScroll);
+    };
+  }, []);
+
+  // Hide/show menu links on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (userToggledMenu) return;
+
+      if (!introRef.current || !menuRef.current || !menuLinksWrapperRef.current || !menuIconRef.current) return;
+
+      const introWrapper = introRef.current;
+      const menu = menuRef.current;
+      const menuLinks = menuLinksWrapperRef.current;
+      const menuIcon = menuIconRef.current;
+
+      const introRect = introWrapper.getBoundingClientRect();
+      const menuRect = menu.getBoundingClientRect();
+      const introMiddle = (introRect.top + introRect.bottom) / 2;
+      const menuBottom = menuRect.bottom;
+
+      if (introMiddle <= menuBottom) {
+        // Hide menu links
+        if (isMenuVisible) {
+          menuLinks.classList.remove('expanded');
+          menuIcon.classList.remove('clicked');
+          setIsMenuVisible(false);
+        }
+      } else {
+        // Show menu links
+        if (!isMenuVisible) {
+          menuLinks.classList.add('expanded');
+          menuIcon.classList.add('clicked');
+          setIsMenuVisible(true);
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [userToggledMenu, isMenuVisible]);
 
   const toggleMenu = () => {
-    // ...
+    setUserToggledMenu(true);
+    if (!menuLinksWrapperRef.current || !menuIconRef.current) return;
+    const menuLinks = menuLinksWrapperRef.current;
+    const menuIcon = menuIconRef.current;
+    if (isMenuVisible) {
+      menuLinks.classList.remove("expanded");
+      menuIcon.classList.remove("clicked");
+    } else {
+      menuLinks.classList.add("expanded");
+      menuIcon.classList.add("clicked");
+    }
+    setIsMenuVisible(!isMenuVisible);
+    setTimeout(() => {
+      setUserToggledMenu(false);
+    }, 300);
   };
 
   return (
@@ -376,9 +388,9 @@ export default function Collection() {
           id="logo"
           ref={logoRef}
           onClick={() => {
-            const main = document.getElementById("ara-main");
+            const main = document.getElementById('ara-main');
             if (main) {
-              window.scrollTo({ top: main.offsetTop - 20, behavior: "smooth" });
+              window.scrollTo({ top: main.offsetTop - 20, behavior: 'smooth' });
             }
           }}
         />
@@ -388,23 +400,10 @@ export default function Collection() {
       <div className="ara-main" id="ara-main">
         {/* MENU */}
         <div className="ara-menu" id="ara-menu" ref={menuRef}>
-          <div className="ara-menu-title" id="ara-menu-title">
-            ARMENIAN RECORD ARCHIVE
-          </div>
-          <div
-            className="ara-menu-links-wrapper expanded"
-            id="ara-menu-links-wrapper"
-            ref={menuLinksWrapperRef}
-          >
-            <Link href="#collection">
-              COLLECTION <br />
-              ՀԱՎԱՔԱՑՈՒ
-            </Link>{" "}
-            ●
-            <Link href="#about">
-              ABOUT US <br />
-              ՄԵՐ ՄԱՍԻՆ
-            </Link>
+          <div className="ara-menu-title" id="ara-menu-title">ARMENIAN RECORD ARCHIVE</div>
+          <div className="ara-menu-links-wrapper expanded" id="ara-menu-links-wrapper" ref={menuLinksWrapperRef}>
+            <Link href="#collection">COLLECTION <br/> ՀԱՎԱՔԱՑՈՒ</Link> ●
+            <Link href="#about">ABOUT US <br/> ՄԵՐ ՄԱՍԻՆ</Link>
           </div>
           <div className="ara-menu-toggle" id="ara-menu-toggle" onClick={toggleMenu}>
             <div className="ara-menu-icon" id="menu-icon" ref={menuIconRef}>
@@ -417,16 +416,10 @@ export default function Collection() {
         {/* INTRO */}
         <div className="ara-intro" ref={introRef}>
           <div className="ara-intro-text-english">
-            <div>
-              ֎ Welcome to the Armenian Record Archive, where we preserve and
-              celebrate the rich history of Armenian music and culture.
-            </div>
+            <div>֎ Welcome to the Armenian Record Archive, where we preserve and celebrate the rich history of Armenian music and culture.</div>
           </div>
           <div className="ara-intro-text-armenian">
-            <div>
-              Բարի գալուստ Հայկական ձայնագրությունների արխիվ, որտեղ մենք պահպանում և
-              տոնում ենք Հայկական երաժշտության և մշակույթի հարուստ պատմությունը: ֍
-            </div>
+            <div>Բարի գալուստ Հայկական ձայնագրությունների արխիվ, որտեղ մենք պահպանում և տոնում ենք Հայկական երաժշտության և մշակույթի հարուստ պատմությունը: ֍</div>
           </div>
         </div>
 
@@ -442,6 +435,7 @@ export default function Collection() {
               value={searchString}
               onChange={(e) => setSearchString(e.target.value)}
             />
+            {/* CLEAR SEARCH BUTTON IF WE HAVE TEXT */}
             {searchString && (
               <button
                 className="clear-search-button"
@@ -455,51 +449,58 @@ export default function Collection() {
           {/* FILTERS SECTION */}
           <div className="ara-filters-section">
             <div className="ara-filters-header">
-              <div
-                className="ara-filters-title"
-                onClick={() => setIsFilterOpen((prev) => !prev)}
-                style={{ cursor: "pointer", userSelect: "none" }}
-              >
-                Filters <span style={{ marginLeft: "0.3rem" }}>▼</span>
-              </div>
+              {/* Toggle open/closed on click */}
+<div 
+  className="ara-filters-title" 
+  onClick={() => setIsFilterOpen((prev) => !prev)} 
+  style={{ cursor: "pointer", userSelect: "none" }}
+>
+  Filters{" "}
+  <span 
+    className={`filter-arrow ${isFilterOpen ? 'open' : ''}`} 
+    style={{ marginLeft: "0.3rem" }}
+  >
+    ▲
+  </span>
+</div>
               <div className="ara-filters-language-switcher">
-                <span
-                  onClick={() => changeLanguage("EN")}
+                <span 
+                  onClick={() => changeLanguage("EN")} 
                   className={language === "EN" ? "language-selected" : ""}
-                  style={{ cursor: "pointer" }}
+                  style={{cursor:'pointer'}}
                 >
                   ENG
-                </span>{" "}
-                |{" "}
-                <span
-                  onClick={() => changeLanguage("HY")}
+                </span> 
+                | 
+                <span 
+                  onClick={() => changeLanguage("HY")} 
                   className={language === "HY" ? "language-selected" : ""}
-                  style={{ cursor: "pointer" }}
+                  style={{cursor:'pointer'}}
                 >
                   ՀԱՅ
                 </span>
               </div>
             </div>
 
-            {/* Conditionally show/hide filter menu, but always in DOM */}
-            <div
-              className={`ara-filter-menu-wrapper ${
-                isFilterOpen ? "expanded" : ""
-              }`}
-            >
-              <FilterMenu
-                genres={genres}
-                instruments={instruments}
-                regions={regions}
-                artists={artists}
-                labels={labels}
-                labelIdToNameMap={labelIdToNameMap}
-                filters={filters}
-                setFilter={setFilter}
-                availableFilters={availableFilters}
-                resultCounts={resultCounts}
-                language={language}
-              />
+            {/* Conditionally render the filter menu */}
+            <div className={`ara-filter-menu-wrapper ${isFilterOpen ? 'expanded' : ''}`}>
+
+
+                <FilterMenu
+                  genres={genres}
+                  instruments={instruments}
+                  regions={regions}
+                  artists={artists}
+                  labels={labels}
+                  labelIdToNameMap={labelIdToNameMap}
+                  filters={filters}
+                  setFilter={setFilter}
+                  availableFilters={availableFilters}
+                  resultCounts={resultCounts}
+                  language={language}
+                />
+
+
             </div>
           </div>
 
@@ -520,11 +521,7 @@ export default function Collection() {
       <div className="ara-record-player-wrapper">
         <div className="ara-record-player-info">
           <div className="ara-record-player-image">
-            <img
-              src="/ARA_armenaphone_05.jpg"
-              alt="Image"
-              className="ara-record-player-thumbnail-img"
-            />
+            <img src="/ARA_armenaphone_05.jpg" alt="Image" className="ara-record-player-thumbnail-img" />
           </div>
           <div className="ara-record-player-song-info">
             <div className="ara-record-player-song-title">Kroung</div>
@@ -537,7 +534,9 @@ export default function Collection() {
         </div>
       </div>
 
-      <footer>{/* Footer content */}</footer>
+      <footer>
+        {/* Footer content */}
+      </footer>
     </>
   );
 }
