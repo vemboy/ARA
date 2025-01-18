@@ -1,3 +1,5 @@
+"use client";
+
 // filter-menu.js
 import React, { useState } from "react";
 
