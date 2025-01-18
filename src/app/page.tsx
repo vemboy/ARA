@@ -127,7 +127,7 @@ export default function Collection() {
     }
 
     const stringifiedFilterObj = JSON.stringify(filterObj);
-    return `https://ara.directus.app/items/record_archive?limit=20&fields=*,record_label.*&filter=${encodeURIComponent(
+    return `https://ara.directus.app/items/record_archive?limit=-1&fields=*,record_label.*&filter=${encodeURIComponent(
       stringifiedFilterObj
     )}`;
   };
