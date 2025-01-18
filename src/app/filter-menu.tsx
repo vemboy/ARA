@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 // filter-menu.js
 import React, { useState } from "react";
