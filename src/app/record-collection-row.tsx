@@ -93,7 +93,7 @@ function RecordCollectionRow(props: any) {
     position: 'absolute' as const,
     top: '50%',
     left: '50%',
-    transform: `translate(-50%, -50%) scale(${2.5 * zoomAmount})`,
+    transform: `translate(-50%, -50%) scale(${2 * zoomAmount})`,
     transformOrigin: '50% 50%',
     width: '100%',
     height: '100%'
@@ -109,11 +109,10 @@ function RecordCollectionRow(props: any) {
         {/* This DIV handles the scaling and positioning */}
         <div className="record-image-container" style={containerStyle}>
           <img
+            loading="lazy"
             src={props.src}
             alt="Record Image"
-            className={
-              isPlaying && currentSongId === songId ? "record-image spinning-record" : "record-image"
-            }
+className={`record-image ${isPlaying && currentSongId === songId ? "playing" : ""}`}
           />
         </div>
         <div className="ara-grid-item-circle-overlay">►</div>

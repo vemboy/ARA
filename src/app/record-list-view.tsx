@@ -31,8 +31,10 @@ function RecordListView(props: any) {
           author={(record.author || "Unknown author").substring(0, 20)}
           src={
             record.image
-              ? getImageThumbnailUrl(record.image)
-              : getDefaultImageThumbnailUrl()
+    // ? `https://ara.directus.app/assets/${record.image}`
+    // : getDefaultImageThumbnailUrl()
+        ? getImageThumbnailUrl(record.image)
+    : getDefaultImageThumbnailUrl()
           }
         />
       ))}

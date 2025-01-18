@@ -391,6 +391,16 @@ strong {
   padding-bottom: 1rem;
 }
 
+.ara-filters-title span {
+  display: inline-block;
+  transition: transform 0.3s;
+}
+
+/* When open, rotate 180deg */
+.ara-filter-menu-wrapper.expanded ~ .ara-filters-title span {
+  transform: rotate(180deg);
+}
+
 .ara-filters-language-switcher {
   font-size: var(--filter-language-switcher-font-size);
   justify-self: end;
@@ -408,6 +418,34 @@ strong {
 
 .ara-filter-menu-wrapper {
   margin-top: 1rem;
+    /* Start collapsed */
+  max-height: 0;
+  overflow: hidden;
+
+  opacity: 0;
+  visibility: hidden;
+
+  /* Animate any property changes over 0.3s */
+  transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.ara-filter-menu-wrapper.expanded {
+  /* Expand to some large max-height 
+     (9999px is a common hack to mimic “auto”) */
+  max-height: 9999px;
+
+  /* Fade in */
+  opacity: 1;
+  visibility: visible;
+}
+
+.filter-arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.filter-arrow.open {
+  transform: rotate(180deg);
 }
 
 .ara-filter-options-wrapper {
@@ -843,28 +881,26 @@ a, a:visited, a:hover, a:active {
   overflow: hidden; /* ensure no spillover */
 }
 
-/* The actual <img> is given a circle shape */
 .record-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  transform-origin: 50% 50%;
-}
 
-/* The spinning-record class does rotation only */
-.spinning-record {
+  /* Everyone has the spin animation but starts paused */
   animation: spin 1.5s linear infinite;
+  animation-play-state: paused;
+  animation-timing-function: linear;
 }
 
-/* Keyframes for continuous rotation */
+.record-image.playing {
+  /* This class sets the animation running */
+  animation-play-state: running;
+}
+
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
       
 
@@ -1117,12 +1153,24 @@ body {
   cursor: default;
 }
 
+/* Keyframe for continuous spinning */
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* The base image style (already likely in your CSS) */
 .ara-record-image__main {
-  display: block;
-  border-radius: 100%;
   width: 100%;
   height: auto;
-  user-select: none;
+  border-radius: 50%;
+  animation: spin 5s linear infinite;
+  animation-play-state: paused; /* default paused */
+}
+
+/* When playing, we un-pause the animation */
+.spinning-record {
+  animation-play-state: running;
 }
 
 .ara-record-image::before {

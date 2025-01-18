@@ -9,6 +9,7 @@ function RecordImage(props: any) {
     <Link href={`collection-detail/${props.id}`}>
       <div className="airtable-gallery-2">
         <img
+          loading="lazy"
           style={{ width: "300px", height: "300px" }}
           src={`${props.src}`}
           alt=""
