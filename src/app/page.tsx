@@ -188,11 +188,11 @@ useEffect(() => {
       const processedFilters: { [key: string]: Set<string> } = {};
       Object.entries(filterObj).forEach(([key, values]) => {
         // Ensure values is an array
-        const valuesArray = Array.isArray(values) 
-          ? values 
-          : typeof values === 'object' 
-            ? Object.keys(values) 
-            : [values];
+const valuesArray = Array.isArray(values) 
+  ? values 
+  : values !== null && typeof values === 'object' && Object.keys(values).length > 0
+    ? Object.keys(values)
+    : [values].filter(Boolean);
         
         processedFilters[key] = new Set(valuesArray);
       });

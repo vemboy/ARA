@@ -98,25 +98,26 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
 
   const filterOrder = ["genres", "instruments", "record_label", "regions", "artist_original"];
 
-  const renderFilterItems = (items: string[], filterType: string) => {
-    return items.map((item) => {
-      const isAvailable = availableFilters[filterType as keyof typeof availableFilters].has(item);
-      
-      // Change this line to check if the filter exists and contains the item
-      const isActive = filters[filterType] && filters[filterType].has ? filters[filterType].has(item) : false;
-      
-      return (
-        <div
-          key={item}
-          className={`filter-item ${isAvailable ? "" : "disabled"} ${isActive ? "active" : ""}`}
-          onClick={() => isAvailable && handleSubItemClick(filterType, item)}
-        >
-          <span className="ara-filter-icon-circle"></span> 
-          {getLocalizedName(item)} ({resultCounts[item] || 0})
-        </div>
-      );
-    });
-  };
+const renderFilterItems = (items: string[], filterType: string) => {
+  return items.map((item) => {
+    const isAvailable = availableFilters[filterType as keyof typeof availableFilters].has(item);
+    
+    const isActive = filters[filterType] && 
+      typeof filters[filterType].has === 'function' && 
+      filters[filterType].has(item);
+    
+    return (
+      <div
+        key={item}
+        className={`filter-item ${isAvailable ? "" : "disabled"} ${isActive ? "active" : ""}`}
+        onClick={() => isAvailable && handleSubItemClick(filterType, item)}
+      >
+        <span className="ara-filter-icon-circle"></span> 
+        {getLocalizedName(item)} ({resultCounts[item] || 0})
+      </div>
+    );
+  });
+};
 
   return (
     <>
@@ -146,24 +147,26 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
           </div>
         )}
 
-        {activeFilter === "record_label" && (
-          <div className="ara-filter-items" data-filter="label">
-            {labels.map((label) => {
-              const isAvailable = availableFilters.record_label.has(label.label_en);
-              const isActive = filters.record_label && filters.record_label.has(label.label_en);
-              return (
-                <div
-                  key={label.id}
-                  className={`filter-item ${isAvailable ? "" : "disabled"} ${isActive ? "active" : ""}`}
-                  onClick={() => isAvailable && handleSubItemClick("record_label", label.label_en)}
-                >
-                  <span className="ara-filter-icon-circle"></span> 
-                  {label.label_en} ({resultCounts[label.label_en] || 0})
-                </div>
-              );
-            })}
-          </div>
-        )}
+{activeFilter === "record_label" && (
+  <div className="ara-filter-items" data-filter="label">
+    {labels.map((label) => {
+      const isAvailable = availableFilters.record_label.has(label.label_en);
+      const isActive = filters.record_label && 
+        typeof filters.record_label.has === 'function' && 
+        filters.record_label.has(label.label_en);
+      return (
+        <div
+          key={label.id}
+          className={`filter-item ${isAvailable ? "" : "disabled"} ${isActive ? "active" : ""}`}
+          onClick={() => isAvailable && handleSubItemClick("record_label", label.label_en)}
+        >
+          <span className="ara-filter-icon-circle"></span> 
+          {label.label_en} ({resultCounts[label.label_en] || 0})
+        </div>
+      );
+    })}
+  </div>
+)}
 
         {activeFilter === "regions" && (
           <div className="ara-filter-items" data-filter="region">
