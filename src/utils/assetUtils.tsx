@@ -18,6 +18,8 @@ export function getDefaultImageDetailUrl() {
   return getImageDetailUrl(DETAULT_IMAGE_ID);
 }
 
+
+
 // // assetUtils.ts
 // const DIRECTUS_ASSETS_URL = "https://ara.directus.app/assets";
 // const DEFAULT_IMAGE_ID = "bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48";

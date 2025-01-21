@@ -2,6 +2,7 @@
 
 "use client";
 
+import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Link from "next/link";
@@ -14,6 +15,7 @@ import FilterMenu from "./filter-menu";
 import RecordListView from "./record-list-view";
 
 export default function Collection() {
+  const searchParams = useSearchParams();
   const audioContext = React.useContext(AudioContext);
   const setSong = audioContext?.setSong;
   const setName = audioContext?.setName;
@@ -30,6 +32,8 @@ export default function Collection() {
   const [searchYear, setSearchYear] = useState<string>("");
   const [searchArtist, setSearchArtist] = useState<string>("");
   const [selectedRecord, setSelectedRecord] = useState<any | null>(null);
+
+  const [activeFilter, setActiveFilter] = useState<string | null>("genres");
 
   const [instruments, setInstruments] = useState<string[]>([]);
   const [genres, setGenres] = useState<string[]>([]);
@@ -65,72 +69,145 @@ export default function Collection() {
   const [userToggledMenu, setUserToggledMenu] = useState(false);
 
   // NEW: State to toggle open/close of the filter menu
-  const [isFilterOpen, setIsFilterOpen] = useState(true);
+const [isFilterOpen, setIsFilterOpen] = useState(true);  // Default to true
 
   const changeLanguage = (lang: string) => {
     setLanguage(lang);
   };
 
-  /** Builds the query URL with the current filters & search inputs */
-  const getUrlWithFilters = (additionalFilter?: object) => {
-    const filterObj: { _or?: object[]; _and?: object[] } = {
-      _or: [],
-      _and: [],
-    };
+/** Builds the query URL with the current filters & search inputs */
+const getUrlWithFilters = (additionalFilter?: object) => {
+  const filterObj: { _or?: object[]; _and?: object[] } = {
+    _or: [],
+    _and: [],
+  };
 
-    if (searchString.length > 0) {
+  if (searchString.length > 0) {
+    // First, check if we have any operators
+    if (searchString.includes('+') || searchString.includes(',')) {
+      const hasAndOperator = searchString.includes('+');
+      const hasOrOperator = searchString.includes(',');
+      
+      // Split by either operator and trim whitespace
+      const searchTerms = hasAndOperator 
+        ? searchString.split('+').map(term => term.trim())
+        : searchString.split(',').map(term => term.trim());
+
+      // Create a search condition for each term
+      const searchConditions = searchTerms.map(term => ({
+        _or: [
+          { title: { _icontains: term } },
+          { title_armenian: { _icontains: term } },
+          { artist_armenian: { _icontains: term } },
+          { artist_original: { _icontains: term } },
+          { genres: { _icontains: term } },
+          { instruments: { _icontains: term } },
+          { regions: { _icontains: term } },
+          { record_label: { label_en: { _icontains: term } } }
+        ]
+      }));
+
+      // For AND operations (plus sign), add each condition to _and array
+      // For OR operations (comma), combine all conditions in _or array
+      if (hasAndOperator) {
+        filterObj._and = filterObj._and || [];
+        filterObj._and.push(...searchConditions);
+      } else {
+        // Flatten all OR conditions into a single array
+        filterObj._or = searchConditions.flatMap(condition => condition._or);
+      }
+    } else {
+      // Handle single search term (no operators) - existing behavior
       filterObj._or = [
         { title: { _icontains: searchString } },
         { title_armenian: { _icontains: searchString } },
         { artist_armenian: { _icontains: searchString } },
         { artist_original: { _icontains: searchString } },
+        { genres: { _icontains: searchString } },
+        { instruments: { _icontains: searchString } },
+        { regions: { _icontains: searchString } },
+        { record_label: { label_en: { _icontains: searchString } } }
       ];
     }
+  }
 
-    if (searchYear.length > 0) {
-      filterObj._and?.push({ "year(year)": { _eq: searchYear } });
-    }
+  if (searchYear.length > 0) {
+    filterObj._and = filterObj._and || [];
+    filterObj._and.push({ "year(year)": { _eq: searchYear } });
+  }
 
-    if (searchArtist.length > 0) {
-      filterObj._and?.push({
-        _or: [
-          { artist_english: { _icontains: searchArtist } },
-          { artist_armenian: { _icontains: searchArtist } },
-          { artist_original: { _icontains: searchArtist } },
-        ],
-      });
-    }
-
-    // Apply each selected filter
-    Object.entries(filters).forEach(([filterName, filtersSet]) => {
-      const filterArray = Array.from(filtersSet);
-      if (filterArray.length > 0) {
-        if (filterName === "record_label") {
-          const labelIds = labels
-            .filter((label) => filtersSet.has(label.label_en))
-            .map((label) => label.id);
-
-          if (!filterObj._and) filterObj._and = [];
-          filterObj._and.push({ record_label: { _in: labelIds } });
-        } else {
-          filterArray.forEach((filterVal) => {
-            if (!filterObj._and) filterObj._and = [];
-            filterObj._and.push({ [filterName]: { _contains: filterVal } });
-          });
-        }
-      }
+  if (searchArtist.length > 0) {
+    filterObj._and = filterObj._and || [];
+    filterObj._and.push({
+      _or: [
+        { artist_english: { _icontains: searchArtist } },
+        { artist_armenian: { _icontains: searchArtist } },
+        { artist_original: { _icontains: searchArtist } },
+      ],
     });
+  }
 
-    if (additionalFilter) {
-      if (!filterObj._and) filterObj._and = [];
-      filterObj._and.push(additionalFilter);
+  // Apply each selected filter
+  Object.entries(filters).forEach(([filterName, filtersSet]) => {
+    const filterArray = Array.from(filtersSet);
+    if (filterArray.length > 0) {
+      if (filterName === "record_label") {
+        const labelIds = labels
+          .filter((label) => filtersSet.has(label.label_en))
+          .map((label) => label.id);
+
+        if (!filterObj._and) filterObj._and = [];
+        filterObj._and.push({ record_label: { _in: labelIds } });
+      } else {
+        filterArray.forEach((filterVal) => {
+          if (!filterObj._and) filterObj._and = [];
+          filterObj._and.push({ [filterName]: { _icontains: filterVal } });
+        });
+      }
     }
+  });
 
-    const stringifiedFilterObj = JSON.stringify(filterObj);
-    return `https://ara.directus.app/items/record_archive?limit=-1&fields=*,record_label.*&filter=${encodeURIComponent(
-      stringifiedFilterObj
-    )}`;
-  };
+  if (additionalFilter) {
+    if (!filterObj._and) filterObj._and = [];
+    filterObj._and.push(additionalFilter);
+  }
+
+  const stringifiedFilterObj = JSON.stringify(filterObj);
+  return `https://ara.directus.app/items/record_archive?limit=-1&fields=*,record_label.*&filter=${encodeURIComponent(
+    stringifiedFilterObj
+  )}`;
+};
+
+useEffect(() => {
+  const filterParam = searchParams.get('filter');
+  if (filterParam) {
+    try {
+      const filterObj = JSON.parse(decodeURIComponent(filterParam));
+      
+      // Convert to Sets, handling different possible input formats
+      const processedFilters: { [key: string]: Set<string> } = {};
+      Object.entries(filterObj).forEach(([key, values]) => {
+        // Ensure values is an array
+        const valuesArray = Array.isArray(values) 
+          ? values 
+          : typeof values === 'object' 
+            ? Object.keys(values) 
+            : [values];
+        
+        processedFilters[key] = new Set(valuesArray);
+      });
+
+      setFilter(processedFilters);
+      
+      // Set the active filter to the first filter type
+      const filterType = Object.keys(processedFilters)[0] || "genres";
+      setActiveFilter(filterType);
+    } catch (error) {
+      console.error('Error parsing filter parameter:', error);
+    }
+  }
+}, [searchParams]);
+
 
   // Fetch initial data (labels, genres, regions, instruments, artists)
   useEffect(() => {
@@ -487,6 +564,8 @@ export default function Collection() {
 
 
                 <FilterMenu
+                  activeFilter={activeFilter}
+                  setActiveFilter={setActiveFilter}
                   genres={genres}
                   instruments={instruments}
                   regions={regions}

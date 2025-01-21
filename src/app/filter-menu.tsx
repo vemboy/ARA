@@ -1,8 +1,8 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-// filter-menu.js
-import React, { useState } from "react";
+import React from "react";
+import { Dispatch, SetStateAction } from 'react';
 
 interface FilterMenuProps {
   genres: string[];
@@ -21,7 +21,10 @@ interface FilterMenuProps {
     record_label: Set<string>;
   };
   resultCounts: { [key: string]: number };
-  language: string; // now receive language from parent
+  language: string;
+
+  activeFilter: string | null;
+  setActiveFilter: Dispatch<SetStateAction<string | null>>;
 }
 
 const FilterMenu: React.FC<FilterMenuProps> = ({
@@ -35,11 +38,11 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
   setFilter,
   availableFilters,
   resultCounts,
-  language
+  language,
+  activeFilter,
+  setActiveFilter
 }) => {
-  const [activeFilter, setActiveFilter] = useState<string>("genres");
-
-  // Translations object (English/Armenian)
+  // Translations for menu titles
   const translations: Record<string, Record<string, string>> = {
     EN: {
       artist_original: "Artist",
@@ -47,6 +50,7 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
       instruments: "Instrument",
       record_label: "Label",
       regions: "Region",
+      clear_all: "Clear All"
     },
     HY: {
       artist_original: "Արտիստ",
@@ -54,7 +58,23 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
       instruments: "Նվագարան",
       record_label: "Պիտակ",
       regions: "Մարզ",
+      clear_all: "Մաքրել բոլորը"
     },
+  };
+
+  // Helper function to get the correct language version from the string
+  const getLocalizedName = (item: string | null | undefined) => {
+    // Handle null or undefined
+    if (item == null) return "Unknown";
+    
+    // Convert to string to ensure .includes method exists
+    const itemStr = String(item);
+    
+    // Check if it contains language delimiter
+    if (!itemStr.includes("-|-")) return itemStr;
+    
+    const [english, armenian] = itemStr.split("-|-");
+    return language === "EN" ? english : armenian;
   };
 
   /** Toggle one item in the filter set */
@@ -76,8 +96,27 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
     setFilter({});
   };
 
-  /** The menu items in top row (genres, instruments, label, regions, artist) */
   const filterOrder = ["genres", "instruments", "record_label", "regions", "artist_original"];
+
+  const renderFilterItems = (items: string[], filterType: string) => {
+    return items.map((item) => {
+      const isAvailable = availableFilters[filterType as keyof typeof availableFilters].has(item);
+      
+      // Change this line to check if the filter exists and contains the item
+      const isActive = filters[filterType] && filters[filterType].has ? filters[filterType].has(item) : false;
+      
+      return (
+        <div
+          key={item}
+          className={`filter-item ${isAvailable ? "" : "disabled"} ${isActive ? "active" : ""}`}
+          onClick={() => isAvailable && handleSubItemClick(filterType, item)}
+        >
+          <span className="ara-filter-icon-circle"></span> 
+          {getLocalizedName(item)} ({resultCounts[item] || 0})
+        </div>
+      );
+    });
+  };
 
   return (
     <>
@@ -95,52 +134,23 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
       </div>
 
       <div className="ara-filter-items-wrapper">
-        {/* GENRES */}
         {activeFilter === "genres" && (
           <div className="ara-filter-items ara-filter-items-selected" data-filter="genre">
-            {genres.map((genre) => {
-              const isAvailable = availableFilters.genres.has(genre);
-              const isActive = filters.genres?.has(genre);
-              return (
-                <div
-                  key={genre}
-                  className={`filter-item ${isAvailable ? "" : "disabled"} ${isActive ? "active" : ""}`}
-                  onClick={() => isAvailable && handleSubItemClick("genres", genre)}
-                >
-                  <span className="ara-filter-icon-circle"></span> 
-                  {genre} ({resultCounts[genre] || 0})
-                </div>
-              );
-            })}
+            {renderFilterItems(genres, "genres")}
           </div>
         )}
 
-        {/* INSTRUMENTS */}
         {activeFilter === "instruments" && (
           <div className="ara-filter-items" data-filter="instrument">
-            {instruments.map((instrument) => {
-              const isAvailable = availableFilters.instruments.has(instrument);
-              const isActive = filters.instruments?.has(instrument);
-              return (
-                <div
-                  key={instrument}
-                  className={`filter-item ${isAvailable ? "" : "disabled"} ${isActive ? "active" : ""}`}
-                  onClick={() => isAvailable && handleSubItemClick("instruments", instrument)}
-                >
-                  <span className="ara-filter-icon-circle"></span> 
-                  {instrument} ({resultCounts[instrument] || 0})
-                </div>
-              );
-            })}
+            {renderFilterItems(instruments, "instruments")}
           </div>
         )}
 
-        {/* RECORD LABEL */}
         {activeFilter === "record_label" && (
           <div className="ara-filter-items" data-filter="label">
             {labels.map((label) => {
               const isAvailable = availableFilters.record_label.has(label.label_en);
-              const isActive = filters.record_label?.has(label.label_en);
+              const isActive = filters.record_label && filters.record_label.has(label.label_en);
               return (
                 <div
                   key={label.id}
@@ -155,81 +165,57 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
           </div>
         )}
 
-        {/* REGIONS */}
         {activeFilter === "regions" && (
           <div className="ara-filter-items" data-filter="region">
-            {regions.map((region) => {
-              const isAvailable = availableFilters.regions.has(region);
-              const isActive = filters.regions?.has(region);
-              return (
-                <div
-                  key={region}
-                  className={`filter-item ${isAvailable ? "" : "disabled"} ${isActive ? "active" : ""}`}
-                  onClick={() => isAvailable && handleSubItemClick("regions", region)}
-                >
-                  <span className="ara-filter-icon-circle"></span> 
-                  {region} ({resultCounts[region] || 0})
-                </div>
-              );
-            })}
+            {renderFilterItems(regions, "regions")}
           </div>
         )}
 
-        {/* ARTIST ORIGINAL */}
         {activeFilter === "artist_original" && (
           <div className="ara-filter-items" data-filter="artist">
-            {artists.map((artist) => {
-              const isAvailable = availableFilters.artists.has(artist);
-              const isActive = filters.artist_original?.has(artist);
-              return (
-                <div
-                  key={artist}
-                  className={`filter-item ${isAvailable ? "" : "disabled"} ${isActive ? "active" : ""}`}
-                  onClick={() => isAvailable && handleSubItemClick("artist_original", artist)}
-                >
-                  <span className="ara-filter-icon-circle"></span> 
-                  {artist} ({resultCounts[artist] || 0})
-                </div>
-              );
-            })}
+            {renderFilterItems(artists, "artist_original")}
           </div>
         )}
       </div>
 
-      {/* Currently selected items + 'Clear All' link */}
-      <div style={{ marginTop: "10px" }}>
-        {Object.entries(filters).flatMap(([filterType, selectedItems]) =>
-          Array.from(selectedItems).map((item) => (
-            <span 
-              className="filter-item" 
-              key={item} 
-              style={{ fontWeight: "bold", marginRight: "5px" }}
-            >
-              {item}
-              <button
-                style={{ marginLeft: "5px" }}
-                onClick={() => handleSubItemClick(filterType, item)}
-              >
-                ×
-              </button>
-            </span>
-          ))
-        )}
+      {Object.keys(filters).length > 0 && (
+        <div style={{ marginTop: "10px" }}>
+          <div className="selected-filters-container">
+            {Object.entries(filters).flatMap(([filterType, selectedItems]) =>
+              Array.from(selectedItems).map((item) => (
+                <span 
+                  className="filter-item" 
+                  key={item}
+                >
+                  {getLocalizedName(item)}
+                  <button
+                    onClick={(e: React.MouseEvent) => {
+                      e.preventDefault();
+                      handleSubItemClick(filterType, item);
+                    }}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))
+            )}
+          </div>
 
-        {/* Show Clear All only if we have some filters selected */}
-        {Object.keys(filters).length > 0 && (
-          <a
-            href="#"
-            onClick={(e) => {
+          <div 
+            onClick={(e: React.MouseEvent) => {
               e.preventDefault();
               handleClearAll();
             }}
-            style={{ marginLeft: "10px", textDecoration: "underline", cursor: "pointer" }}
+            style={{ 
+              marginLeft: "10px", 
+              textDecoration: "underline", 
+              cursor: "pointer" 
+            }}
           >
-            Clear All
-          </a>
-        )}
-      </div>
+            {translations[language].clear_all}
+          </div>
+        </div>
+      )}
     </>
   );
 };

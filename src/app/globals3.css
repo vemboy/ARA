@@ -179,7 +179,7 @@ strong {
   color: white;
   font-size: 1.5rem;
   cursor: pointer;
-  margin-right: 1rem;
+  margin-right: 3.5rem;
 }
 
 .clear-search-button:hover {
@@ -369,6 +369,8 @@ strong {
   display: grid;
   margin-top: 2rem;
 }
+
+
 
 .filter-arrow {
   display: inline-block;
@@ -905,7 +907,35 @@ a, a:visited, a:hover, a:active {
       
 
 
+/* Pill-style selected filters */
+.selected-filters-container .filter-item {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 0.9rem;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
 
+.selected-filters-container .filter-item:hover {
+  background-color: var(--ara-blue);
+  color: white;
+  cursor: pointer;
+}
+
+.selected-filters-container .filter-item button {
+  background: none;
+  border: none;
+  color: #666;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.selected-filters-container .filter-item:hover button {
+  color: white;
+}
 
 
 
@@ -1113,9 +1143,10 @@ body {
   display: grid;
   grid-template-columns: max-content 1fr;
   border-bottom: 2px solid black;
-  padding-bottom: 10px;
+  padding-bottom: 13.5px;
   grid-area: heading;
   grid-gap: .5rem;
+  margin-bottom: -10px;  /* Add this line to reduce the bottom gap */
 }
 
 .ara-header__recording-label {
@@ -1166,6 +1197,20 @@ body {
   border-radius: 50%;
   animation: spin 5s linear infinite;
   animation-play-state: paused; /* default paused */
+}
+
+.ara-record-info__pills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ara-record-info__pill {
+  background-color: #f0f0f0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
 }
 
 /* When playing, we un-pause the animation */
@@ -1226,8 +1271,13 @@ body {
   text-transform: uppercase;
   margin-bottom: 5px;
   font-size: 16px;
+  transition: opacity 0.2s ease;
+  user-select: none;
 }
 
+.ara-record-info__side-title:hover {
+  opacity: 0.7;
+}
 .ara-record-info__track-list {
   display: grid;
   grid-template-columns: 2ch 1fr 6ch;
