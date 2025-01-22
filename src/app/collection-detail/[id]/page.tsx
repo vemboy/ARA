@@ -1,3 +1,5 @@
+// collection detail page - page.tsx
+
 "use client";
 export const dynamic = "force-dynamic";
 
@@ -11,12 +13,18 @@ import {
   getDefaultImageDetailUrl,
   getImageDetailUrl,
 } from "@/utils/assetUtils";
+import SharePopup from '@/app/SharePopup';
+
 
 interface RecordType {
   [key: string]: any;
 }
 
-
+const isArmenianScript = (text: string) => {
+  // Armenian Unicode range is U+0530 to U+058F
+  const armenianPattern = /[\u0530-\u058F]/;
+  return armenianPattern.test(text);
+};
 
 // Add this helper function with your other functions
 const formatDuration = (durationInSeconds: number) => {
@@ -49,18 +57,14 @@ const CollectionDetail: React.FC = () => {
 
 const handlePillClick = (filterType: string, value: string) => {
   // Create an encoded filter object that our main page can understand
-  const filter = {
-    [filterType]: new Set([value])
-  };
-
-  // Convert to URL-safe string
   const filterParam = encodeURIComponent(JSON.stringify({
     [filterType]: [value]  // Use an array instead of a Set
   }));
   
-  // Navigate to main page with filter
-  router.push(`/?filter=${filterParam}`);
+  // Navigate to main page with filter and include #collection to scroll there
+  router.push(`/?filter=${filterParam}#collection`);
 };
+
   
   // Audio Context
   const audioContext = useContext(AudioContext);
@@ -79,6 +83,7 @@ const handlePillClick = (filterType: string, value: string) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackUrl, setCurrentTrackUrl] = useState<string | null>(null);
   const [durations, setDurations] = useState<{ [key: string]: string }>({});
+  const [isShareOpen, setIsShareOpen] = useState(false);
 
   // Grab the record ID from the URL
   const pathName = usePathname();
@@ -89,13 +94,13 @@ const handlePillClick = (filterType: string, value: string) => {
   // ----------------------------------------------------------------
   // 2) useEffect to fetch data for this record
   // ----------------------------------------------------------------
-  useEffect(() => {
+useEffect(() => {
   axios.get(`https://ara.directus.app/items/record_archive/${recordId}`)
     .then((response) => {
       const initialRecord = response.data.data;
       const ARAID = initialRecord["ARAID"];
 
-      axios.get(`https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}&fields=*,audio.id,record_label.*`)
+      axios.get(`https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}&fields=*,title_english,audio.id,record_label.*`)  // Note: added title_english here
         .then(async (recordsResponse) => {
           let fetchedRecords = recordsResponse.data.data;
 
@@ -371,7 +376,13 @@ const handleTrackClick = (record: RecordType) => {
           <div className="ara-header__recording-label">
             {currentRecord.record_label?.label_en ?? "Unknown Label"}
           </div>
-          <div className="ara-header__share">SHARE</div>
+<div 
+  className="ara-header__share" 
+  onClick={() => setIsShareOpen(true)}
+  style={{ cursor: 'pointer' }}
+>
+  SHARE
+</div>
           <div className="ara-header__recording-catalog-number">
             {catalogNumbers}
           </div>
@@ -427,14 +438,18 @@ const handleTrackClick = (record: RecordType) => {
         <div className="ara-record-info__track-number">
           {sideA.track_number ?? "1A"}
         </div>
-        <div className="ara-record-info__song-title-container">
-          <div className="ara-record-info__song-title">
-            {sideA.title ?? "Unknown title"}
-          </div>
-          <div className="ara-record-info__transliteration">
-            {sideA.title_armenian ?? "Unknown Armenian title"}
-          </div>
-        </div>
+<div className="ara-record-info__song-title-container">
+  <div className="ara-record-info__song-title">
+    {isArmenianScript(sideA.title || '')
+      ? sideA.title
+      : sideA.title_armenian || "No Armenian title"}
+  </div>
+  <div className="ara-record-info__transliteration">
+    {isArmenianScript(sideA.title || '')
+      ? (sideA.title_english || "No English transliteration")
+      : sideA.title}
+  </div>
+</div>
 <div className="ara-record-info__song-length">
   {durations[sideA.id] || "No Audio"}
 </div>
@@ -463,14 +478,18 @@ const handleTrackClick = (record: RecordType) => {
         <div className="ara-record-info__track-number">
           {sideB.track_number ?? "1B"}
         </div>
-        <div className="ara-record-info__song-title-container">
-          <div className="ara-record-info__song-title">
-            {sideB.title ?? "Unknown title"}
-          </div>
-          <div className="ara-record-info__transliteration">
-            {sideB.title_armenian ?? "Unknown Armenian title"}
-          </div>
-        </div>
+<div className="ara-record-info__song-title-container">
+  <div className="ara-record-info__song-title">
+    {isArmenianScript(sideB.title || '')
+      ? sideB.title
+      : sideB.title_armenian || "No Armenian title"}
+  </div>
+  <div className="ara-record-info__transliteration">
+    {isArmenianScript(sideB.title || '')
+      ? (sideB.title_english || "No English transliteration")
+      : sideB.title}
+  </div>
+</div>
 <div className="ara-record-info__song-length">
   {durations[sideB.id] || "No audio"}
 </div>
@@ -665,7 +684,15 @@ const handleTrackClick = (record: RecordType) => {
             </div>
           ))}
         </div>
+        
       </div>
+
+<SharePopup
+  open={isShareOpen}
+  onOpenChange={setIsShareOpen}
+  recordTitle={currentRecord.title || "Record"}
+  recordId={recordId}
+/>
 
     </div>
   );

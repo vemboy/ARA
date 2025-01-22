@@ -1,4 +1,4 @@
-// Collection.tsx
+// main page - page.tsx
 
 "use client";
 
@@ -9,10 +9,39 @@ import Link from "next/link";
 import _ from "lodash";
 import { AudioContext } from "./audioLayout";
 
+
 // UPDATED: Import your new "filter-menu.js" here
 import FilterMenu from "./filter-menu";
 
 import RecordListView from "./record-list-view";
+
+const smoothScrollToMain = () => {
+  const main = document.getElementById('ara-main');
+  if (main) {
+    const start = window.scrollY;
+    const end = main.offsetTop;
+    const duration = 1000; // 1 second
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Easing function for smoother animation
+      const easeInOutCubic = progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+      window.scrollTo(0, start + (end - start) * easeInOutCubic);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }
+};
 
 export default function Collection() {
   const searchParams = useSearchParams();
@@ -304,12 +333,31 @@ const valuesArray = Array.isArray(values)
       });
   }, []);
 
+useEffect(() => {
+  const initialDelay = setTimeout(() => {
+    if (window.scrollY === 0) {
+      const timer = setTimeout(() => {
+        if (window.scrollY === 0) {
+          smoothScrollToMain();
+        }
+      }, 1500);
+
+      return () => clearTimeout(timer);
+    }
+  }, 100);
+
+  return () => clearTimeout(initialDelay);
+}, []);
+
   // Fetch records + update available filters
-  useEffect(() => {
-    const url = getUrlWithFilters();
-    axios.get(url).then((response) => {
-      const data = response.data.data;
-      const mappedRecords = data.map((record: any) => {
+useEffect(() => {
+  const url = getUrlWithFilters();
+  axios.get(url).then((response) => {
+    const data = response.data.data;
+    const mappedRecords = data
+      // First filter out records without audio
+      .filter((record: any) => record.audio)
+      .map((record: any) => {
         return {
           songId: record.audio,
           author: record.artist_original,
@@ -328,7 +376,7 @@ const valuesArray = Array.isArray(values)
           artist_original: record.artist_original,
         };
       });
-      setRecords(mappedRecords);
+    setRecords(mappedRecords);
 
       // Calculate counts & available filters
       const newResultCounts: { [key: string]: number } = {};
@@ -459,18 +507,13 @@ const valuesArray = Array.isArray(values)
     <>
       {/* Landing Page */}
       <div className="ara-landing-page" id="ara-landing-page" ref={landingRef}>
-        <img
-          src="/ara_logo_test_2.png"
-          alt="ARA logo"
-          id="logo"
-          ref={logoRef}
-          onClick={() => {
-            const main = document.getElementById('ara-main');
-            if (main) {
-              window.scrollTo({ top: main.offsetTop - 20, behavior: 'smooth' });
-            }
-          }}
-        />
+<img
+  src="/ara_logo_test_2_upscaled.png"
+  alt="ARA logo"
+  id="logo"
+  ref={logoRef}
+  onClick={smoothScrollToMain}
+/>
       </div>
 
       {/* Main Container */}
@@ -613,9 +656,7 @@ const valuesArray = Array.isArray(values)
         </div>
       </div>
 
-      <footer>
-        {/* Footer content */}
-      </footer>
+
     </>
   );
 }

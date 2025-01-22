@@ -94,8 +94,8 @@ strong {
 }
 
 .ara-landing-page img {
-  width: 50vw;
-  height: 50vh;
+  width: 400px; /* Adjust the width as needed */
+  height: 400px; /* Adjust the height as needed */
   object-fit: contain;
   transition: transform 0.1s ease-out;
   cursor: pointer;
@@ -691,17 +691,7 @@ strong {
   padding-right:2rem;
 }
 
-footer {
-  height: 300px;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr;
-  border-left: 20px solid var(--ara-blue);
-  border-right: 20px solid var(--ara-blue);
-  background-color: var(--ara-blue);
-  color: white;
-  margin-top: 20rem; /* Adds the large spacing under the metadata section */
-}
+
 
 a, a:visited, a:hover, a:active {
   color: var(--ara-blue);
@@ -731,19 +721,13 @@ a, a:visited, a:hover, a:active {
 
 
 
+.error-message {
+  color: var(--ara-blue);
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+}
 
-	footer {
-		height:300px;
-		display: grid;
-		grid-template-columns: 1fr;
-		grid-template-rows: auto 1fr;
-		border-left: 20px solid var(--ara-blue);
-		border-right: 20px solid var(--ara-blue);
-		background-color: var(--ara-blue);
-		color: white;
-		margin-top: 20rem;
-
-	}
 
 	/* Mobile layout: Single column */
 	@media (max-width: 768px) {
