@@ -183,4 +183,6 @@ const SharePopup = ({ open, onOpenChange, recordTitle, recordId }: SharePopupPro
   );
 };
 
+console.log("hi")
+
 export default SharePopup;
