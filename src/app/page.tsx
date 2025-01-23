@@ -2,13 +2,12 @@
 
 "use client";
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Link from "next/link";
 import _ from "lodash";
 import { AudioContext } from "./audioLayout";
-
 
 // UPDATED: Import your new "filter-menu.js" here
 import FilterMenu from "./filter-menu";
@@ -16,7 +15,7 @@ import FilterMenu from "./filter-menu";
 import RecordListView from "./record-list-view";
 
 const smoothScrollToMain = () => {
-  const main = document.getElementById('ara-main');
+  const main = document.getElementById("ara-main");
   if (main) {
     const start = window.scrollY;
     const end = main.offsetTop;
@@ -28,9 +27,10 @@ const smoothScrollToMain = () => {
       const progress = Math.min(elapsed / duration, 1);
 
       // Easing function for smoother animation
-      const easeInOutCubic = progress < 0.5
-        ? 4 * progress * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      const easeInOutCubic =
+        progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 
       window.scrollTo(0, start + (end - start) * easeInOutCubic);
 
@@ -69,9 +69,13 @@ export default function Collection() {
   const [regions, setRegions] = useState<string[]>([]);
   const [artists, setArtists] = useState<string[]>([]);
   const [labels, setLabels] = useState<any[]>([]);
-  const [labelIdToNameMap, setLabelIdToNameMap] = useState<{ [key: string]: string }>({});
+  const [labelIdToNameMap, setLabelIdToNameMap] = useState<{
+    [key: string]: string;
+  }>({});
 
-  const [resultCounts, setResultCounts] = useState<{ [key: string]: number }>({});
+  const [resultCounts, setResultCounts] = useState<{ [key: string]: number }>(
+    {}
+  );
   const [availableFilters, setAvailableFilters] = useState<{
     genres: Set<string>;
     instruments: Set<string>;
@@ -98,145 +102,148 @@ export default function Collection() {
   const [userToggledMenu, setUserToggledMenu] = useState(false);
 
   // NEW: State to toggle open/close of the filter menu
-const [isFilterOpen, setIsFilterOpen] = useState(true);  // Default to true
+  const [isFilterOpen, setIsFilterOpen] = useState(true); // Default to true
 
   const changeLanguage = (lang: string) => {
     setLanguage(lang);
   };
 
-/** Builds the query URL with the current filters & search inputs */
-const getUrlWithFilters = (additionalFilter?: object) => {
-  const filterObj: { _or?: object[]; _and?: object[] } = {
-    _or: [],
-    _and: [],
+  /** Builds the query URL with the current filters & search inputs */
+  const getUrlWithFilters = (additionalFilter?: object) => {
+    const filterObj: { _or?: object[]; _and?: object[] } = {
+      _or: [],
+      _and: [],
+    };
+
+    if (searchString.length > 0) {
+      // First, check if we have any operators
+      if (searchString.includes("+") || searchString.includes(",")) {
+        const hasAndOperator = searchString.includes("+");
+        const hasOrOperator = searchString.includes(",");
+
+        // Split by either operator and trim whitespace
+        const searchTerms = hasAndOperator
+          ? searchString.split("+").map((term) => term.trim())
+          : searchString.split(",").map((term) => term.trim());
+
+        // Create a search condition for each term
+        const searchConditions = searchTerms.map((term) => ({
+          _or: [
+            { title: { _icontains: term } },
+            { title_armenian: { _icontains: term } },
+            { artist_armenian: { _icontains: term } },
+            { artist_original: { _icontains: term } },
+            { genres: { _icontains: term } },
+            { instruments: { _icontains: term } },
+            { regions: { _icontains: term } },
+            { record_label: { label_en: { _icontains: term } } },
+          ],
+        }));
+
+        // For AND operations (plus sign), add each condition to _and array
+        // For OR operations (comma), combine all conditions in _or array
+        if (hasAndOperator) {
+          filterObj._and = filterObj._and || [];
+          filterObj._and.push(...searchConditions);
+        } else {
+          // Flatten all OR conditions into a single array
+          filterObj._or = searchConditions.flatMap(
+            (condition) => condition._or
+          );
+        }
+      } else {
+        // Handle single search term (no operators) - existing behavior
+        filterObj._or = [
+          { title: { _icontains: searchString } },
+          { title_armenian: { _icontains: searchString } },
+          { artist_armenian: { _icontains: searchString } },
+          { artist_original: { _icontains: searchString } },
+          { genres: { _icontains: searchString } },
+          { instruments: { _icontains: searchString } },
+          { regions: { _icontains: searchString } },
+          { record_label: { label_en: { _icontains: searchString } } },
+        ];
+      }
+    }
+
+    if (searchYear.length > 0) {
+      filterObj._and = filterObj._and || [];
+      filterObj._and.push({ "year(year)": { _eq: searchYear } });
+    }
+
+    if (searchArtist.length > 0) {
+      filterObj._and = filterObj._and || [];
+      filterObj._and.push({
+        _or: [
+          { artist_english: { _icontains: searchArtist } },
+          { artist_armenian: { _icontains: searchArtist } },
+          { artist_original: { _icontains: searchArtist } },
+        ],
+      });
+    }
+
+    // Apply each selected filter
+    Object.entries(filters).forEach(([filterName, filtersSet]) => {
+      const filterArray = Array.from(filtersSet);
+      if (filterArray.length > 0) {
+        if (filterName === "record_label") {
+          const labelIds = labels
+            .filter((label) => filtersSet.has(label.label_en))
+            .map((label) => label.id);
+
+          if (!filterObj._and) filterObj._and = [];
+          filterObj._and.push({ record_label: { _in: labelIds } });
+        } else {
+          filterArray.forEach((filterVal) => {
+            if (!filterObj._and) filterObj._and = [];
+            filterObj._and.push({ [filterName]: { _icontains: filterVal } });
+          });
+        }
+      }
+    });
+
+    if (additionalFilter) {
+      if (!filterObj._and) filterObj._and = [];
+      filterObj._and.push(additionalFilter);
+    }
+
+    const stringifiedFilterObj = JSON.stringify(filterObj);
+    return `https://ara.directus.app/items/record_archive?limit=-1&fields=*,record_label.*&filter=${encodeURIComponent(
+      stringifiedFilterObj
+    )}`;
   };
 
-  if (searchString.length > 0) {
-    // First, check if we have any operators
-    if (searchString.includes('+') || searchString.includes(',')) {
-      const hasAndOperator = searchString.includes('+');
-      const hasOrOperator = searchString.includes(',');
-      
-      // Split by either operator and trim whitespace
-      const searchTerms = hasAndOperator 
-        ? searchString.split('+').map(term => term.trim())
-        : searchString.split(',').map(term => term.trim());
+  useEffect(() => {
+    const filterParam = searchParams.get("filter");
+    if (filterParam) {
+      try {
+        const filterObj = JSON.parse(decodeURIComponent(filterParam));
 
-      // Create a search condition for each term
-      const searchConditions = searchTerms.map(term => ({
-        _or: [
-          { title: { _icontains: term } },
-          { title_armenian: { _icontains: term } },
-          { artist_armenian: { _icontains: term } },
-          { artist_original: { _icontains: term } },
-          { genres: { _icontains: term } },
-          { instruments: { _icontains: term } },
-          { regions: { _icontains: term } },
-          { record_label: { label_en: { _icontains: term } } }
-        ]
-      }));
+        // Convert to Sets, handling different possible input formats
+        const processedFilters: { [key: string]: Set<string> } = {};
+        Object.entries(filterObj).forEach(([key, values]) => {
+          // Ensure values is an array
+          const valuesArray = Array.isArray(values)
+            ? values
+            : values !== null &&
+              typeof values === "object" &&
+              Object.keys(values).length > 0
+            ? Object.keys(values)
+            : [values].filter(Boolean);
 
-      // For AND operations (plus sign), add each condition to _and array
-      // For OR operations (comma), combine all conditions in _or array
-      if (hasAndOperator) {
-        filterObj._and = filterObj._and || [];
-        filterObj._and.push(...searchConditions);
-      } else {
-        // Flatten all OR conditions into a single array
-        filterObj._or = searchConditions.flatMap(condition => condition._or);
-      }
-    } else {
-      // Handle single search term (no operators) - existing behavior
-      filterObj._or = [
-        { title: { _icontains: searchString } },
-        { title_armenian: { _icontains: searchString } },
-        { artist_armenian: { _icontains: searchString } },
-        { artist_original: { _icontains: searchString } },
-        { genres: { _icontains: searchString } },
-        { instruments: { _icontains: searchString } },
-        { regions: { _icontains: searchString } },
-        { record_label: { label_en: { _icontains: searchString } } }
-      ];
-    }
-  }
-
-  if (searchYear.length > 0) {
-    filterObj._and = filterObj._and || [];
-    filterObj._and.push({ "year(year)": { _eq: searchYear } });
-  }
-
-  if (searchArtist.length > 0) {
-    filterObj._and = filterObj._and || [];
-    filterObj._and.push({
-      _or: [
-        { artist_english: { _icontains: searchArtist } },
-        { artist_armenian: { _icontains: searchArtist } },
-        { artist_original: { _icontains: searchArtist } },
-      ],
-    });
-  }
-
-  // Apply each selected filter
-  Object.entries(filters).forEach(([filterName, filtersSet]) => {
-    const filterArray = Array.from(filtersSet);
-    if (filterArray.length > 0) {
-      if (filterName === "record_label") {
-        const labelIds = labels
-          .filter((label) => filtersSet.has(label.label_en))
-          .map((label) => label.id);
-
-        if (!filterObj._and) filterObj._and = [];
-        filterObj._and.push({ record_label: { _in: labelIds } });
-      } else {
-        filterArray.forEach((filterVal) => {
-          if (!filterObj._and) filterObj._and = [];
-          filterObj._and.push({ [filterName]: { _icontains: filterVal } });
+          processedFilters[key] = new Set(valuesArray);
         });
+
+        setFilter(processedFilters);
+
+        // Set the active filter to the first filter type
+        const filterType = Object.keys(processedFilters)[0] || "genres";
+        setActiveFilter(filterType);
+      } catch (error) {
+        console.error("Error parsing filter parameter:", error);
       }
     }
-  });
-
-  if (additionalFilter) {
-    if (!filterObj._and) filterObj._and = [];
-    filterObj._and.push(additionalFilter);
-  }
-
-  const stringifiedFilterObj = JSON.stringify(filterObj);
-  return `https://ara.directus.app/items/record_archive?limit=-1&fields=*,record_label.*&filter=${encodeURIComponent(
-    stringifiedFilterObj
-  )}`;
-};
-
-useEffect(() => {
-  const filterParam = searchParams.get('filter');
-  if (filterParam) {
-    try {
-      const filterObj = JSON.parse(decodeURIComponent(filterParam));
-      
-      // Convert to Sets, handling different possible input formats
-      const processedFilters: { [key: string]: Set<string> } = {};
-      Object.entries(filterObj).forEach(([key, values]) => {
-        // Ensure values is an array
-const valuesArray = Array.isArray(values) 
-  ? values 
-  : values !== null && typeof values === 'object' && Object.keys(values).length > 0
-    ? Object.keys(values)
-    : [values].filter(Boolean);
-        
-        processedFilters[key] = new Set(valuesArray);
-      });
-
-      setFilter(processedFilters);
-      
-      // Set the active filter to the first filter type
-      const filterType = Object.keys(processedFilters)[0] || "genres";
-      setActiveFilter(filterType);
-    } catch (error) {
-      console.error('Error parsing filter parameter:', error);
-    }
-  }
-}, [searchParams]);
-
+  }, [searchParams]);
 
   // Fetch initial data (labels, genres, regions, instruments, artists)
   useEffect(() => {
@@ -274,7 +281,24 @@ const valuesArray = Array.isArray(values)
       .catch((error) => {
         console.error("Error fetching genres field options:", error);
         // fallback
-        setGenres(["religious", "folk", "instrumental", "vocal", "dance", "patriotic", "national", "opera", "kef", "children", "lullaby", "choral", "symphony", "chamber", "prayer", "taqsim"]);
+        setGenres([
+          "religious",
+          "folk",
+          "instrumental",
+          "vocal",
+          "dance",
+          "patriotic",
+          "national",
+          "opera",
+          "kef",
+          "children",
+          "lullaby",
+          "choral",
+          "symphony",
+          "chamber",
+          "prayer",
+          "taqsim",
+        ]);
       });
 
     // Fetch regions
@@ -293,12 +317,20 @@ const valuesArray = Array.isArray(values)
       .catch((error) => {
         console.error("Error fetching regions field options:", error);
         // fallback
-        setRegions(["Europe", "North America", "South America", "Soviet Union", "Middle East"]);
+        setRegions([
+          "Europe",
+          "North America",
+          "South America",
+          "Soviet Union",
+          "Middle East",
+        ]);
       });
 
     // Fetch instruments
     axios
-      .get("https://ara.directus.app/items/record_archive?limit=-1&fields=instruments")
+      .get(
+        "https://ara.directus.app/items/record_archive?limit=-1&fields=instruments"
+      )
       .then((response) => {
         const uniqueInstruments: Set<string> = new Set();
         response.data.data.forEach((item: any) => {
@@ -317,7 +349,9 @@ const valuesArray = Array.isArray(values)
 
     // Fetch artists
     axios
-      .get("https://ara.directus.app/items/record_archive?groupBy[]=artist_original")
+      .get(
+        "https://ara.directus.app/items/record_archive?groupBy[]=artist_original"
+      )
       .then((response) => {
         const uniqueArtists: Set<string> = new Set();
         _.forEach(response.data.data, (artistObj: any) => {
@@ -333,50 +367,50 @@ const valuesArray = Array.isArray(values)
       });
   }, []);
 
-useEffect(() => {
-  const initialDelay = setTimeout(() => {
-    if (window.scrollY === 0) {
-      const timer = setTimeout(() => {
-        if (window.scrollY === 0) {
-          smoothScrollToMain();
-        }
-      }, 1500);
+  useEffect(() => {
+    const initialDelay = setTimeout(() => {
+      if (window.scrollY === 0) {
+        const timer = setTimeout(() => {
+          if (window.scrollY === 0) {
+            smoothScrollToMain();
+          }
+        }, 1500);
 
-      return () => clearTimeout(timer);
-    }
-  }, 100);
+        return () => clearTimeout(timer);
+      }
+    }, 100);
 
-  return () => clearTimeout(initialDelay);
-}, []);
+    return () => clearTimeout(initialDelay);
+  }, []);
 
   // Fetch records + update available filters
-useEffect(() => {
-  const url = getUrlWithFilters();
-  axios.get(url).then((response) => {
-    const data = response.data.data;
-    const mappedRecords = data
-      // First filter out records without audio
-      .filter((record: any) => record.audio)
-      .map((record: any) => {
-        return {
-          songId: record.audio,
-          author: record.artist_original,
-          title: record.title,
-          image: record.record_image,
-          id: record.id,
-          genre: record.genre,
-          year: record.year,
-          title_armenian: record.title_armenian,
-          color: record.hex_color,
-          display_title: record.display_title,
-          record_label: record.record_label?.label_en || null,
-          genres: record.genres ?? [],
-          instruments: record.instruments ?? [],
-          regions: record.regions ?? [],
-          artist_original: record.artist_original,
-        };
-      });
-    setRecords(mappedRecords);
+  useEffect(() => {
+    const url = getUrlWithFilters();
+    axios.get(url).then((response) => {
+      const data = response.data.data;
+      const mappedRecords = data
+        // First filter out records without audio
+        .filter((record: any) => record.audio)
+        .map((record: any) => {
+          return {
+            songId: record.audio,
+            author: record.artist_original,
+            title: record.title,
+            image: record.record_image,
+            id: record.id,
+            genre: record.genre,
+            year: record.year,
+            title_armenian: record.title_armenian,
+            color: record.hex_color,
+            display_title: record.display_title,
+            record_label: record.record_label?.label_en || null,
+            genres: record.genres ?? [],
+            instruments: record.instruments ?? [],
+            regions: record.regions ?? [],
+            artist_original: record.artist_original,
+          };
+        });
+      setRecords(mappedRecords);
 
       // Calculate counts & available filters
       const newResultCounts: { [key: string]: number } = {};
@@ -400,7 +434,8 @@ useEffect(() => {
         // instruments
         if (Array.isArray(rec.instruments)) {
           rec.instruments.forEach((instrument: string) => {
-            newResultCounts[instrument] = (newResultCounts[instrument] || 0) + 1;
+            newResultCounts[instrument] =
+              (newResultCounts[instrument] || 0) + 1;
             newAvailableFilters.instruments.add(instrument);
           });
         }
@@ -453,7 +488,13 @@ useEffect(() => {
     const handleScroll = () => {
       if (userToggledMenu) return;
 
-      if (!introRef.current || !menuRef.current || !menuLinksWrapperRef.current || !menuIconRef.current) return;
+      if (
+        !introRef.current ||
+        !menuRef.current ||
+        !menuLinksWrapperRef.current ||
+        !menuIconRef.current
+      )
+        return;
 
       const introWrapper = introRef.current;
       const menu = menuRef.current;
@@ -468,15 +509,15 @@ useEffect(() => {
       if (introMiddle <= menuBottom) {
         // Hide menu links
         if (isMenuVisible) {
-          menuLinks.classList.remove('expanded');
-          menuIcon.classList.remove('clicked');
+          menuLinks.classList.remove("expanded");
+          menuIcon.classList.remove("clicked");
           setIsMenuVisible(false);
         }
       } else {
         // Show menu links
         if (!isMenuVisible) {
-          menuLinks.classList.add('expanded');
-          menuIcon.classList.add('clicked');
+          menuLinks.classList.add("expanded");
+          menuIcon.classList.add("clicked");
           setIsMenuVisible(true);
         }
       }
@@ -507,25 +548,40 @@ useEffect(() => {
     <>
       {/* Landing Page */}
       <div className="ara-landing-page" id="ara-landing-page" ref={landingRef}>
-<img
-  src="/ara_logo_test_2_upscaled.png"
-  alt="ARA logo"
-  id="logo"
-  ref={logoRef}
-  onClick={smoothScrollToMain}
-/>
+        <img
+          src="/ara_logo_test_2_upscaled.png"
+          alt="ARA logo"
+          id="logo"
+          ref={logoRef}
+          onClick={smoothScrollToMain}
+        />
       </div>
 
       {/* Main Container */}
       <div className="ara-main" id="ara-main">
         {/* MENU */}
         <div className="ara-menu" id="ara-menu" ref={menuRef}>
-          <div className="ara-menu-title" id="ara-menu-title">ARMENIAN RECORD ARCHIVE</div>
-          <div className="ara-menu-links-wrapper expanded" id="ara-menu-links-wrapper" ref={menuLinksWrapperRef}>
-            <Link href="#collection">COLLECTION <br/> ՀԱՎԱՔԱՑՈՒ</Link> ●
-            <Link href="#about">ABOUT US <br/> ՄԵՐ ՄԱՍԻՆ</Link>
+          <div className="ara-menu-title" id="ara-menu-title">
+            ARMENIAN RECORD ARCHIVE
           </div>
-          <div className="ara-menu-toggle" id="ara-menu-toggle" onClick={toggleMenu}>
+          <div
+            className="ara-menu-links-wrapper expanded"
+            id="ara-menu-links-wrapper"
+            ref={menuLinksWrapperRef}
+          >
+            <Link href="#collection">
+              COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ
+            </Link>{" "}
+            ●
+            <Link href="#about">
+              ABOUT US <br /> ՄԵՐ ՄԱՍԻՆ
+            </Link>
+          </div>
+          <div
+            className="ara-menu-toggle"
+            id="ara-menu-toggle"
+            onClick={toggleMenu}
+          >
             <div className="ara-menu-icon" id="menu-icon" ref={menuIconRef}>
               <div className="ara-menu-icon-sleeve"></div>
               <div className="ara-menu-icon-record"></div>
@@ -536,10 +592,17 @@ useEffect(() => {
         {/* INTRO */}
         <div className="ara-intro" ref={introRef}>
           <div className="ara-intro-text-english">
-            <div>֎ Welcome to the Armenian Record Archive, where we preserve and celebrate the rich history of Armenian music and culture.</div>
+            <div>
+              ֎ Welcome to the Armenian Record Archive, where we preserve and
+              celebrate the rich history of Armenian music and culture.
+            </div>
           </div>
           <div className="ara-intro-text-armenian">
-            <div>Բարի գալուստ Հայկական ձայնագրությունների արխիվ, որտեղ մենք պահպանում և տոնում ենք Հայկական երաժշտության և մշակույթի հարուստ պատմությունը: ֍</div>
+            <div>
+              Բարի գալուստ Հայկական ձայնագրությունների արխիվ, որտեղ մենք
+              պահպանում և տոնում ենք Հայկական երաժշտության և մշակույթի հարուստ
+              պատմությունը: ֍
+            </div>
           </div>
         </div>
 
@@ -570,32 +633,32 @@ useEffect(() => {
           <div className="ara-filters-section">
             <div className="ara-filters-header">
               {/* Toggle open/closed on click */}
-<div 
-  className="ara-filters-title" 
-  onClick={() => setIsFilterOpen((prev) => !prev)} 
-  style={{ cursor: "pointer", userSelect: "none" }}
->
-  Filters{" "}
-  <span 
-    className={`filter-arrow ${isFilterOpen ? 'open' : ''}`} 
-    style={{ marginLeft: "0.3rem" }}
-  >
-    ▲
-  </span>
-</div>
+              <div
+                className="ara-filters-title"
+                onClick={() => setIsFilterOpen((prev) => !prev)}
+                style={{ cursor: "pointer", userSelect: "none" }}
+              >
+                Filters{" "}
+                <span
+                  className={`filter-arrow ${isFilterOpen ? "open" : ""}`}
+                  style={{ marginLeft: "0.3rem" }}
+                >
+                  ▲
+                </span>
+              </div>
               <div className="ara-filters-language-switcher">
-                <span 
-                  onClick={() => changeLanguage("EN")} 
+                <span
+                  onClick={() => changeLanguage("EN")}
                   className={language === "EN" ? "language-selected" : ""}
-                  style={{cursor:'pointer'}}
+                  style={{ cursor: "pointer" }}
                 >
                   ENG
-                </span> 
-                | 
-                <span 
-                  onClick={() => changeLanguage("HY")} 
+                </span>
+                |
+                <span
+                  onClick={() => changeLanguage("HY")}
                   className={language === "HY" ? "language-selected" : ""}
-                  style={{cursor:'pointer'}}
+                  style={{ cursor: "pointer" }}
                 >
                   ՀԱՅ
                 </span>
@@ -603,26 +666,26 @@ useEffect(() => {
             </div>
 
             {/* Conditionally render the filter menu */}
-            <div className={`ara-filter-menu-wrapper ${isFilterOpen ? 'expanded' : ''}`}>
-
-
-                <FilterMenu
-                  activeFilter={activeFilter}
-                  setActiveFilter={setActiveFilter}
-                  genres={genres}
-                  instruments={instruments}
-                  regions={regions}
-                  artists={artists}
-                  labels={labels}
-                  labelIdToNameMap={labelIdToNameMap}
-                  filters={filters}
-                  setFilter={setFilter}
-                  availableFilters={availableFilters}
-                  resultCounts={resultCounts}
-                  language={language}
-                />
-
-
+            <div
+              className={`ara-filter-menu-wrapper ${
+                isFilterOpen ? "expanded" : ""
+              }`}
+            >
+              <FilterMenu
+                activeFilter={activeFilter}
+                setActiveFilter={setActiveFilter}
+                genres={genres}
+                instruments={instruments}
+                regions={regions}
+                artists={artists}
+                labels={labels}
+                labelIdToNameMap={labelIdToNameMap}
+                filters={filters}
+                setFilter={setFilter}
+                availableFilters={availableFilters}
+                resultCounts={resultCounts}
+                language={language}
+              />
             </div>
           </div>
 
@@ -643,7 +706,11 @@ useEffect(() => {
       <div className="ara-record-player-wrapper">
         <div className="ara-record-player-info">
           <div className="ara-record-player-image">
-            <img src="/ARA_armenaphone_05.jpg" alt="Image" className="ara-record-player-thumbnail-img" />
+            <img
+              src="/ARA_armenaphone_05.jpg"
+              alt="Image"
+              className="ara-record-player-thumbnail-img"
+            />
           </div>
           <div className="ara-record-player-song-info">
             <div className="ara-record-player-song-title">Kroung</div>
@@ -655,8 +722,6 @@ useEffect(() => {
           <div className="ara-record-player-time">00:00 | 03:47</div>
         </div>
       </div>
-
-
     </>
   );
 }

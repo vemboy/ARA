@@ -3,6 +3,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import Image from "next/image";
+import {
+  getDefaultImageThumbnailUrl,
+  getImageThumbnailUrl,
+  getImageDetailUrl,
+} from "@/utils/assetUtils";
 
 interface ZoomData {
   id: string;
@@ -15,12 +21,15 @@ function RecordCollectionRow(props: any) {
 
   const songId = props.songId;
   const currentSongId = props.currentSongId;
+  const imageUrl = props.imageUrl;
 
   // Fetch zoom value from the server
   useEffect(() => {
     async function fetchZoomAmount() {
       try {
-        const response = await axios.get("https://ara.directus.app/items/website_variables");
+        const response = await axios.get(
+          "https://ara.directus.app/items/website_variables"
+        );
         const zoomData: ZoomData | undefined = response?.data?.data?.find(
           (item: ZoomData) => item.id === "RecordZoomAmount"
         );
@@ -50,7 +59,11 @@ function RecordCollectionRow(props: any) {
       props.setCurrentSongId(songId);
       props.setCurrentName(props.title);
       props.setCurrentArtistName(props.author);
-      props.setAlbumArt(props.src); 
+      props.setAlbumArt(
+        imageUrl
+          ? getImageThumbnailUrl(imageUrl)
+          : getDefaultImageThumbnailUrl()
+      );
       props.setSongId(props.id);
 
       setIsPlaying(true);
@@ -90,29 +103,41 @@ function RecordCollectionRow(props: any) {
 
   // The parent .record-image-container will do the translate + scale
   const containerStyle = {
-    position: 'absolute' as const,
-    top: '50%',
-    left: '50%',
+    position: "absolute" as const,
+    top: "50%",
+    left: "50%",
     transform: `translate(-50%, -50%) scale(${2 * zoomAmount})`,
-    transformOrigin: '50% 50%',
-    width: '100%',
-    height: '100%'
+    transformOrigin: "50% 50%",
+    width: "100%",
+    height: "100%",
   };
 
   return (
     <div className="ara-grid-item">
-      <div className="ara-grid-icons">
-        {/* No icons for now */}
-      </div>
+      <div className="ara-grid-icons">{/* No icons for now */}</div>
 
       <div className="ara-grid-item-circle" onClick={handleRecordClick}>
         {/* This DIV handles the scaling and positioning */}
         <div className="record-image-container" style={containerStyle}>
-          <img
+          <Image
             loading="lazy"
-            src={props.src}
+            src={
+              imageUrl
+                ? getImageDetailUrl(imageUrl)
+                : getDefaultImageThumbnailUrl()
+            }
             alt="Record Image"
-className={`record-image ${isPlaying && currentSongId === songId ? "playing" : ""}`}
+            width={500}
+            height={500}
+            quality={100}
+            blurDataURL={
+              imageUrl
+                ? getImageThumbnailUrl(imageUrl)
+                : getDefaultImageThumbnailUrl()
+            }
+            className={`record-image ${
+              isPlaying && currentSongId === songId ? "playing" : ""
+            }`}
           />
         </div>
         <div className="ara-grid-item-circle-overlay">►</div>
@@ -125,9 +150,7 @@ className={`record-image ${isPlaying && currentSongId === songId ? "playing" : "
           </Link>
         </div>
         <div className="ara-grid_item_title_transliteration">
-          <Link href={`/collection-detail/${props.id}`}>
-            {props.title}
-          </Link>
+          <Link href={`/collection-detail/${props.id}`}>{props.title}</Link>
         </div>
       </div>
     </div>

@@ -2,7 +2,10 @@
 
 import React, { useState } from "react";
 import RecordCollectionRow from "./record-collection-row";
-import { getDefaultImageThumbnailUrl, getImageThumbnailUrl } from "@/utils/assetUtils";
+import {
+  getDefaultImageThumbnailUrl,
+  getImageDetailUrl,
+} from "@/utils/assetUtils";
 
 function RecordListView(props: any) {
   const [currentSongId, setCurrentSongId] = useState<string | null>(null);
@@ -31,11 +34,12 @@ function RecordListView(props: any) {
           author={(record.author || "Unknown author").substring(0, 20)}
           src={
             record.image
-    // ? `https://ara.directus.app/assets/${record.image}`
-    // : getDefaultImageThumbnailUrl()
-        ? getImageThumbnailUrl(record.image)
-    : getDefaultImageThumbnailUrl()
+              ? // ? `https://ara.directus.app/assets/${record.image}`
+                // : getDefaultImageThumbnailUrl()
+                getImageDetailUrl(record.image)
+              : getDefaultImageThumbnailUrl()
           }
+          imageUrl={record.image}
         />
       ))}
     </div>
