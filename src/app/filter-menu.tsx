@@ -110,7 +110,6 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
 
   const renderFilterItems = (items: string[], filterType: string) => {
     return items.map((item) => {
-      console.log("!!", availableFilters, filterType);
       const filterTypeValidated =
         filterType === "artist_original" ? "artists" : filterType;
       const isAvailable =
