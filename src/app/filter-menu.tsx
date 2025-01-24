@@ -4,7 +4,7 @@
 export const dynamic = "force-dynamic";
 
 import React from "react";
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from "react";
 
 interface FilterMenuProps {
   genres: string[];
@@ -14,7 +14,9 @@ interface FilterMenuProps {
   labels: any[];
   labelIdToNameMap: { [key: string]: string };
   filters: { [key: string]: Set<string> };
-  setFilter: React.Dispatch<React.SetStateAction<{ [key: string]: Set<string> }>>;
+  setFilter: React.Dispatch<
+    React.SetStateAction<{ [key: string]: Set<string> }>
+  >;
   availableFilters: {
     genres: Set<string>;
     instruments: Set<string>;
@@ -42,7 +44,7 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
   resultCounts,
   language,
   activeFilter,
-  setActiveFilter
+  setActiveFilter,
 }) => {
   // Translations for menu titles
   const translations: Record<string, Record<string, string>> = {
@@ -52,7 +54,7 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
       instruments: "Instrument",
       record_label: "Label",
       regions: "Region",
-      clear_all: "Clear All"
+      clear_all: "Clear All",
     },
     HY: {
       artist_original: "Արտիստ",
@@ -60,7 +62,7 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
       instruments: "Նվագարան",
       record_label: "Պիտակ",
       regions: "Մարզ",
-      clear_all: "Մաքրել բոլորը"
+      clear_all: "Մաքրել բոլորը",
     },
   };
 
@@ -68,13 +70,13 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
   const getLocalizedName = (item: string | null | undefined) => {
     // Handle null or undefined
     if (item == null) return "Unknown";
-    
+
     // Convert to string to ensure .includes method exists
     const itemStr = String(item);
-    
+
     // Check if it contains language delimiter
     if (!itemStr.includes("-|-")) return itemStr;
-    
+
     const [english, armenian] = itemStr.split("-|-");
     return language === "EN" ? english : armenian;
   };
@@ -98,28 +100,43 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
     setFilter({});
   };
 
-  const filterOrder = ["genres", "instruments", "record_label", "regions", "artist_original"];
+  const filterOrder = [
+    "genres",
+    "instruments",
+    "record_label",
+    "regions",
+    "artist_original",
+  ];
 
-const renderFilterItems = (items: string[], filterType: string) => {
-  return items.map((item) => {
-    const isAvailable = availableFilters[filterType as keyof typeof availableFilters].has(item);
-    
-    const isActive = filters[filterType] && 
-      typeof filters[filterType].has === 'function' && 
-      filters[filterType].has(item);
-    
-    return (
-      <div
-        key={item}
-        className={`filter-item ${isAvailable ? "" : "disabled"} ${isActive ? "active" : ""}`}
-        onClick={() => isAvailable && handleSubItemClick(filterType, item)}
-      >
-        <span className="ara-filter-icon-circle"></span> 
-        {getLocalizedName(item)} ({resultCounts[item] || 0})
-      </div>
-    );
-  });
-};
+  const renderFilterItems = (items: string[], filterType: string) => {
+    return items.map((item) => {
+      console.log("!!", availableFilters, filterType);
+      const filterTypeValidated =
+        filterType === "artist_original" ? "artists" : filterType;
+      const isAvailable =
+        availableFilters[
+          filterTypeValidated as keyof typeof availableFilters
+        ].has(item);
+
+      const isActive =
+        filters[filterType] &&
+        typeof filters[filterType].has === "function" &&
+        filters[filterType].has(item);
+
+      return (
+        <div
+          key={item}
+          className={`filter-item ${isAvailable ? "" : "disabled"} ${
+            isActive ? "active" : ""
+          }`}
+          onClick={() => isAvailable && handleSubItemClick(filterType, item)}
+        >
+          <span className="ara-filter-icon-circle"></span>
+          {getLocalizedName(item)} ({resultCounts[item] || 0})
+        </div>
+      );
+    });
+  };
 
   return (
     <>
@@ -127,7 +144,9 @@ const renderFilterItems = (items: string[], filterType: string) => {
         {filterOrder.map((fKey) => (
           <div
             key={fKey}
-            className={`ara-filter-option ${activeFilter === fKey ? "selected" : ""}`}
+            className={`ara-filter-option ${
+              activeFilter === fKey ? "selected" : ""
+            }`}
             data-filter={fKey}
             onClick={() => setActiveFilter(fKey)}
           >
@@ -138,7 +157,10 @@ const renderFilterItems = (items: string[], filterType: string) => {
 
       <div className="ara-filter-items-wrapper">
         {activeFilter === "genres" && (
-          <div className="ara-filter-items ara-filter-items-selected" data-filter="genre">
+          <div
+            className="ara-filter-items ara-filter-items-selected"
+            data-filter="genre"
+          >
             {renderFilterItems(genres, "genres")}
           </div>
         )}
@@ -149,26 +171,34 @@ const renderFilterItems = (items: string[], filterType: string) => {
           </div>
         )}
 
-{activeFilter === "record_label" && (
-  <div className="ara-filter-items" data-filter="label">
-    {labels.map((label) => {
-      const isAvailable = availableFilters.record_label.has(label.label_en);
-      const isActive = filters.record_label && 
-        typeof filters.record_label.has === 'function' && 
-        filters.record_label.has(label.label_en);
-      return (
-        <div
-          key={label.id}
-          className={`filter-item ${isAvailable ? "" : "disabled"} ${isActive ? "active" : ""}`}
-          onClick={() => isAvailable && handleSubItemClick("record_label", label.label_en)}
-        >
-          <span className="ara-filter-icon-circle"></span> 
-          {label.label_en} ({resultCounts[label.label_en] || 0})
-        </div>
-      );
-    })}
-  </div>
-)}
+        {activeFilter === "record_label" && (
+          <div className="ara-filter-items" data-filter="label">
+            {labels.map((label) => {
+              const isAvailable = availableFilters.record_label.has(
+                label.label_en
+              );
+              const isActive =
+                filters.record_label &&
+                typeof filters.record_label.has === "function" &&
+                filters.record_label.has(label.label_en);
+              return (
+                <div
+                  key={label.id}
+                  className={`filter-item ${isAvailable ? "" : "disabled"} ${
+                    isActive ? "active" : ""
+                  }`}
+                  onClick={() =>
+                    isAvailable &&
+                    handleSubItemClick("record_label", label.label_en)
+                  }
+                >
+                  <span className="ara-filter-icon-circle"></span>
+                  {label.label_en} ({resultCounts[label.label_en] || 0})
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {activeFilter === "regions" && (
           <div className="ara-filter-items" data-filter="region">
@@ -188,10 +218,7 @@ const renderFilterItems = (items: string[], filterType: string) => {
           <div className="selected-filters-container">
             {Object.entries(filters).flatMap(([filterType, selectedItems]) =>
               Array.from(selectedItems).map((item) => (
-                <span 
-                  className="filter-item" 
-                  key={item}
-                >
+                <span className="filter-item" key={item}>
                   {getLocalizedName(item)}
                   <button
                     onClick={(e: React.MouseEvent) => {
@@ -206,15 +233,15 @@ const renderFilterItems = (items: string[], filterType: string) => {
             )}
           </div>
 
-          <div 
+          <div
             onClick={(e: React.MouseEvent) => {
               e.preventDefault();
               handleClearAll();
             }}
-            style={{ 
-              marginLeft: "10px", 
-              textDecoration: "underline", 
-              cursor: "pointer" 
+            style={{
+              marginLeft: "10px",
+              textDecoration: "underline",
+              cursor: "pointer",
             }}
           >
             {translations[language].clear_all}
