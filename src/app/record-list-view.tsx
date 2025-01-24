@@ -1,14 +1,41 @@
 // record-list-view.tsx
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RecordCollectionRow from "./record-collection-row";
 import {
   getDefaultImageThumbnailUrl,
   getImageDetailUrl,
 } from "@/utils/assetUtils";
+import axios from "axios";
+
+interface ZoomData {
+  id: string;
+  Value: number;
+}
 
 function RecordListView(props: any) {
   const [currentSongId, setCurrentSongId] = useState<string | null>(null);
+  const [zoomAmount, setZoomAmount] = useState<number>(1.0);
+
+  // Fetch zoom value from the server
+  useEffect(() => {
+    async function fetchZoomAmount() {
+      try {
+        const response = await axios.get(
+          "https://ara.directus.app/items/website_variables"
+        );
+        const zoomData: ZoomData | undefined = response?.data?.data?.find(
+          (item: ZoomData) => item.id === "RecordZoomAmount"
+        );
+        if (zoomData && zoomData.Value) {
+          setZoomAmount(zoomData.Value);
+        }
+      } catch (error) {
+        console.error("Error fetching RecordZoomAmount:", error);
+      }
+    }
+    fetchZoomAmount();
+  }, []);
 
   return (
     <div id="ara-grid-wrapper" className="ara-grid-wrapper">
@@ -40,6 +67,7 @@ function RecordListView(props: any) {
               : getDefaultImageThumbnailUrl()
           }
           imageUrl={record.image}
+          zoomAmount={zoomAmount}
         />
       ))}
     </div>

@@ -10,38 +10,12 @@ import {
   getImageDetailUrl,
 } from "@/utils/assetUtils";
 
-interface ZoomData {
-  id: string;
-  Value: number;
-}
-
 function RecordCollectionRow(props: any) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [zoomAmount, setZoomAmount] = useState<number>(1.0);
 
   const songId = props.songId;
   const currentSongId = props.currentSongId;
   const imageUrl = props.imageUrl;
-
-  // Fetch zoom value from the server
-  useEffect(() => {
-    async function fetchZoomAmount() {
-      try {
-        const response = await axios.get(
-          "https://ara.directus.app/items/website_variables"
-        );
-        const zoomData: ZoomData | undefined = response?.data?.data?.find(
-          (item: ZoomData) => item.id === "RecordZoomAmount"
-        );
-        if (zoomData && zoomData.Value) {
-          setZoomAmount(zoomData.Value);
-        }
-      } catch (error) {
-        console.error("Error fetching RecordZoomAmount:", error);
-      }
-    }
-    fetchZoomAmount();
-  }, []);
 
   // Handle record click => play/pause audio
   const handleRecordClick = () => {
@@ -106,7 +80,7 @@ function RecordCollectionRow(props: any) {
     position: "absolute" as const,
     top: "50%",
     left: "50%",
-    transform: `translate(-50%, -50%) scale(${2 * zoomAmount})`,
+    transform: `translate(-50%, -50%) scale(${2 * props.zoomAmount})`,
     transformOrigin: "50% 50%",
     width: "100%",
     height: "100%",
