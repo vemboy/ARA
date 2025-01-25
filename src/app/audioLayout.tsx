@@ -52,8 +52,7 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
   };
 
   // Whether we have a valid track loaded
-  const hasSong = Boolean(currentSong && currentSong.length > 0);
-
+  const hasSong = Boolean(currentSong && currentSong.length > 0 && currentName && currentName.length > 0)
   // Listen for the <audio> "play"/"pause" events
   useEffect(() => {
     const player = audioPlayerRef.current?.audio?.current;
@@ -158,6 +157,7 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
             We always display the bottom bar, even if no track 
             => default record image, bar, times 
           */}
+          {hasSong && (
           <div className="ara-record-player-wrapper">
             {/* 
               Left side: 
@@ -236,7 +236,7 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
                 {displayCurrentTime} | {displayDuration}
               </div>
             </div>
-          </div>
+            </div>)}
 
           {/* Hidden react-h5-audio-player */}
           <div style={{ display: "none" }}>

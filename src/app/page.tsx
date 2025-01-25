@@ -702,26 +702,7 @@ export default function Collection() {
         </div>
       </div>
 
-      {/* Static Player at the bottom */}
-      <div className="ara-record-player-wrapper">
-        <div className="ara-record-player-info">
-          <div className="ara-record-player-image">
-            <img
-              src="/ARA_armenaphone_05.jpg"
-              alt="Image"
-              className="ara-record-player-thumbnail-img"
-            />
-          </div>
-          <div className="ara-record-player-song-info">
-            <div className="ara-record-player-song-title">Kroung</div>
-            <div className="ara-record-player-artist-name">Shara Talian</div>
-          </div>
-        </div>
-        <div className="ara-record-player-audio-section">
-          <div className="ara-record-player-progress-bar"></div>
-          <div className="ara-record-player-time">00:00 | 03:47</div>
-        </div>
-      </div>
+
     </>
   );
 }
