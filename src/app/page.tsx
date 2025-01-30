@@ -213,37 +213,47 @@ export default function Collection() {
     )}`;
   };
 
-  useEffect(() => {
-    const filterParam = searchParams.get("filter");
-    if (filterParam) {
-      try {
-        const filterObj = JSON.parse(decodeURIComponent(filterParam));
+useEffect(() => {
+  const filterParam = searchParams.get("filter");
+  if (filterParam) {
+    try {
+      const filterObj = JSON.parse(decodeURIComponent(filterParam));
 
-        // Convert to Sets, handling different possible input formats
-        const processedFilters: { [key: string]: Set<string> } = {};
-        Object.entries(filterObj).forEach(([key, values]) => {
-          // Ensure values is an array
-          const valuesArray = Array.isArray(values)
-            ? values
-            : values !== null &&
-              typeof values === "object" &&
-              Object.keys(values).length > 0
-            ? Object.keys(values)
-            : [values].filter(Boolean);
+      const processedFilters: { [key: string]: Set<string> } = {};
+      Object.entries(filterObj).forEach(([key, values]) => {
+        const valuesArray = Array.isArray(values)
+          ? values
+          : values !== null && typeof values === "object" && Object.keys(values).length > 0
+          ? Object.keys(values)
+          : [values].filter(Boolean);
 
-          processedFilters[key] = new Set(valuesArray);
-        });
+        processedFilters[key] = new Set(valuesArray);
+      });
 
-        setFilter(processedFilters);
+      setFilter(processedFilters);
 
-        // Set the active filter to the first filter type
-        const filterType = Object.keys(processedFilters)[0] || "genres";
-        setActiveFilter(filterType);
-      } catch (error) {
-        console.error("Error parsing filter parameter:", error);
-      }
+      const filterType = Object.keys(processedFilters)[0] || "genres";
+      setActiveFilter(filterType);
+      
+      setIsFilterOpen(true);
+
+      setTimeout(() => {
+        const filtersElement = document.getElementById("filters");
+        if (filtersElement) {
+          const rect = filtersElement.getBoundingClientRect();
+          const absoluteTop = window.pageYOffset + rect.top;
+          window.scrollTo({
+            top: absoluteTop - 16,
+            behavior: 'instant'
+          });
+        }
+      }, 100);
+
+    } catch (error) {
+      console.error("Error parsing filter parameter:", error);
     }
-  }, [searchParams]);
+  }
+}, [searchParams]);
 
   // Fetch initial data (labels, genres, regions, instruments, artists)
   useEffect(() => {
@@ -549,13 +559,13 @@ export default function Collection() {
     <>
       {/* Landing Page */}
       <div className="ara-landing-page" id="ara-landing-page" ref={landingRef}>
-        <img
-          src="/ara_logo_test_2_upscaled.png"
-          alt="ARA logo"
-          id="logo"
-          ref={logoRef}
-          onClick={smoothScrollToMain}
-        />
+<img
+  src="/ara_logo_1.svg"  
+  alt="ARA logo"
+  id="logo"
+  ref={logoRef}
+  onClick={smoothScrollToMain}
+/>
       </div>
 
       {/* Main Container */}
@@ -634,19 +644,15 @@ export default function Collection() {
           <div className="ara-filters-section">
             <div className="ara-filters-header">
               {/* Toggle open/closed on click */}
-              <div
-                className="ara-filters-title"
-                onClick={() => setIsFilterOpen((prev) => !prev)}
-                style={{ cursor: "pointer", userSelect: "none" }}
-              >
-                Filters{" "}
-                <span
-                  className={`filter-arrow ${isFilterOpen ? "open" : ""}`}
-                  style={{ marginLeft: "0.3rem" }}
-                >
-                  ▲
-                </span>
-              </div>
+<div 
+  className="ara-filters-title" 
+  id="filters"  // Add this id
+  onClick={() => setIsFilterOpen((prev) => !prev)}
+  style={{ cursor: "pointer", userSelect: "none" }}
+>
+  Filters{" "}
+  <span className={`filter-arrow ${isFilterOpen ? "open" : ""}`}>▲</span>
+</div>
               <div className="ara-filters-language-switcher">
                 <span
                   onClick={() => changeLanguage("EN")}

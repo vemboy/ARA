@@ -9,6 +9,78 @@
   src: url('FitVariable-NormalVF.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'AdelleSansARM';
+  src: url('/fonts/AdelleSansARM-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'AdelleSansARM-Semibold';
+  src: url('/fonts/AdelleSansARM-Semibold.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'AdelleSansARM-Bold';
+  src: url('/fonts/AdelleSansARM-Bold.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Regular font styles */
+.ara-intro-text-english,
+.ara-intro-text-armenian,
+.search-input,
+.filter-item,
+.ara-grid_item_title_transliteration,
+.ara-record-info__transliteration,
+.ara-record-info__details-content,
+.ara-record-info__pill,
+.ara-record-meta-section__side-a-data,
+.ara-record-meta-section__side-b-data,
+.ara-record-player-artist-name {
+  font-family: 'AdelleSansARM', Arial, sans-serif;
+}
+
+/* Semi-bold font styles */
+.ara-menu-links-wrapper a,
+.ara-filters-title,
+.ara-filter-option.selected,
+.ara-grid_item_title_armenian,
+.ara-header__recording-label,
+.ara-record-info__side-title,
+.ara-record-info__song-title,
+.ara-record-info__details-title,
+.ara-record-info__label,
+.ara-record-meta-section__data-title,
+.ara-record-player-song-title,
+.filter-item.active,
+.language-selected {
+  font-family: 'AdelleSansARM-Semibold', Arial, sans-serif;
+}
+
+/* Group all bold elements */
+.ara-intro-text-english div,
+.ara-intro-text-armenian div,
+.ara-header__recording-catalog-number,
+.ara-header__share,
+.ara-record-info__track-number,
+.ara-record-info__song-length,
+.ara-record-player-time,
+.ara-filter-option:hover,
+.filter-item:hover,
+.selected-filters-container .filter-item,
+.ara-filter-items .filter-item.active,
+.ara-record-info__track-entry:hover .ara-record-info__track-number,
+.ara-record-info__track-entry:hover .ara-record-info__song-title,
+.ara-record-info__track-entry:hover .ara-record-info__song-length {
+  font-family: 'AdelleSansARM-Bold', Arial, sans-serif;
+}
+
+
 /* ============================== ROOT VARIABLES ============================== */
 :root {
   --ara-blue: #091133;
@@ -50,7 +122,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #091133;
-  font-family: Arial, sans-serif;
+  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
 }
 
 p {
@@ -157,6 +229,7 @@ strong {
 }
 
 .ara-menu-links-wrapper a {
+  font-family: 'AdelleSansARM-Semibold', Arial, sans-serif;
   color: var(--ara-blue);
   margin: 0 10px;
   text-decoration: none;
@@ -192,14 +265,14 @@ strong {
    ================================
 */
 .filter-item {
-  /* Normal item = regular text */
+  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
   font-weight: normal;
   font-style: normal;
   color: var(--ara-blue);
   cursor: pointer;
   display: flex;
   align-items: center;
-  margin-bottom: 0.5rem; /* space between items, optional */
+  margin-bottom: 0.5rem;
 }
 
 /* The circle on the left */
@@ -321,6 +394,7 @@ strong {
 }
 
 .ara-intro-text-english, .ara-intro-text-armenian {
+  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
   font-size: var(--intro-text-font-size);
   font-weight: bold;
   line-height: 1.1;
@@ -350,6 +424,7 @@ strong {
 }
 
 .search-input {
+  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
   font-size: var(--search-input-font-size);
   color: white;
   border: none;
@@ -391,6 +466,7 @@ strong {
   font-weight: bold;
   padding-top: 1rem;
   padding-bottom: 1rem;
+  padding-top: 2rem;
 }
 
 .ara-filters-title span {
@@ -609,6 +685,7 @@ strong {
 }
 
 .ara-grid_item_title_transliteration {
+  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
   font-style: italic;
   font-size: var(--grid-item-title-transliteration-font-size);
 }
@@ -692,6 +769,9 @@ strong {
   padding-right:2rem;
 }
 
+html {
+  scroll-padding-top: 2rem; /* Adjust this value to control the margin */
+}
 
 
 a, a:visited, a:hover, a:active {
@@ -1300,6 +1380,7 @@ body {
 }
 
 .ara-record-info__transliteration {
+  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
   font-style: italic;
   font-size: 16px;
   color: #555;
@@ -1343,6 +1424,7 @@ body {
   flex-direction: column;
   gap: 0.5rem;
   font-size: 14px;
+  font-family: 'AdelleSansARM', Arial, sans-serif;
 }
 
 .ara-record-info__item {
@@ -1362,6 +1444,7 @@ body {
   background-color: #f0f0f0;
   color: #333;
   font-size: 0.9rem;
+  font-family: 'AdelleSansARM', Arial, sans-serif;
 }
 
 .ara-record-info__pill:hover {
@@ -1397,6 +1480,16 @@ body {
 
 .ara-record-meta-section__side-a-data {
   border-right: 1px solid #ddd;
+}
+
+.ara-record-meta-section__side-a-data,
+.ara-record-meta-section__side-b-data {
+  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
+}
+
+.ara-record-player-artist-name {
+  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
+  font-size: var(--player-artist-name-font-size);
 }
 
 /* PLAYER SECTION */

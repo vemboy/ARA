@@ -20,10 +20,16 @@ interface RecordType {
   [key: string]: any;
 }
 
+
 const isArmenianScript = (text: string) => {
   // Armenian Unicode range is U+0530 to U+058F
   const armenianPattern = /[\u0530-\u058F]/;
   return armenianPattern.test(text);
+};
+
+const splitArtistNames = (artistString: string): string[] => {
+  if (!artistString) return [];
+  return artistString.split(',').map(name => name.trim());
 };
 
 // Add this helper function with your other functions
@@ -54,17 +60,55 @@ const getEnglishVersion = (text: string) => {
 const CollectionDetail: React.FC = () => {
   const router = useRouter();
 
-  const handlePillClick = (filterType: string, value: string) => {
-    // Create an encoded filter object that our main page can understand
-    const filterParam = encodeURIComponent(
-      JSON.stringify({
-        [filterType]: [value], // Use an array instead of a Set
-      })
-    );
 
-    // Navigate to main page with filter and include #collection to scroll there
-    router.push(`/?filter=${filterParam}#collection`);
-  };
+type AvailableFilters = {
+  genres: Set<string>;
+  instruments: Set<string>;
+  regions: Set<string>;
+  artists: Set<string>;
+  record_label: Set<string>;
+};
+
+const [availableFilters, setAvailableFilters] = useState<AvailableFilters>({
+  genres: new Set<string>(),
+  instruments: new Set<string>(),
+  regions: new Set<string>(),
+  artists: new Set<string>(),
+  record_label: new Set<string>(),
+});
+
+  useEffect(() => {
+  axios.get("https://ara.directus.app/items/record_archive?groupBy[]=artist_original")
+    .then((response) => {
+      const uniqueArtists: Set<string> = new Set();
+      response.data.data.forEach((artistObj: any) => {
+        if (artistObj.artist_original) {
+          artistObj.artist_original.split(',').forEach((artist: string) => {
+            uniqueArtists.add(getEnglishVersion(artist.trim()));
+          });
+        }
+      });
+      setAvailableFilters(prev => ({
+        ...prev,
+        artists: uniqueArtists
+      }));
+    })
+    .catch((error) => {
+      console.error("Error fetching artists:", error);
+    });
+}, []);
+
+const handlePillClick = (filterType: string, value: string) => {
+  // Create an encoded filter object that our main page can understand
+  const filterParam = encodeURIComponent(
+    JSON.stringify({
+      [filterType]: [value],
+    })
+  );
+
+  // Navigate to main page with filter and scroll position marker
+  router.push(`/?filter=${filterParam}#filters`);  // Changed from #collection to #filters
+};
 
   // Audio Context
   const audioContext = useContext(AudioContext);
@@ -145,6 +189,8 @@ const CollectionDetail: React.FC = () => {
           });
       });
   }, [araId]);
+
+
 
   // ----------------------------------------------------------------
   // 3) useEffect to initialize the <audio> once
@@ -523,21 +569,34 @@ const CollectionDetail: React.FC = () => {
                     : "SIDE A — DETAILS"}
                 </div>
                 <div className="ara-record-info__details-content">
-                  <div className="ara-record-info__item">
-                    <span className="ara-record-info__label">Artist:</span>
-                    <span
-                      className="ara-record-info__pill"
-                      onClick={() =>
-                        handlePillClick(
-                          "artist_original",
-                          getEnglishVersion(sideA.artist_original)
-                        )
-                      }
-                    >
-                      {getEnglishVersion(sideA.artist_original) ??
-                        "Unknown artist"}
-                    </span>
-                  </div>
+<div className="ara-record-info__item">
+  <span className="ara-record-info__label">Artists:</span>
+  <div className="ara-record-info__pills-container">
+    {sideA.artist_original ? (
+      sideA.artist_original.split(',').map((artist: string, index: number) => {
+        const processedArtist = getEnglishVersion(artist.trim());
+        const isAvailable = availableFilters.artists.has(processedArtist);
+        
+        return (
+          <span
+            key={index}
+            className={`ara-record-info__pill ${!isAvailable ? 'disabled' : ''}`}
+            onClick={() => isAvailable && handlePillClick("artist_original", processedArtist)}
+            style={!isAvailable ? {
+              opacity: 0.5,
+              cursor: 'not-allowed',
+              backgroundColor: '#e0e0e0'
+            } : undefined}
+          >
+            {processedArtist}
+          </span>
+        );
+      })
+    ) : (
+      <span className="ara-record-info__pill">Unknown artist</span>
+    )}
+  </div>
+</div>
                   <div className="ara-record-info__item">
                     <span className="ara-record-info__label">
                       Instrument Used:
@@ -638,21 +697,34 @@ const CollectionDetail: React.FC = () => {
                     : "SIDE B — DETAILS"}
                 </div>
                 <div className="ara-record-info__details-content">
-                  <div className="ara-record-info__item">
-                    <span className="ara-record-info__label">Artist:</span>
-                    <span
-                      className="ara-record-info__pill"
-                      onClick={() =>
-                        handlePillClick(
-                          "artist_original",
-                          getEnglishVersion(sideB.artist_original)
-                        )
-                      }
-                    >
-                      {getEnglishVersion(sideB.artist_original) ??
-                        "Unknown artist"}
-                    </span>
-                  </div>
+<div className="ara-record-info__item">
+  <span className="ara-record-info__label">Artists:</span>
+  <div className="ara-record-info__pills-container">
+    {sideB.artist_original ? (
+      sideB.artist_original.split(',').map((artist: string, index: number) => {
+        const processedArtist = getEnglishVersion(artist.trim());
+        const isAvailable = availableFilters.artists.has(processedArtist);
+        
+        return (
+          <span
+            key={index}
+            className={`ara-record-info__pill ${!isAvailable ? 'disabled' : ''}`}
+            onClick={() => isAvailable && handlePillClick("artist_original", processedArtist)}
+            style={!isAvailable ? {
+              opacity: 0.5,
+              cursor: 'not-allowed',
+              backgroundColor: '#e0e0e0'
+            } : undefined}
+          >
+            {processedArtist}
+          </span>
+        );
+      })
+    ) : (
+      <span className="ara-record-info__pill">Unknown artist</span>
+    )}
+  </div>
+</div>
                   <div className="ara-record-info__item">
                     <span className="ara-record-info__label">
                       Instrument Used:
