@@ -14,6 +14,12 @@ import FilterMenu from "./filter-menu";
 
 import RecordListView from "./record-list-view";
 
+interface ArtistType {
+  id: string;
+  artist_name: string;
+  artist_name_armenian?: string | null;
+}
+
 const smoothScrollToMain = () => {
   const main = document.getElementById("ara-main");
   if (main) {
@@ -67,7 +73,8 @@ export default function Collection() {
   const [instruments, setInstruments] = useState<string[]>([]);
   const [genres, setGenres] = useState<string[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
-  const [artists, setArtists] = useState<string[]>([]);
+  const [artists, setArtists] = useState<ArtistType[]>([]);
+
   const [labels, setLabels] = useState<any[]>([]);
   const [labelIdToNameMap, setLabelIdToNameMap] = useState<{
     [key: string]: string;
@@ -358,23 +365,16 @@ useEffect(() => {
       });
 
     // Fetch artists
-    axios
-      .get(
-        "https://ara.directus.app/items/record_archive?groupBy[]=artist_original"
-      )
-      .then((response) => {
-        const uniqueArtists: Set<string> = new Set();
-        _.forEach(response.data.data, (artistObj: any) => {
-          if (artistObj.artist_original) {
-            uniqueArtists.add(artistObj.artist_original as string);
-          }
-        });
-        setArtists(Array.from(uniqueArtists));
-      })
-      .catch((error) => {
-        console.log("Error fetching artists:", error);
-        setArtists([]);
-      });
+axios
+  .get("https://ara.directus.app/items/artists?limit=-1&fields=id,artist_name,artist_name_armenian")
+  .then((response) => {
+    const data = response.data.data || [];
+    setArtists(data); // Store as an array of objects
+  })
+  .catch((error) => {
+    console.error("Error fetching artists:", error);
+    setArtists([]);
+  });
   }, []);
 
   useEffect(() => {
@@ -395,89 +395,118 @@ useEffect(() => {
 
   // Fetch records + update available filters
   useEffect(() => {
-    const url = getUrlWithFilters();
-    axios.get(url).then((response) => {
-      const data = response.data.data;
-      const mappedRecords = data
-        // First filter out records without audio
-        .filter((record: any) => record.audio)
-        .map((record: any) => {
-          return {
-            songId: record.audio,
-            author: record.artist_original,
-            title: record.title,
-            image: record.record_image,
-            id: record.id,
-            genre: record.genre,
-            year: record.year,
-            title_armenian: record.title_armenian,
-            color: record.hex_color,
-            display_title: record.display_title,
-            record_label: record.record_label?.label_en || null,
-            genres: record.genres ?? [],
-            instruments: record.instruments ?? [],
-            regions: record.regions ?? [],
-            artist_original: record.artist_original,
-            araId: record.ARAID,
-          };
+  // Wait until we have fetched the artists array, otherwise substring matching won't work
+  if (artists.length === 0) {
+    // If the "artists" data isn't loaded yet, skip or do partial logic
+    return;
+  }
+
+  
+
+  const url = getUrlWithFilters();
+  axios.get(url).then((response) => {
+    const data = response.data.data;
+    // Filter out records without audio, etc.
+    const mappedRecords = data
+      .filter((record: any) => record.audio)
+      .map((record: any) => ({
+        songId: record.audio,
+        author: record.artist_original,
+        title: record.title,
+        image: record.record_image,
+        id: record.id,
+        genre: record.genre,
+        year: record.year,
+        title_armenian: record.title_armenian,
+        color: record.hex_color,
+        display_title: record.display_title,
+        record_label: record.record_label?.label_en || null,
+        genres: record.genres ?? [],
+        instruments: record.instruments ?? [],
+        regions: record.regions ?? [],
+        artist_original: record.artist_original,
+        araId: record.ARAID,
+      }));
+
+    setRecords(mappedRecords);
+
+    // Calculate counts & available filters
+    const newResultCounts: { [key: string]: number } = {};
+    const newAvailableFilters = {
+      genres: new Set<string>(),
+      instruments: new Set<string>(),
+      regions: new Set<string>(),
+      artists: new Set<string>(),
+      record_label: new Set<string>(),
+    };
+
+    // For each record, update the sets for genres, instruments, etc. 
+    data.forEach((rec: any) => {
+      // genres
+      if (Array.isArray(rec.genres)) {
+        rec.genres.forEach((genre: string) => {
+          newResultCounts[genre] = (newResultCounts[genre] || 0) + 1;
+          newAvailableFilters.genres.add(genre);
         });
-      setRecords(mappedRecords);
+      }
 
-      // Calculate counts & available filters
-      const newResultCounts: { [key: string]: number } = {};
-      const newAvailableFilters = {
-        genres: new Set<string>(),
-        instruments: new Set<string>(),
-        regions: new Set<string>(),
-        artists: new Set<string>(),
-        record_label: new Set<string>(),
-      };
+      // instruments
+      if (Array.isArray(rec.instruments)) {
+        rec.instruments.forEach((instrument: string) => {
+          newResultCounts[instrument] = (newResultCounts[instrument] || 0) + 1;
+          newAvailableFilters.instruments.add(instrument);
+        });
+      }
 
-      data.forEach((rec: any) => {
-        // genres
-        if (Array.isArray(rec.genres)) {
-          rec.genres.forEach((genre: string) => {
-            newResultCounts[genre] = (newResultCounts[genre] || 0) + 1;
-            newAvailableFilters.genres.add(genre);
-          });
-        }
+      // regions
+      if (Array.isArray(rec.regions)) {
+        rec.regions.forEach((region: string) => {
+          newResultCounts[region] = (newResultCounts[region] || 0) + 1;
+          newAvailableFilters.regions.add(region);
+        });
+      }
 
-        // instruments
-        if (Array.isArray(rec.instruments)) {
-          rec.instruments.forEach((instrument: string) => {
-            newResultCounts[instrument] =
-              (newResultCounts[instrument] || 0) + 1;
-            newAvailableFilters.instruments.add(instrument);
-          });
-        }
-
-        // regions
-        if (Array.isArray(rec.regions)) {
-          rec.regions.forEach((region: string) => {
-            newResultCounts[region] = (newResultCounts[region] || 0) + 1;
-            newAvailableFilters.regions.add(region);
-          });
-        }
-
-        // artists
-        if (rec.artist_original) {
-          const artist = rec.artist_original;
-          newResultCounts[artist] = (newResultCounts[artist] || 0) + 1;
-          newAvailableFilters.artists.add(artist);
-        }
-
-        // labels
-        if (rec.record_label) {
-          const labelName = rec.record_label;
-          newResultCounts[labelName] = (newResultCounts[labelName] || 0) + 1;
-          newAvailableFilters.record_label.add(labelName);
-        }
-      });
-
-      setResultCounts(newResultCounts);
-      setAvailableFilters(newAvailableFilters);
+      // record_label
+      if (rec.record_label) {
+        const labelName = rec.record_label;
+        newResultCounts[labelName] = (newResultCounts[labelName] || 0) + 1;
+        newAvailableFilters.record_label.add(labelName);
+      }
     });
-  }, [searchString, searchYear, filters, searchArtist]);
+
+    // --- THE KEY CHANGE: ARTIST FILTER BUILDING ---
+    // Instead of storing rec.artist_original directly,
+    // we do a substring check against your "artists" array (artist_name).
+    // For each record, see if it "contains" each known artist name.
+
+    // We'll do a second pass so that we can read from `mappedRecords` 
+    // (or from `data`) and also have the "artists" array in scope.
+    data.forEach((rec: any) => {
+      const recordArtistText = (rec.artist_original || "").toLowerCase();
+
+      // Loop over your full artists array
+      for (const artistObj of artists) {
+        // If artist_name can be null, do a fallback
+        const aName = artistObj.artist_name?.trim() || "";
+        if (!aName) continue;
+
+        // Convert both sides to lower case for an `_icontains` style match
+        const lower = aName.toLowerCase();
+        if (recordArtistText.includes(lower)) {
+          // This record "belongs" to that artist
+          // So bump the count and mark the artist as available
+          newResultCounts[aName] = (newResultCounts[aName] || 0) + 1;
+          newAvailableFilters.artists.add(aName);
+        }
+      }
+    });
+    // --- END KEY CHANGE ---
+
+    setResultCounts(newResultCounts);
+    setAvailableFilters(newAvailableFilters);
+  });
+}, [searchString, searchYear, filters, searchArtist, artists]); 
+
 
   // Rotate logo on scroll
   useEffect(() => {
@@ -554,6 +583,38 @@ useEffect(() => {
       setUserToggledMenu(false);
     }, 300);
   };
+
+useEffect(() => {
+  // Once we fetch both:
+  //    records (the entire archive, or the subset?)
+  //    and artists (the entire artists table)
+  // we can do a quick check
+  const artistSet = new Set(artists.map((a) => a.artist_name));
+
+  records.forEach((rec) => {
+    const artistOriginal = rec.artist_original;
+    if (artistOriginal && !artistSet.has(artistOriginal.trim())) {
+      console.warn(
+        `Record ID=${rec.id} uses artist_original="${artistOriginal}" 
+         which doesn't match any "artist_name" in the artists table!`
+      );
+    }
+  });
+}, [records, artists]);
+
+
+useEffect(() => {
+  records.forEach((rec) => {
+    // If `artist_original` has commas, we assume multiple artists:
+    if (rec.artist_original?.includes(",")) {
+      console.log(
+        "%c MULTI-ARTIST RECORD DETECTED! " + 
+          `Record ID=${rec.id} => ${rec.artist_original}`,
+        "color: #FFFFFF; font-size: 14px; background-color: #FF33CC; padding: 2px 4px;"
+      );
+    }
+  });
+}, [records]);
 
   return (
     <>
