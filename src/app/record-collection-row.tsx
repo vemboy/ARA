@@ -119,12 +119,12 @@ function RecordCollectionRow(props: any) {
 
       <div className="ara-grid-item-title">
         <div className="ara-grid_item_title_armenian">
-          <Link href={`/collection-detail/${props.id}`}>
+          <Link href={`/collection-detail/${props.araId}`}>
             {props.title_armenian}
           </Link>
         </div>
         <div className="ara-grid_item_title_transliteration">
-          <Link href={`/collection-detail/${props.id}`}>{props.title}</Link>
+          <Link href={`/collection-detail/${props.araId}`}>{props.title}</Link>
         </div>
       </div>
     </div>

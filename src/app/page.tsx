@@ -408,6 +408,7 @@ export default function Collection() {
             instruments: record.instruments ?? [],
             regions: record.regions ?? [],
             artist_original: record.artist_original,
+            araId: record.ARAID,
           };
         });
       setRecords(mappedRecords);
@@ -701,8 +702,6 @@ export default function Collection() {
           />
         </div>
       </div>
-
-
     </>
   );
 }

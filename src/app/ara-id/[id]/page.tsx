@@ -88,6 +88,7 @@ const CollectionDetail: React.FC = () => {
   // Grab the record ID from the URL
   const pathName = usePathname();
   const araId = pathName.split("/").slice(-1)[0];
+  console.log("path:", pathName, araId);
 
   // ----------------------------------------------------------------
   // 2) useEffect to fetch data for this record

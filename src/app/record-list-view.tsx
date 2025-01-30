@@ -37,6 +37,7 @@ function RecordListView(props: any) {
     fetchZoomAmount();
   }, []);
 
+  console.log("RECORDS:", props.records);
   return (
     <div id="ara-grid-wrapper" className="ara-grid-wrapper">
       {props.records.map((record: any) => (
@@ -68,6 +69,7 @@ function RecordListView(props: any) {
           }
           imageUrl={record.image}
           zoomAmount={zoomAmount}
+          araId={record.araId}
         />
       ))}
     </div>
