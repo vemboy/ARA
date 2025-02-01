@@ -20,6 +20,19 @@ interface RecordType {
   [key: string]: any;
 }
 
+const splitBilingualField = (value: any) => {
+  if (!value) return { en: "", am: "" };
+  // Check if value is a string
+  if (typeof value !== 'string') {
+    console.warn('Non-string value passed to splitBilingualField:', value);
+    return { en: String(value), am: String(value) };
+  }
+  const parts = value.split("|").map(part => part.trim());
+  return {
+    en: parts[0] || "",
+    am: parts[1] || parts[0] // fallback to English if no Armenian
+  };
+};
 
 const isArmenianScript = (text: string) => {
   // Armenian Unicode range is U+0530 to U+058F
@@ -290,9 +303,19 @@ const handlePillClick = (filterType: string, value: string) => {
       sideB: sideB?.ARAID ?? "Unknown ARA ID",
     },
     {
-      title: "Title",
-      sideA: sideA?.title ?? "Unknown title",
-      sideB: sideB?.title ?? "Unknown title",
+      title: "Title (Armenian)",
+      sideA: sideA?.title_armenian ?? "Unknown title",
+      sideB: sideB?.title_armenian ?? "Unknown title",
+    },
+    {
+      title: "Title (English)",
+      sideA: sideA?.title_english ?? "Unknown title",
+      sideB: sideB?.title_english ?? "Unknown title",
+    },
+    {
+      title: "Title (Translation)",
+      sideA: sideA?.title_translation ?? "No translation available",
+      sideB: sideB?.title_translation ?? "No translation available",
     },
     {
       title: "Names",
@@ -496,18 +519,21 @@ const handlePillClick = (filterType: string, value: string) => {
                     <div className="ara-record-info__track-number">
                       {sideA.track_number ?? "1A"}
                     </div>
-                    <div className="ara-record-info__song-title-container">
-                      <div className="ara-record-info__song-title">
-                        {isArmenianScript(sideA.title || "")
-                          ? sideA.title
-                          : sideA.title_armenian || "No Armenian title"}
+                      <div className="ara-record-info__song-title-container">
+                        <div className="ara-record-info__song-title">
+                          {isArmenianScript(sideA.title || "")
+                            ? sideA.title
+                            : sideA.title_armenian || "No Armenian title"}
+                        </div>
+                        <div className="ara-record-info__transliteration">
+                          {isArmenianScript(sideA.title || "")
+                            ? sideA.title_english || "No English transliteration"
+                            : sideA.title}
+                        </div>
+                        <div className="ara-record-info__translation">
+                          {sideA.title_translation || "No translation available"}
+                        </div>
                       </div>
-                      <div className="ara-record-info__transliteration">
-                        {isArmenianScript(sideA.title || "")
-                          ? sideA.title_english || "No English transliteration"
-                          : sideA.title}
-                      </div>
-                    </div>
                     <div className="ara-record-info__song-length">
                       {durations[sideA.id] || "No Audio"}
                     </div>
@@ -536,18 +562,21 @@ const handlePillClick = (filterType: string, value: string) => {
                     <div className="ara-record-info__track-number">
                       {sideB.track_number ?? "1B"}
                     </div>
-                    <div className="ara-record-info__song-title-container">
-                      <div className="ara-record-info__song-title">
-                        {isArmenianScript(sideB.title || "")
-                          ? sideB.title
-                          : sideB.title_armenian || "No Armenian title"}
+                      <div className="ara-record-info__song-title-container">
+                        <div className="ara-record-info__song-title">
+                          {isArmenianScript(sideB.title || "")
+                            ? sideB.title
+                            : sideB.title_armenian || "No Armenian title"}
+                        </div>
+                        <div className="ara-record-info__transliteration">
+                          {isArmenianScript(sideB.title || "")
+                            ? sideB.title_english || "No English transliteration"
+                            : sideB.title}
+                        </div>
+                        <div className="ara-record-info__translation">
+                          {sideB.title_translation || "No translation available"}
+                        </div>
                       </div>
-                      <div className="ara-record-info__transliteration">
-                        {isArmenianScript(sideB.title || "")
-                          ? sideB.title_english || "No English transliteration"
-                          : sideB.title}
-                      </div>
-                    </div>
                     <div className="ara-record-info__song-length">
                       {durations[sideB.id] || "No audio"}
                     </div>
@@ -818,34 +847,163 @@ const handlePillClick = (filterType: string, value: string) => {
           </div>
         </div>
 
-        {/* Metadata Section */}
-        <div className="ara-record-meta-section">
-          <div className="ara-record-meta-section__metadata-row">
-            <div className="ara-record-meta-section__data-title">
-              DATA CATEGORY
-            </div>
-            <div className="ara-record-meta-section__side-a-data">
-              SIDE A DATA
-            </div>
-            <div className="ara-record-meta-section__side-b-data">
-              SIDE B DATA
-            </div>
-          </div>
+{/* Metadata Section */}
+<div className="ara-record-meta-section">
+  <div className="ara-record-meta-section__metadata-row">
+    <div className="ara-record-meta-section__data-title">DATA CATEGORY</div>
+    <div className="ara-record-meta-section__side-a-data">SIDE A DATA</div>
+    <div className="ara-record-meta-section__side-a-data-armenian">ԿՈՂՄ Ա ՏՎՅԱԼՆԵՐ</div>
+    <div className="ara-record-meta-section__side-b-data">SIDE B DATA</div>
+    <div className="ara-record-meta-section__side-b-data-armenian">ԿՈՂՄ Բ ՏՎՅԱԼՆԵՐ</div>
+  </div>
 
-          {metadataEntries.map((entry, idx) => (
-            <div className="ara-record-meta-section__metadata-row" key={idx}>
-              <div className="ara-record-meta-section__data-title">
-                {entry.title}
-              </div>
-              <div className="ara-record-meta-section__side-a-data">
-                {entry.sideA}
-              </div>
-              <div className="ara-record-meta-section__side-b-data">
-                {entry.sideB}
-              </div>
-            </div>
-          ))}
-        </div>
+  {[
+    {
+      title: "ARA ID",
+      titleAm: "ARA ID",
+      sideA: sideA?.ARAID ?? "Unknown ARA ID",
+      sideAAm: sideA?.ARAID ?? "Անհայտ ARA ID",
+      sideB: sideB?.ARAID ?? "Unknown ARA ID",
+      sideBAm: sideB?.ARAID ?? "Անհայտ ARA ID"
+    },
+    {
+      title: "Title",
+      titleAm: "ՏՎՅԱԼՆԵՐ",
+      sideA: sideA?.title_english ?? "No title",
+      sideAAm: sideA?.title_armenian ?? "Վերնագիր չկա",
+      sideB: sideB?.title_english ?? "No title",
+      sideBAm: sideB?.title_armenian ?? "Վերնագիր չկա"
+    },
+    {
+      title: "Recording Label",
+      titleAm: "ՏՎՅԱԼՆԵՐ",
+      sideA: sideA?.record_label?.label_en ?? "Unknown Label",
+      sideAAm: sideA?.record_label?.label_am ?? "Անհայտ պիտակ",
+      sideB: sideB?.record_label?.label_en ?? "Unknown Label",
+      sideBAm: sideB?.record_label?.label_am ?? "Անհայտ պիտակ"
+    },
+    {
+      title: "Recording Catalog Number",
+      titleAm: "ՏՎՅԱԼՆԵՐ",
+      sideA: sideA?.record_catalog_number ?? "No catalog number",
+      sideAAm: sideA?.record_catalog_number ?? "Կատալոգի համար չկա",
+      sideB: sideB?.record_catalog_number ?? "No catalog number",
+      sideBAm: sideB?.record_catalog_number ?? "Կատալոգի համար չկա"
+    },
+    {
+      title: "Language",
+      titleAm: "ՏՎՅԱԼՆԵՐ",
+      sideA: typeof sideA?.language === 'string' 
+        ? splitBilingualField(sideA.language).en.replace(/-$/, '') 
+        : "Unknown language",
+      sideAAm: typeof sideA?.language === 'string' 
+        ? splitBilingualField(sideA.language).am.replace(/^-/, '') 
+        : "Անհայտ լեզու",
+      sideB: typeof sideB?.language === 'string' 
+        ? splitBilingualField(sideB.language).en.replace(/-$/, '') 
+        : "Unknown language",
+      sideBAm: typeof sideB?.language === 'string' 
+        ? splitBilingualField(sideB.language).am.replace(/^-/, '') 
+        : "Անհայտ լեզու"
+    },
+    {
+      title: "Instruments",
+      titleAm: "ՏՎՅԱԼՆԵՐ",
+      sideA: Array.isArray(sideA?.instruments) 
+        ? sideA.instruments.map(i => splitBilingualField(i).en.replace(/-$/, '')).join(", ") 
+        : "Unknown instruments",
+      sideAAm: Array.isArray(sideA?.instruments) 
+        ? sideA.instruments.map(i => splitBilingualField(i).am.replace(/^-/, '')).join(", ") 
+        : "Անհայտ գործիքներ",
+      sideB: Array.isArray(sideB?.instruments) 
+        ? sideB.instruments.map(i => splitBilingualField(i).en.replace(/-$/, '')).join(", ") 
+        : "Unknown instruments",
+      sideBAm: Array.isArray(sideB?.instruments) 
+        ? sideB.instruments.map(i => splitBilingualField(i).am.replace(/^-/, '')).join(", ") 
+        : "Անհայտ գործիքներ"
+    },
+    {
+      title: "Recording Location",
+      titleAm: "ՏՎՅԱԼՆԵՐ",
+      sideA: Array.isArray(sideA?.regions) 
+        ? sideA.regions.map(r => splitBilingualField(r).en.replace(/-$/, '')).join(", ") 
+        : "Unknown location",
+      sideAAm: Array.isArray(sideA?.regions) 
+        ? sideA.regions.map(r => splitBilingualField(r).am.replace(/^-/, '')).join(", ") 
+        : "Անհայտ վայր",
+      sideB: Array.isArray(sideB?.regions) 
+        ? sideB.regions.map(r => splitBilingualField(r).en.replace(/-$/, '')).join(", ") 
+        : "Unknown location",
+      sideBAm: Array.isArray(sideB?.regions) 
+        ? sideB.regions.map(r => splitBilingualField(r).am.replace(/^-/, '')).join(", ") 
+        : "Անհայտ վայր"
+    },
+    {
+      title: "Genre",
+      titleAm: "ՏՎՅԱԼՆԵՐ",
+      sideA: Array.isArray(sideA?.genres) 
+        ? sideA.genres.map(g => splitBilingualField(g).en.replace(/-$/, '')).join(", ") 
+        : "Unknown genre",
+      sideAAm: Array.isArray(sideA?.genres) 
+        ? sideA.genres.map(g => splitBilingualField(g).am.replace(/^-/, '')).join(", ") 
+        : "Անհայտ ժանր",
+      sideB: Array.isArray(sideB?.genres) 
+        ? sideB.genres.map(g => splitBilingualField(g).en.replace(/-$/, '')).join(", ") 
+        : "Unknown genre",
+      sideBAm: Array.isArray(sideB?.genres) 
+        ? sideB.genres.map(g => splitBilingualField(g).am.replace(/^-/, '')).join(", ") 
+        : "Անհայտ ժանր"
+    },
+    {
+      title: "Recording Date",
+      titleAm: "ՏՎՅԱԼՆԵՐ",
+      sideA: sideA?.track_year ?? "Unknown date",
+      sideAAm: sideA?.track_year ?? "Անհայտ ամսաթիվ",
+      sideB: sideB?.track_year ?? "Unknown date",
+      sideBAm: sideB?.track_year ?? "Անհայտ ամսաթիվ"
+    },
+    {
+      title: "Composed by",
+      titleAm: "ՏՎՅԱԼՆԵՐ",
+      sideA: sideA?.composed_by ?? "Unknown composer",
+      sideAAm: sideA?.composed_by ?? "Անհայտ հեղինակ",
+      sideB: sideB?.composed_by ?? "Unknown composer",
+      sideBAm: sideB?.composed_by ?? "Անհայտ հեղինակ"
+    },
+    {
+      title: "Arranged by",
+      titleAm: "ՏՎՅԱԼՆԵՐ",
+      sideA: sideA?.arranged_by ?? "Unknown arranger",
+      sideAAm: sideA?.arranged_by ?? "Անհայտ դասավորող",
+      sideB: sideB?.arranged_by ?? "Unknown arranger",
+      sideBAm: sideB?.arranged_by ?? "Անհայտ դասավորող"
+    },
+    {
+      title: "Lyrics by",
+      titleAm: "ՏՎՅԱԼՆԵՐ",
+      sideA: sideA?.lyrics_by ?? "Unknown lyricist",
+      sideAAm: sideA?.lyrics_by ?? "Անհայտ բանաստեղծ",
+      sideB: sideB?.lyrics_by ?? "Unknown lyricist",
+      sideBAm: sideB?.lyrics_by ?? "Անհայտ բանաստեղծ"
+    },
+    {
+      title: "Conducted by",
+      titleAm: "ՏՎՅԱԼՆԵՐ",
+      sideA: sideA?.conducted_by ?? "Unknown conductor",
+      sideAAm: sideA?.conducted_by ?? "Անհայտ դիրիժոր",
+      sideB: sideB?.conducted_by ?? "Unknown conductor",
+      sideBAm: sideB?.conducted_by ?? "Անհայտ դիրիժոր"
+    }
+  ].map((entry, idx) => (
+    <div className="ara-record-meta-section__metadata-row" key={idx}>
+      <div className="ara-record-meta-section__data-title">{entry.title}</div>
+      <div className="ara-record-meta-section__side-a-data">{entry.sideA}</div>
+      <div className="ara-record-meta-section__side-a-data-armenian">{entry.sideAAm}</div>
+      <div className="ara-record-meta-section__side-b-data">{entry.sideB}</div>
+      <div className="ara-record-meta-section__side-b-data-armenian">{entry.sideBAm}</div>
+    </div>
+  ))}
+</div>
       </div>
 
       <SharePopup

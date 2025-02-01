@@ -1,5 +1,4 @@
-// main page - page.tsx
-
+// page.tsx
 "use client";
 
 import { useSearchParams } from "next/navigation";
@@ -7,19 +6,26 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Link from "next/link";
 import _ from "lodash";
+import Fuse from "fuse.js";
 import { AudioContext } from "./audioLayout";
 
-// UPDATED: Import your new "filter-menu.js" here
+// Import your new filter menu
 import FilterMenu from "./filter-menu";
 
+// Import your RecordListView
 import RecordListView from "./record-list-view";
 
+// Interface for artists
 interface ArtistType {
   id: string;
   artist_name: string;
   artist_name_armenian?: string | null;
 }
 
+/**
+ * Optional helper to do a smooth scroll to the #ara-main section.
+ * Feel free to customize or remove.
+ */
 const smoothScrollToMain = () => {
   const main = document.getElementById("ara-main");
   if (main) {
@@ -49,8 +55,13 @@ const smoothScrollToMain = () => {
   }
 };
 
+/**
+ * Main collection component
+ */
 export default function Collection() {
   const searchParams = useSearchParams();
+
+  // Access audio context (if you have a global player)
   const audioContext = React.useContext(AudioContext);
   const setSong = audioContext?.setSong;
   const setName = audioContext?.setName;
@@ -59,30 +70,35 @@ export default function Collection() {
   const setAlbumArt = audioContext?.setAlbumArt;
   const audioPlayerRef = audioContext?.audioPlayerRef;
 
-  const [filters, setFilter] = useState<{ [key: string]: Set<string> }>({});
+  // Instead of a single "filters", we use two sets: included and excluded
+  const [includedFilters, setIncludedFilters] = useState<{ [key: string]: Set<string> }>({});
+  const [excludedFilters, setExcludedFilters] = useState<{ [key: string]: Set<string> }>({});
+
   const [language, setLanguage] = useState("EN");
-  const [currentPage, setPage] = useState(2);
+
+  // We'll store the entire (unfiltered) record archive
+  const [allRecords, setAllRecords] = useState<any[]>([]);
+  // We'll store the final (filtered) records
   const [records, setRecords] = useState<any[]>([]);
+
+  // Additional search controls
   const [searchString, setSearchString] = useState<string>("");
   const [searchYear, setSearchYear] = useState<string>("");
   const [searchArtist, setSearchArtist] = useState<string>("");
-  const [selectedRecord, setSelectedRecord] = useState<any | null>(null);
 
+  // Active filter tab
   const [activeFilter, setActiveFilter] = useState<string | null>("genres");
 
+  // Master lists for each filter type
   const [instruments, setInstruments] = useState<string[]>([]);
   const [genres, setGenres] = useState<string[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
   const [artists, setArtists] = useState<ArtistType[]>([]);
-
   const [labels, setLabels] = useState<any[]>([]);
-  const [labelIdToNameMap, setLabelIdToNameMap] = useState<{
-    [key: string]: string;
-  }>({});
+  const [labelIdToNameMap, setLabelIdToNameMap] = useState<{ [key: string]: string }>({});
 
-  const [resultCounts, setResultCounts] = useState<{ [key: string]: number }>(
-    {}
-  );
+  // For dynamic counts & availability
+  const [resultCounts, setResultCounts] = useState<{ [key: string]: number }>({});
   const [availableFilters, setAvailableFilters] = useState<{
     genres: Set<string>;
     instruments: Set<string>;
@@ -97,7 +113,7 @@ export default function Collection() {
     record_label: new Set(),
   });
 
-  // Landing page and menu refs
+  // Various refs for the landing page & menu
   const landingRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuLinksWrapperRef = useRef<HTMLDivElement>(null);
@@ -105,166 +121,23 @@ export default function Collection() {
   const introRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
 
+  // Menu show/hide states
   const [isMenuVisible, setIsMenuVisible] = useState(true);
   const [userToggledMenu, setUserToggledMenu] = useState(false);
 
-  // NEW: State to toggle open/close of the filter menu
-  const [isFilterOpen, setIsFilterOpen] = useState(true); // Default to true
+  // Whether the filter menu is open
+  const [isFilterOpen, setIsFilterOpen] = useState(true);
 
+  // Language toggle
   const changeLanguage = (lang: string) => {
     setLanguage(lang);
   };
 
-  /** Builds the query URL with the current filters & search inputs */
-  const getUrlWithFilters = (additionalFilter?: object) => {
-    const filterObj: { _or?: object[]; _and?: object[] } = {
-      _or: [],
-      _and: [],
-    };
-
-    if (searchString.length > 0) {
-      // First, check if we have any operators
-      if (searchString.includes("+") || searchString.includes(",")) {
-        const hasAndOperator = searchString.includes("+");
-        const hasOrOperator = searchString.includes(",");
-
-        // Split by either operator and trim whitespace
-        const searchTerms = hasAndOperator
-          ? searchString.split("+").map((term) => term.trim())
-          : searchString.split(",").map((term) => term.trim());
-
-        // Create a search condition for each term
-        const searchConditions = searchTerms.map((term) => ({
-          _or: [
-            { title: { _icontains: term } },
-            { title_armenian: { _icontains: term } },
-            { artist_armenian: { _icontains: term } },
-            { artist_original: { _icontains: term } },
-            { genres: { _icontains: term } },
-            { instruments: { _icontains: term } },
-            { regions: { _icontains: term } },
-            { record_label: { label_en: { _icontains: term } } },
-          ],
-        }));
-
-        // For AND operations (plus sign), add each condition to _and array
-        // For OR operations (comma), combine all conditions in _or array
-        if (hasAndOperator) {
-          filterObj._and = filterObj._and || [];
-          filterObj._and.push(...searchConditions);
-        } else {
-          // Flatten all OR conditions into a single array
-          filterObj._or = searchConditions.flatMap(
-            (condition) => condition._or
-          );
-        }
-      } else {
-        // Handle single search term (no operators) - existing behavior
-        filterObj._or = [
-          { title: { _icontains: searchString } },
-          { title_armenian: { _icontains: searchString } },
-          { artist_armenian: { _icontains: searchString } },
-          { artist_original: { _icontains: searchString } },
-          { genres: { _icontains: searchString } },
-          { instruments: { _icontains: searchString } },
-          { regions: { _icontains: searchString } },
-          { record_label: { label_en: { _icontains: searchString } } },
-        ];
-      }
-    }
-
-    if (searchYear.length > 0) {
-      filterObj._and = filterObj._and || [];
-      filterObj._and.push({ "year(year)": { _eq: searchYear } });
-    }
-
-    if (searchArtist.length > 0) {
-      filterObj._and = filterObj._and || [];
-      filterObj._and.push({
-        _or: [
-          { artist_english: { _icontains: searchArtist } },
-          { artist_armenian: { _icontains: searchArtist } },
-          { artist_original: { _icontains: searchArtist } },
-        ],
-      });
-    }
-
-    // Apply each selected filter
-    Object.entries(filters).forEach(([filterName, filtersSet]) => {
-      const filterArray = Array.from(filtersSet);
-      if (filterArray.length > 0) {
-        if (filterName === "record_label") {
-          const labelIds = labels
-            .filter((label) => filtersSet.has(label.label_en))
-            .map((label) => label.id);
-
-          if (!filterObj._and) filterObj._and = [];
-          filterObj._and.push({ record_label: { _in: labelIds } });
-        } else {
-          filterArray.forEach((filterVal) => {
-            if (!filterObj._and) filterObj._and = [];
-            filterObj._and.push({ [filterName]: { _icontains: filterVal } });
-          });
-        }
-      }
-    });
-
-    if (additionalFilter) {
-      if (!filterObj._and) filterObj._and = [];
-      filterObj._and.push(additionalFilter);
-    }
-
-    const stringifiedFilterObj = JSON.stringify(filterObj);
-    return `https://ara.directus.app/items/record_archive?limit=-1&fields=*,record_label.*&filter=${encodeURIComponent(
-      stringifiedFilterObj
-    )}`;
-  };
-
-useEffect(() => {
-  const filterParam = searchParams.get("filter");
-  if (filterParam) {
-    try {
-      const filterObj = JSON.parse(decodeURIComponent(filterParam));
-
-      const processedFilters: { [key: string]: Set<string> } = {};
-      Object.entries(filterObj).forEach(([key, values]) => {
-        const valuesArray = Array.isArray(values)
-          ? values
-          : values !== null && typeof values === "object" && Object.keys(values).length > 0
-          ? Object.keys(values)
-          : [values].filter(Boolean);
-
-        processedFilters[key] = new Set(valuesArray);
-      });
-
-      setFilter(processedFilters);
-
-      const filterType = Object.keys(processedFilters)[0] || "genres";
-      setActiveFilter(filterType);
-      
-      setIsFilterOpen(true);
-
-      setTimeout(() => {
-        const filtersElement = document.getElementById("filters");
-        if (filtersElement) {
-          const rect = filtersElement.getBoundingClientRect();
-          const absoluteTop = window.pageYOffset + rect.top;
-          window.scrollTo({
-            top: absoluteTop - 16,
-            behavior: 'instant'
-          });
-        }
-      }, 100);
-
-    } catch (error) {
-      console.error("Error parsing filter parameter:", error);
-    }
-  }
-}, [searchParams]);
-
-  // Fetch initial data (labels, genres, regions, instruments, artists)
+  /**
+   * On mount, fetch all initial data: labels, genres, instruments, artists, plus all records.
+   */
   useEffect(() => {
-    // Fetch labels
+    // 1) Fetch labels from Directus
     axios
       .get("https://ara.directus.app/items/record_labels?fields=id,label_en")
       .then((response) => {
@@ -282,7 +155,7 @@ useEffect(() => {
         setLabelIdToNameMap({});
       });
 
-    // Fetch genres
+    // 2) Fetch genres field options
     axios
       .get("https://ara.directus.app/fields/record_archive/genres")
       .then((response) => {
@@ -318,7 +191,7 @@ useEffect(() => {
         ]);
       });
 
-    // Fetch regions
+    // 3) Fetch regions field options
     axios
       .get("https://ara.directus.app/fields/record_archive/regions")
       .then((response) => {
@@ -343,11 +216,9 @@ useEffect(() => {
         ]);
       });
 
-    // Fetch instruments
+    // 4) Fetch instruments from the record_archive (collect unique)
     axios
-      .get(
-        "https://ara.directus.app/items/record_archive?limit=-1&fields=instruments"
-      )
+      .get("https://ara.directus.app/items/record_archive?limit=-1&fields=instruments")
       .then((response) => {
         const uniqueInstruments: Set<string> = new Set();
         response.data.data.forEach((item: any) => {
@@ -364,19 +235,33 @@ useEffect(() => {
         setInstruments([]);
       });
 
-    // Fetch artists
-axios
-  .get("https://ara.directus.app/items/artists?limit=-1&fields=id,artist_name,artist_name_armenian")
-  .then((response) => {
-    const data = response.data.data || [];
-    setArtists(data); // Store as an array of objects
-  })
-  .catch((error) => {
-    console.error("Error fetching artists:", error);
-    setArtists([]);
-  });
+    // 5) Fetch artists from Directus
+    axios
+      .get("https://ara.directus.app/items/artists?limit=-1&fields=id,artist_name,artist_name_armenian")
+      .then((response) => {
+        const data = response.data.data || [];
+        setArtists(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching artists:", error);
+        setArtists([]);
+      });
+
+    // 6) Fetch ALL records from record_archive
+    axios
+      .get("https://ara.directus.app/items/record_archive?limit=-1&fields=*,record_label.*")
+      .then((response) => {
+        const allData = response.data.data;
+        setAllRecords(allData);
+      })
+      .catch((error) => {
+        console.error("Error fetching all records from Directus:", error);
+      });
   }, []);
 
+  /**
+   * Optionally auto-scroll after mount
+   */
   useEffect(() => {
     const initialDelay = setTimeout(() => {
       if (window.scrollY === 0) {
@@ -385,52 +270,194 @@ axios
             smoothScrollToMain();
           }
         }, 1500);
-
         return () => clearTimeout(timer);
       }
     }, 100);
-
     return () => clearTimeout(initialDelay);
   }, []);
 
-  // Fetch records + update available filters
+  /**
+   * The main effect that filters allRecords to produce "records" 
+   * based on searchString, searchYear, searchArtist, plus included/excluded sets.
+   */
   useEffect(() => {
-  // Wait until we have fetched the artists array, otherwise substring matching won't work
-  if (artists.length === 0) {
-    // If the "artists" data isn't loaded yet, skip or do partial logic
-    return;
-  }
+    if (!allRecords.length) {
+      setRecords([]);
+      return;
+    }
 
-  
+    // 1) Fuzzy search on many fields (if searchString is not empty)
+    let fuseFiltered: any[];
+    if (!searchString) {
+      fuseFiltered = [...allRecords];
+    } else {
+      const fuseOptions = {
+        isCaseSensitive: false,
+        includeScore: true,
+        threshold: 0.2,
+        distance: 100,
+        ignoreLocation: true,
+        minMatchCharLength: 2,
+        keys: [
+          "id",
+          "ARAID",
+          "record_catalog_number",
+          "title",
+          "title_armenian",
+          "title_english",
+          "title_translation",
+          "display_title",
+          "artist_original",
+          "artist_english",
+          "artist_armenian",
+          "arranged_by",
+          "composed_by",
+          "conducted_by",
+          "lyrics_by",
+          "record_label.label_en",
+          "language",
+          "genres",
+          "instruments",
+          "regions",
+          "comment",
+          "song_lyrics",
+        ],
+      };
+      const fuse = new Fuse(allRecords, fuseOptions);
+      const searchResults = fuse.search(searchString);
+      fuseFiltered = searchResults.map((r) => r.item);
+    }
 
-  const url = getUrlWithFilters();
-  axios.get(url).then((response) => {
-    const data = response.data.data;
-    // Filter out records without audio, etc.
-    const mappedRecords = data
-      .filter((record: any) => record.audio)
-      .map((record: any) => ({
-        songId: record.audio,
-        author: record.artist_original,
-        title: record.title,
-        image: record.record_image,
-        id: record.id,
-        genre: record.genre,
-        year: record.year,
-        title_armenian: record.title_armenian,
-        color: record.hex_color,
-        display_title: record.display_title,
-        record_label: record.record_label?.label_en || null,
-        genres: record.genres ?? [],
-        instruments: record.instruments ?? [],
-        regions: record.regions ?? [],
-        artist_original: record.artist_original,
-        araId: record.ARAID,
+    // 2) Filter by year
+    let postYear: any[];
+    if (!searchYear) {
+      postYear = fuseFiltered;
+    } else {
+      postYear = fuseFiltered.filter((rec) => {
+        if (!rec.year) return false;
+        return String(rec.year) === searchYear;
+      });
+    }
+
+    // 3) Filter by "searchArtist" substring
+    let postArtist: any[];
+    if (!searchArtist) {
+      postArtist = postYear;
+    } else {
+      postArtist = postYear.filter((rec) => {
+        const fieldsToCheck = [
+          rec.artist_english,
+          rec.artist_armenian,
+          rec.artist_original,
+        ];
+        return fieldsToCheck.some((field) =>
+          field?.toLowerCase().includes(searchArtist.toLowerCase())
+        );
+      });
+    }
+
+    // 4) Apply included filters (i.e. must contain all in includedFilters)
+    let postFilters = [...postArtist];
+
+    // For each filter type in includedFilters
+    Object.keys(includedFilters).forEach((filterName) => {
+      const setOfIncluded = includedFilters[filterName];
+      if (!setOfIncluded || setOfIncluded.size === 0) return;
+
+      if (filterName === "record_label") {
+        // We have label objects. We find the matching label IDs by label_en
+        const labelIds = labels
+          .filter((lab) => setOfIncluded.has(lab.label_en))
+          .map((lab) => lab.id);
+
+        postFilters = postFilters.filter((rec) => {
+          if (!rec.record_label) return false;
+          return labelIds.includes(rec.record_label.id);
+        });
+      } else if (filterName === "artist_original" || filterName === "artists") {
+        // We'll do a substring check in rec.artist_original
+        const filterArray = Array.from(setOfIncluded);
+        postFilters = postFilters.filter((rec) => {
+          const recArtist = (rec.artist_original || "").toLowerCase();
+          return filterArray.every((artistName) =>
+            recArtist.includes(artistName.toLowerCase())
+          );
+        });
+      } else {
+        // "genres", "instruments", "regions"
+        postFilters = postFilters.filter((rec) => {
+          const recField = Array.isArray(rec[filterName]) ? rec[filterName] : [];
+          return Array.from(setOfIncluded).every((val) =>
+            recField.some((fieldVal: string) =>
+              fieldVal.toLowerCase().includes(val.toLowerCase())
+            )
+          );
+        });
+      }
+    });
+
+    // 5) Apply excluded filters (i.e. must NOT contain any in excludedFilters)
+    Object.keys(excludedFilters).forEach((filterName) => {
+      const setOfExcluded = excludedFilters[filterName];
+      if (!setOfExcluded || setOfExcluded.size === 0) return;
+
+      if (filterName === "record_label") {
+        const labelIds = labels
+          .filter((lab) => setOfExcluded.has(lab.label_en))
+          .map((lab) => lab.id);
+
+        postFilters = postFilters.filter((rec) => {
+          if (!rec.record_label) return true; // if it has no label, not excluded
+          return !labelIds.includes(rec.record_label.id);
+        });
+      } else if (filterName === "artist_original" || filterName === "artists") {
+        // exclude if rec.artist_original includes that name
+        postFilters = postFilters.filter((rec) => {
+          const recArtist = (rec.artist_original || "").toLowerCase();
+          return !Array.from(setOfExcluded).some((excludedName) =>
+            recArtist.includes(excludedName.toLowerCase())
+          );
+        });
+      } else {
+        // "genres", "instruments", "regions"
+        postFilters = postFilters.filter((rec) => {
+          const recField = Array.isArray(rec[filterName]) ? rec[filterName] : [];
+          // remove the record if it contains ANY excluded item
+          return !Array.from(setOfExcluded).some((excludedVal) =>
+            recField.some((fieldVal: string) =>
+              fieldVal.toLowerCase().includes(excludedVal.toLowerCase())
+            )
+          );
+        });
+      }
+    });
+
+    // 6) Filter out anything without audio
+    const finalRecords = postFilters
+      .filter((rec) => rec.audio)
+      .map((rec: any) => ({
+        songId: rec.audio,
+        author: rec.artist_original,
+        title: rec.title,
+        image: rec.record_image,
+        id: rec.id,
+        year: rec.year,
+        title_armenian: rec.title_armenian,
+        color: rec.hex_color,
+        display_title: rec.display_title,
+        record_label: rec.record_label?.label_en || null,
+        genres: rec.genres ?? [],
+        instruments: rec.instruments ?? [],
+        regions: rec.regions ?? [],
+        artist_original: rec.artist_original,
+        araId: rec.ARAID,
       }));
 
-    setRecords(mappedRecords);
+    setRecords(finalRecords);
 
-    // Calculate counts & available filters
+    /**
+     * Now compute dynamic counts & availability from these finalRecords
+     */
     const newResultCounts: { [key: string]: number } = {};
     const newAvailableFilters = {
       genres: new Set<string>(),
@@ -440,32 +467,28 @@ axios
       record_label: new Set<string>(),
     };
 
-    // For each record, update the sets for genres, instruments, etc. 
-    data.forEach((rec: any) => {
+    finalRecords.forEach((rec) => {
       // genres
       if (Array.isArray(rec.genres)) {
-        rec.genres.forEach((genre: string) => {
-          newResultCounts[genre] = (newResultCounts[genre] || 0) + 1;
-          newAvailableFilters.genres.add(genre);
+        rec.genres.forEach((g: string) => {
+          newResultCounts[g] = (newResultCounts[g] || 0) + 1;
+          newAvailableFilters.genres.add(g);
         });
       }
-
       // instruments
       if (Array.isArray(rec.instruments)) {
-        rec.instruments.forEach((instrument: string) => {
-          newResultCounts[instrument] = (newResultCounts[instrument] || 0) + 1;
-          newAvailableFilters.instruments.add(instrument);
+        rec.instruments.forEach((instr: string) => {
+          newResultCounts[instr] = (newResultCounts[instr] || 0) + 1;
+          newAvailableFilters.instruments.add(instr);
         });
       }
-
       // regions
       if (Array.isArray(rec.regions)) {
-        rec.regions.forEach((region: string) => {
-          newResultCounts[region] = (newResultCounts[region] || 0) + 1;
-          newAvailableFilters.regions.add(region);
+        rec.regions.forEach((r: string) => {
+          newResultCounts[r] = (newResultCounts[r] || 0) + 1;
+          newAvailableFilters.regions.add(r);
         });
       }
-
       // record_label
       if (rec.record_label) {
         const labelName = rec.record_label;
@@ -474,41 +497,35 @@ axios
       }
     });
 
-    // --- THE KEY CHANGE: ARTIST FILTER BUILDING ---
-    // Instead of storing rec.artist_original directly,
-    // we do a substring check against your "artists" array (artist_name).
-    // For each record, see if it "contains" each known artist name.
-
-    // We'll do a second pass so that we can read from `mappedRecords` 
-    // (or from `data`) and also have the "artists" array in scope.
-    data.forEach((rec: any) => {
-      const recordArtistText = (rec.artist_original || "").toLowerCase();
-
-      // Loop over your full artists array
+    // For artists
+    finalRecords.forEach((rec) => {
+      const recArtist = (rec.artist_original || "").toLowerCase();
       for (const artistObj of artists) {
-        // If artist_name can be null, do a fallback
         const aName = artistObj.artist_name?.trim() || "";
         if (!aName) continue;
-
-        // Convert both sides to lower case for an `_icontains` style match
-        const lower = aName.toLowerCase();
-        if (recordArtistText.includes(lower)) {
-          // This record "belongs" to that artist
-          // So bump the count and mark the artist as available
+        if (recArtist.includes(aName.toLowerCase())) {
           newResultCounts[aName] = (newResultCounts[aName] || 0) + 1;
           newAvailableFilters.artists.add(aName);
         }
       }
     });
-    // --- END KEY CHANGE ---
 
     setResultCounts(newResultCounts);
     setAvailableFilters(newAvailableFilters);
-  });
-}, [searchString, searchYear, filters, searchArtist, artists]); 
+  }, [
+    searchString,
+    searchYear,
+    searchArtist,
+    includedFilters,
+    excludedFilters,
+    allRecords,
+    artists,
+    labels,
+  ]);
 
-
-  // Rotate logo on scroll
+  /**
+   * Rotate the big landing page logo on scroll
+   */
   useEffect(() => {
     const rotateLogoOnScroll = () => {
       if (!logoRef.current || !landingRef.current) return;
@@ -523,11 +540,12 @@ axios
     };
   }, []);
 
-  // Hide/show menu links on scroll
+  /**
+   * Hide/show the top menu on scroll (if user hasn't toggled it).
+   */
   useEffect(() => {
     const handleScroll = () => {
       if (userToggledMenu) return;
-
       if (
         !introRef.current ||
         !menuRef.current ||
@@ -546,7 +564,7 @@ axios
       const introMiddle = (introRect.top + introRect.bottom) / 2;
       const menuBottom = menuRect.bottom;
 
-      if (introMiddle <= menuBottom) {
+      if (introMiddle <= menuBottom - 50) {
         // Hide menu links
         if (isMenuVisible) {
           menuLinks.classList.remove("expanded");
@@ -566,6 +584,9 @@ axios
     return () => window.removeEventListener("scroll", handleScroll);
   }, [userToggledMenu, isMenuVisible]);
 
+  /**
+   * Manual toggle for the top menu
+   */
   const toggleMenu = () => {
     setUserToggledMenu(true);
     if (!menuLinksWrapperRef.current || !menuIconRef.current) return;
@@ -584,49 +605,17 @@ axios
     }, 300);
   };
 
-useEffect(() => {
-  // Once we fetch both:
-  //    records (the entire archive, or the subset?)
-  //    and artists (the entire artists table)
-  // we can do a quick check
-  const artistSet = new Set(artists.map((a) => a.artist_name));
-
-  records.forEach((rec) => {
-    const artistOriginal = rec.artist_original;
-    if (artistOriginal && !artistSet.has(artistOriginal.trim())) {
-      console.warn(
-        `Record ID=${rec.id} uses artist_original="${artistOriginal}" 
-         which doesn't match any "artist_name" in the artists table!`
-      );
-    }
-  });
-}, [records, artists]);
-
-
-useEffect(() => {
-  records.forEach((rec) => {
-    // If `artist_original` has commas, we assume multiple artists:
-    if (rec.artist_original?.includes(",")) {
-      console.log(
-        "%c MULTI-ARTIST RECORD DETECTED! " + 
-          `Record ID=${rec.id} => ${rec.artist_original}`,
-        "color: #FFFFFF; font-size: 14px; background-color: #FF33CC; padding: 2px 4px;"
-      );
-    }
-  });
-}, [records]);
-
   return (
     <>
       {/* Landing Page */}
       <div className="ara-landing-page" id="ara-landing-page" ref={landingRef}>
-<img
-  src="/ara_logo_1.svg"  
-  alt="ARA logo"
-  id="logo"
-  ref={logoRef}
-  onClick={smoothScrollToMain}
-/>
+        <img
+          src="/ara_logo_1.svg"
+          alt="ARA logo"
+          id="logo"
+          ref={logoRef}
+          onClick={smoothScrollToMain}
+        />
       </div>
 
       {/* Main Container */}
@@ -690,7 +679,7 @@ useEffect(() => {
               value={searchString}
               onChange={(e) => setSearchString(e.target.value)}
             />
-            {/* CLEAR SEARCH BUTTON IF WE HAVE TEXT */}
+            {/* Clear button */}
             {searchString && (
               <button
                 className="clear-search-button"
@@ -704,16 +693,17 @@ useEffect(() => {
           {/* FILTERS SECTION */}
           <div className="ara-filters-section">
             <div className="ara-filters-header">
-              {/* Toggle open/closed on click */}
-<div 
-  className="ara-filters-title" 
-  id="filters"  // Add this id
-  onClick={() => setIsFilterOpen((prev) => !prev)}
-  style={{ cursor: "pointer", userSelect: "none" }}
->
-  Filters{" "}
-  <span className={`filter-arrow ${isFilterOpen ? "open" : ""}`}>▲</span>
-</div>
+              <div
+                className="ara-filters-title"
+                id="filters"
+                onClick={() => setIsFilterOpen((prev) => !prev)}
+                style={{ cursor: "pointer", userSelect: "none" }}
+              >
+                Filters{" "}
+                <span className={`filter-arrow ${isFilterOpen ? "open" : ""}`}>
+                  ▲
+                </span>
+              </div>
               <div className="ara-filters-language-switcher">
                 <span
                   onClick={() => changeLanguage("EN")}
@@ -733,7 +723,6 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* Conditionally render the filter menu */}
             <div
               className={`ara-filter-menu-wrapper ${
                 isFilterOpen ? "expanded" : ""
@@ -748,8 +737,11 @@ useEffect(() => {
                 artists={artists}
                 labels={labels}
                 labelIdToNameMap={labelIdToNameMap}
-                filters={filters}
-                setFilter={setFilter}
+                // Pass our two sets of filters:
+                includedFilters={includedFilters}
+                setIncludedFilters={setIncludedFilters}
+                excludedFilters={excludedFilters}
+                setExcludedFilters={setExcludedFilters}
                 availableFilters={availableFilters}
                 resultCounts={resultCounts}
                 language={language}

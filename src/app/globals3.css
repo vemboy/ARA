@@ -186,6 +186,7 @@ strong {
 }
 
 /* ============================== MENU STYLES ============================== */
+/* ============================== MENU STYLES ============================== */
 .ara-menu {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -197,11 +198,12 @@ strong {
   z-index: 10;
   padding-top: 10px;
   padding-bottom: 10px;
+  /* OPTIONAL: Helps avoid jitter by telling browser to optimize 'top' changes */
+  will-change: top; 
 }
 
 .ara-menu-title {
   grid-column: 1 / span 2;
-  grid-row: 1;
   font-family: 'FitVariable';
   font-size: var(--menu-title-font-size);
   font-weight: bold;
@@ -218,15 +220,38 @@ strong {
   align-items: center;
   margin-top: 10px;
   overflow: hidden;
-  transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
   max-height: 0;
   opacity: 0;
+
+  /* Smoother transitions + will-change to reduce layout thrash */
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  will-change: max-height, opacity;
 }
 
 .ara-menu-links-wrapper.expanded {
   max-height: 100px;
   opacity: 1;
 }
+
+/* Mark “excluded” with strikethrough */
+.filter-item.excluded {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* Maybe highlight the circle border in red or something for excluded */
+.filter-item.excluded .ara-filter-icon-circle {
+  border-color: red;
+}
+
+.filter-item {
+  /* Whatever you have already */
+  user-select: none;             /* Standard */
+  -webkit-user-select: none;     /* For older WebKit */
+  -moz-user-select: none;        /* For older Firefox */
+  -ms-user-select: none;         /* For older IE/Edge */
+}
+
 
 .ara-menu-links-wrapper a {
   font-family: 'AdelleSansARM-Semibold', Arial, sans-serif;
@@ -505,6 +530,14 @@ strong {
 
   /* Animate any property changes over 0.3s */
   transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.ara-record-info__translation {
+  font-family: 'AdelleSansARM', Arial, sans-serif;
+  font-style: italic;
+  font-size: 16px;
+  color: #555;
+  text-align: start;
 }
 
 .ara-filter-menu-wrapper.expanded {
@@ -1464,7 +1497,7 @@ body {
 
 .ara-record-meta-section__metadata-row {
   display: grid;
-  grid-template-columns: 250px 1fr 1fr;
+  grid-template-columns: 250px 1fr 1fr 1fr 1fr;
   grid-gap: 10px;
   border-top: 1px solid lightgray;
 }
@@ -1478,7 +1511,12 @@ body {
   border-right: 1px solid #ddd;
 }
 
-.ara-record-meta-section__side-a-data {
+.ara-record-meta-section__side-a-data,
+.ara-record-meta-section__side-a-data-armenian {
+  border-right: 1px solid #ddd;
+}
+
+.ara-record-meta-section__side-b-data {
   border-right: 1px solid #ddd;
 }
 

@@ -38,6 +38,7 @@ function RecordListView(props: any) {
   }, []);
 
   console.log("RECORDS:", props.records);
+
   return (
     <div id="ara-grid-wrapper" className="ara-grid-wrapper">
       {props.records.map((record: any) => (
@@ -62,9 +63,7 @@ function RecordListView(props: any) {
           author={(record.author || "Unknown author").substring(0, 20)}
           src={
             record.image
-              ? // ? `https://ara.directus.app/assets/${record.image}`
-                // : getDefaultImageThumbnailUrl()
-                getImageDetailUrl(record.image)
+              ? getImageDetailUrl(record.image)
               : getDefaultImageThumbnailUrl()
           }
           imageUrl={record.image}
