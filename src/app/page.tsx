@@ -60,6 +60,7 @@ const smoothScrollToMain = () => {
  */
 export default function Collection() {
   const searchParams = useSearchParams();
+  
 
   // Access audio context (if you have a global player)
   const audioContext = React.useContext(AudioContext);

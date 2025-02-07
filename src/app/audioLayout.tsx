@@ -52,7 +52,9 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
   };
 
   // Whether we have a valid track loaded
-  const hasSong = Boolean(currentSong && currentSong.length > 0 && currentName && currentName.length > 0)
+  const hasSong =
+    Boolean(currentSong && currentSong.length > 0 && currentName && currentName.length > 0);
+
   // Listen for the <audio> "play"/"pause" events
   useEffect(() => {
     const player = audioPlayerRef.current?.audio?.current;
@@ -94,6 +96,25 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
       player.removeEventListener("loadedmetadata", timeUpdateHandler);
     };
   }, [currentSong]);
+
+  // -------------------------------------------------
+  // NEW: Handle pressing "Space" to toggle play/pause
+  // -------------------------------------------------
+  useEffect(() => {
+    const handleSpacebar = (e: KeyboardEvent) => {
+      // Only toggle if a track is loaded
+      if (e.code === "Space" && hasSong) {
+        e.preventDefault(); // Prevent page from scrolling
+        handleTogglePlay();
+      }
+    };
+
+    window.addEventListener("keydown", handleSpacebar);
+    return () => {
+      window.removeEventListener("keydown", handleSpacebar);
+    };
+  }, [hasSong]);
+  // -------------------------------------------------
 
   // Format mm:ss
   function formatTime(time: number): string {
@@ -153,33 +174,23 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
         <body className={inter.className}>
           {children}
 
-          {/* 
-            We always display the bottom bar, even if no track 
-            => default record image, bar, times 
-          */}
           {hasSong && (
-          <div className="ara-record-player-wrapper">
-            {/* 
-              Left side: 
-              - Always show the record image 
-              - If a song is loaded, also show title + artist + icon
-            */}
-            <div className="ara-record-player-info" style={{ display: "flex", alignItems: "center" }}>
-              {/* The album image, always */}
-              <div className="ara-record-player-image">
-                <img
-                  src={
-                    hasSong
-                      ? currentAlbumArt || "https://via.placeholder.com/50"
-                      : "/ARA_armenaphone_05.jpg"
-                  }
-                  alt="Image"
-                  className="ara-record-player-thumbnail-img"
-                />
-              </div>
-
-              {/* If there's a song, show the name + artist + icon */}
-              {hasSong && (
+            <div className="ara-record-player-wrapper">
+              <div
+                className="ara-record-player-info"
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <div className="ara-record-player-image">
+                  <img
+                    src={
+                      hasSong
+                        ? currentAlbumArt || "https://via.placeholder.com/50"
+                        : "/ARA_armenaphone_05.jpg"
+                    }
+                    alt="Image"
+                    className="ara-record-player-thumbnail-img"
+                  />
+                </div>
                 <div
                   className="ara-record-player-song-info"
                   style={{ display: "flex", alignItems: "center", marginLeft: "1rem" }}
@@ -204,47 +215,41 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
                     {playPauseIcon}
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
 
-            {/* Right side: progress bar + time */}
-            <div className="ara-record-player-audio-section">
-              <div
-                className="ara-record-player-progress-bar"
-                onClick={handleProgressClick}
-                style={{
-                  position: "relative",
-                  cursor: hasSong ? "pointer" : "default",
-                  height: "7px", // Thicker black bar
-                }}
-              >
+              <div className="ara-record-player-audio-section">
                 <div
+                  className="ara-record-player-progress-bar"
+                  onClick={handleProgressClick}
                   style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    width: progressPercent,
-                    backgroundColor: "black",
-                    borderRadius: "2px",
-                    transition: "width 0.1s linear", // optional smooth fill
+                    position: "relative",
+                    cursor: hasSong ? "pointer" : "default",
+                    height: "7px",
                   }}
-                />
-              </div>
-
-              <div className="ara-record-player-time">
-                {displayCurrentTime} | {displayDuration}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      width: progressPercent,
+                      backgroundColor: "black",
+                      borderRadius: "2px",
+                      transition: "width 0.1s linear",
+                    }}
+                  />
+                </div>
+                <div className="ara-record-player-time">
+                  {displayCurrentTime} | {displayDuration}
+                </div>
               </div>
             </div>
-            </div>)}
+          )}
 
           {/* Hidden react-h5-audio-player */}
           <div style={{ display: "none" }}>
-            <AudioPlayer
-              ref={audioPlayerRef}
-              src={currentSong}
-              autoPlay={false}
-            />
+            <AudioPlayer ref={audioPlayerRef} src={currentSong} autoPlay={false} />
           </div>
         </body>
       </AudioContext.Provider>
