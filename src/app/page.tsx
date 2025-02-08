@@ -8,6 +8,10 @@ import Link from "next/link";
 import _ from "lodash";
 import Fuse from "fuse.js";
 import { AudioContext } from "./audioLayout";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+
+
 
 // Import your new filter menu
 import FilterMenu from "./filter-menu";
@@ -20,6 +24,7 @@ interface ArtistType {
   id: string;
   artist_name: string;
   artist_name_armenian?: string | null;
+  artist_name_alternate_spelling?: string[];
 }
 
 /**
@@ -59,8 +64,12 @@ const smoothScrollToMain = () => {
  * Main collection component
  */
 export default function Collection() {
+  const router = useRouter();
+
   const searchParams = useSearchParams();
-  
+  const pathname = usePathname(); // e.g. "/"
+
+  const [missingArtistsText, setMissingArtistsText] = useState("");
 
   // Access audio context (if you have a global player)
   const audioContext = React.useContext(AudioContext);
@@ -134,6 +143,52 @@ export default function Collection() {
     setLanguage(lang);
   };
 
+    useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // 1) Force manual scroll restoration so the browser doesn't do it automatically
+    window.history.scrollRestoration = "manual";
+
+    // 2) Attempt to restore scroll position right away (e.g. if user is returning via Back)
+    restoreScrollPosition();
+
+    // 3) Save scroll whenever the page is being hidden/unloaded (including route changes).
+    function handlePageHide() {
+      saveScrollPosition();
+    }
+
+    // 4) If user revisits the page from the BFCache (back-forward cache),
+    //    pageshow can also be fired. So we restore again.
+function handlePageShow(event: Event & { persisted: boolean }) {
+  if (event.persisted) {
+    restoreScrollPosition();
+  }
+}
+
+    window.addEventListener("pagehide", handlePageHide);
+    window.addEventListener("pageshow", handlePageShow);
+
+    return () => {
+      // Always save the scroll one last time on unmount
+      saveScrollPosition();
+      window.removeEventListener("pagehide", handlePageHide);
+      window.removeEventListener("pageshow", handlePageShow);
+    };
+  }, [pathname]);
+
+  function saveScrollPosition() {
+    sessionStorage.setItem(`scrollPos:${pathname}`, String(window.scrollY));
+  }
+
+  function restoreScrollPosition() {
+    const savedY = sessionStorage.getItem(`scrollPos:${pathname}`);
+    if (savedY !== null) {
+      requestAnimationFrame(() => {
+        window.scrollTo(0, parseInt(savedY, 10));
+      });
+    }
+  }
+
   /**
    * On mount, fetch all initial data: labels, genres, instruments, artists, plus all records.
    */
@@ -157,65 +212,105 @@ export default function Collection() {
       });
 
     // 2) Fetch genres field options
-    axios
-      .get("https://ara.directus.app/fields/record_archive/genres")
-      .then((response) => {
-        const fieldData = response.data.data;
-        const interfaceOptions = fieldData.meta.options;
-        let allGenres: string[] = [];
 
-        if (Array.isArray(interfaceOptions.presets)) {
-          allGenres = interfaceOptions.presets;
-        }
-        setGenres(allGenres);
-      })
-      .catch((error) => {
-        console.error("Error fetching genres field options:", error);
-        // fallback
-        setGenres([
-          "religious",
-          "folk",
-          "instrumental",
-          "vocal",
-          "dance",
-          "patriotic",
-          "national",
-          "opera",
-          "kef",
-          "children",
-          "lullaby",
-          "choral",
-          "symphony",
-          "chamber",
-          "prayer",
-          "taqsim",
-        ]);
-      });
+    axios
+  .get("https://ara.directus.app/items/record_archive?limit=-1&fields=genres")
+  .then((response) => {
+    const uniqueGenres: Set<string> = new Set();
+    response.data.data.forEach((item: any) => {
+      if (Array.isArray(item.genres)) {
+        item.genres.forEach((genre: string) => {
+          uniqueGenres.add(genre);
+        });
+      }
+    });
+    setGenres(Array.from(uniqueGenres));
+  })
+  .catch((error) => {
+    console.error("Error fetching genres from DB:", error);
+    setGenres([]);
+  });
+
+    // axios
+    //   .get("https://ara.directus.app/fields/record_archive/genres")
+    //   .then((response) => {
+    //     const fieldData = response.data.data;
+    //     const interfaceOptions = fieldData.meta.options;
+    //     let allGenres: string[] = [];
+
+    //     if (Array.isArray(interfaceOptions.presets)) {
+    //       allGenres = interfaceOptions.presets;
+    //     }
+    //     setGenres(allGenres);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching genres field options:", error);
+    //     // fallback
+    //     setGenres([
+    //       "religious",
+    //       "folk",
+    //       "instrumental",
+    //       "vocal",
+    //       "dance",
+    //       "patriotic",
+    //       "national",
+    //       "opera",
+    //       "kef",
+    //       "children",
+    //       "lullaby",
+    //       "choral",
+    //       "symphony",
+    //       "chamber",
+    //       "prayer",
+    //       "taqsim",
+    //     ]);
+    //   });
 
     // 3) Fetch regions field options
-    axios
-      .get("https://ara.directus.app/fields/record_archive/regions")
-      .then((response) => {
-        const fieldData = response.data.data;
-        const interfaceOptions = fieldData.meta.options;
-        let allRegions: string[] = [];
 
-        if (Array.isArray(interfaceOptions.presets)) {
-          allRegions = interfaceOptions.presets;
-        }
-        setRegions(allRegions);
-      })
-      .catch((error) => {
-        console.error("Error fetching regions field options:", error);
-        // fallback
-        setRegions([
-          "Europe",
-          "North America",
-          "South America",
-          "Soviet Union",
-          "Middle East",
-        ]);
-      });
+    // NEW code for “regions”:
+axios
+  .get("https://ara.directus.app/items/record_archive?limit=-1&fields=regions")
+  .then((response) => {
+    const uniqueRegions: Set<string> = new Set();
+    response.data.data.forEach((item: any) => {
+      if (Array.isArray(item.regions)) {
+        item.regions.forEach((region: string) => {
+          uniqueRegions.add(region);
+        });
+      }
+    });
+    setRegions(Array.from(uniqueRegions));
+  })
+  .catch((error) => {
+    console.error("Error fetching regions from DB:", error);
+    setRegions([]);
+  });
+
+
+    // axios
+    //   .get("https://ara.directus.app/fields/record_archive/regions")
+    //   .then((response) => {
+    //     const fieldData = response.data.data;
+    //     const interfaceOptions = fieldData.meta.options;
+    //     let allRegions: string[] = [];
+
+    //     if (Array.isArray(interfaceOptions.presets)) {
+    //       allRegions = interfaceOptions.presets;
+    //     }
+    //     setRegions(allRegions);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching regions field options:", error);
+    //     // fallback
+    //     setRegions([
+    //       "Europe",
+    //       "North America",
+    //       "South America",
+    //       "Soviet Union",
+    //       "Middle East",
+    //     ]);
+    //   });
 
     // 4) Fetch instruments from the record_archive (collect unique)
     axios
@@ -238,7 +333,7 @@ export default function Collection() {
 
     // 5) Fetch artists from Directus
     axios
-      .get("https://ara.directus.app/items/artists?limit=-1&fields=id,artist_name,artist_name_armenian")
+      .get("https://ara.directus.app/items/artists?limit=-1&fields=id,artist_name,artist_name_armenian,artist_name_alternate_spelling")
       .then((response) => {
         const data = response.data.data || [];
         setArtists(data);
@@ -263,19 +358,52 @@ export default function Collection() {
   /**
    * Optionally auto-scroll after mount
    */
-  useEffect(() => {
-    const initialDelay = setTimeout(() => {
-      if (window.scrollY === 0) {
-        const timer = setTimeout(() => {
-          if (window.scrollY === 0) {
-            smoothScrollToMain();
-          }
-        }, 1500);
-        return () => clearTimeout(timer);
-      }
-    }, 100);
-    return () => clearTimeout(initialDelay);
-  }, []);
+useEffect(() => {
+  // Check if this is a "fresh" load or a "back_forward" load
+  const navEntries = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
+  if (navEntries.length > 0) {
+    const navType = navEntries[0].type;
+    // Only scroll to #ara-main if it's a new navigation or reload
+    if (navType === "navigate" || navType === "reload") {
+      const timer = setTimeout(() => {
+        if (window.scrollY === 0) {
+          smoothScrollToMain();
+        }
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }
+}, []);
+
+useEffect(() => {
+  if (!artists.length || !allRecords.length) return;
+
+  // 1) Check if we already merged them by seeing if any record has "artist_alternate_spellings"
+  //    If yes, do nothing (avoid re-merging)
+  const alreadyMerged = allRecords.some(
+    (r) => r.artist_alternate_spellings !== undefined
+  );
+  if (alreadyMerged) return;
+
+  // 2) Merge them only once
+  const mergedRecords = allRecords.map((rec) => {
+    const foundArtist = artists.find((artist) => {
+      const aName = artist.artist_name?.trim().toLowerCase() ?? "";
+      const aNameArm = artist.artist_name_armenian?.trim().toLowerCase() ?? "";
+      const rName = rec.artist_original?.trim().toLowerCase() ?? "";
+      return rName === aName || rName === aNameArm;
+    });
+
+    return {
+      ...rec,
+      artist_alternate_spellings: foundArtist?.artist_name_alternate_spelling ?? [],
+    };
+  });
+
+  setAllRecords(mergedRecords);
+}, [artists, allRecords]);
+
+
 
   /**
    * The main effect that filters allRecords to produce "records" 
@@ -322,6 +450,7 @@ export default function Collection() {
           "regions",
           "comment",
           "song_lyrics",
+          "artist_alternate_spellings"
         ],
       };
       const fuse = new Fuse(allRecords, fuseOptions);
@@ -342,20 +471,28 @@ export default function Collection() {
 
     // 3) Filter by "searchArtist" substring
     let postArtist: any[];
-    if (!searchArtist) {
-      postArtist = postYear;
-    } else {
-      postArtist = postYear.filter((rec) => {
-        const fieldsToCheck = [
-          rec.artist_english,
-          rec.artist_armenian,
-          rec.artist_original,
-        ];
-        return fieldsToCheck.some((field) =>
-          field?.toLowerCase().includes(searchArtist.toLowerCase())
-        );
-      });
-    }
+if (!searchArtist) {
+  postArtist = postYear;
+} else {
+  postArtist = postYear.filter((rec) => {
+    // rec.artist_alternate_spellings might be an array
+    const altSpellings = Array.isArray(rec.artist_alternate_spellings)
+      ? rec.artist_alternate_spellings
+      : [];
+
+    const fieldsToCheck = [
+      rec.artist_english,
+      rec.artist_armenian,
+      rec.artist_original,
+      // flatten altSpellings into strings
+      ...altSpellings,
+    ];
+
+    return fieldsToCheck.some((field) =>
+      field?.toLowerCase().includes(searchArtist.toLowerCase())
+    );
+  });
+}
 
     // 4) Apply included filters (i.e. must contain all in includedFilters)
     let postFilters = [...postArtist];
@@ -545,42 +682,33 @@ export default function Collection() {
    * Hide/show the top menu on scroll (if user hasn't toggled it).
    */
   useEffect(() => {
-    const handleScroll = () => {
-      if (userToggledMenu) return;
-      if (
-        !introRef.current ||
-        !menuRef.current ||
-        !menuLinksWrapperRef.current ||
-        !menuIconRef.current
-      )
-        return;
+const handleScroll = () => {
+  if (userToggledMenu) return;
+  if (!introRef.current) return;
 
-      const introWrapper = introRef.current;
-      const menu = menuRef.current;
-      const menuLinks = menuLinksWrapperRef.current;
-      const menuIcon = menuIconRef.current;
+  const menuLinks = menuLinksWrapperRef.current;
+  const menuIcon = menuIconRef.current;
+  if (!menuLinks || !menuIcon) return;
 
-      const introRect = introWrapper.getBoundingClientRect();
-      const menuRect = menu.getBoundingClientRect();
-      const introMiddle = (introRect.top + introRect.bottom) / 2;
-      const menuBottom = menuRect.bottom;
+  // Suppose we measure just the intro to decide:
+  const introRect = introRef.current.getBoundingClientRect();
 
-      if (introMiddle <= menuBottom - 50) {
-        // Hide menu links
-        if (isMenuVisible) {
-          menuLinks.classList.remove("expanded");
-          menuIcon.classList.remove("clicked");
-          setIsMenuVisible(false);
-        }
-      } else {
-        // Show menu links
-        if (!isMenuVisible) {
-          menuLinks.classList.add("expanded");
-          menuIcon.classList.add("clicked");
-          setIsMenuVisible(true);
-        }
-      }
-    };
+  // Example: hide if we scrolled past the intro
+  if (introRect.bottom <= 0) {
+    if (isMenuVisible) {
+      menuLinks.classList.remove("expanded");
+      menuIcon.classList.remove("clicked");
+      setIsMenuVisible(false);
+    }
+  } else {
+    if (!isMenuVisible) {
+      menuLinks.classList.add("expanded");
+      menuIcon.classList.add("clicked");
+      setIsMenuVisible(true);
+    }
+  }
+};
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [userToggledMenu, isMenuVisible]);
@@ -605,6 +733,57 @@ export default function Collection() {
       setUserToggledMenu(false);
     }, 300);
   };
+
+  useEffect(() => {
+    // Only run once allRecords & artists have loaded
+    if (!allRecords.length || !artists.length) return;
+
+    // Build a set of known names in lowercase (both artist_name & artist_name_armenian).
+    const knownLower = new Set<string>();
+    artists.forEach((artist) => {
+      if (artist.artist_name) {
+        knownLower.add(artist.artist_name.trim().toLowerCase());
+      }
+      if (artist.artist_name_armenian) {
+        knownLower.add(artist.artist_name_armenian.trim().toLowerCase());
+      }
+    });
+
+    // For collecting each missing artist => set of ARAIDs
+    const missingArtistsMap: { [artistName: string]: Set<string> } = {};
+
+    allRecords.forEach((rec) => {
+      const orig = rec.artist_original?.trim();
+      if (!orig) return;
+
+      const origLower = orig.toLowerCase();
+      if (!knownLower.has(origLower)) {
+        // This artist is missing from our known list
+        if (!missingArtistsMap[orig]) {
+          missingArtistsMap[orig] = new Set();
+        }
+        // Add the record's ARAID
+        if (rec.ARAID) {
+          missingArtistsMap[orig].add(rec.ARAID);
+        }
+      }
+    });
+
+    // If we found none missing, say so
+    if (Object.keys(missingArtistsMap).length === 0) {
+      setMissingArtistsText("No missing artists! Everything matches.\n");
+      return;
+    }
+
+    // Otherwise, build lines of text: 
+    // "ArtistName => ARAID1, ARAID2, ..."
+    let lines = ["Missing Artists:\n"];
+    for (const [artistName, araIds] of Object.entries(missingArtistsMap)) {
+      lines.push(`${artistName} => ${Array.from(araIds).join(", ")}`);
+    }
+
+    setMissingArtistsText(lines.join("\n"));
+  }, [allRecords, artists]);
 
   return (
     <>
@@ -762,6 +941,32 @@ export default function Collection() {
           />
         </div>
       </div>
+      {missingArtistsText && (
+        <DownloadMissingArtists text={missingArtistsText} />
+      )}
     </>
+  );
+}
+
+function DownloadMissingArtists({ text }: { text: string }) {
+  // Create a blob from the text
+  const blob = new Blob([text], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+
+  return (
+    <div style={{ margin: "20px 0" }}>
+      <a
+        href={url}
+        download="missing-artists.txt"
+        style={{
+          padding: "8px 12px",
+          backgroundColor: "red",
+          color: "white",
+          textDecoration: "none",
+        }}
+      >
+        Download Missing Artists
+      </a>
+    </div>
   );
 }

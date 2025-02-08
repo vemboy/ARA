@@ -54,6 +54,10 @@ const getEnglishVersion = (text: string) => {
 const CollectionDetail: React.FC = () => {
   const router = useRouter();
 
+  const handleBack = () => {
+    router.back();
+  };
+
   const handlePillClick = (filterType: string, value: string) => {
     // Create an encoded filter object that our main page can understand
     const filterParam = encodeURIComponent(
@@ -245,9 +249,22 @@ const CollectionDetail: React.FC = () => {
       sideB: sideB?.ARAID ?? "Unknown ARA ID",
     },
     {
-      title: "Title",
-      sideA: sideA?.title ?? "Unknown title",
-      sideB: sideB?.title ?? "Unknown title",
+      title: "Title (English)",
+      sideA: isArmenianScript(sideA?.title || "")
+        ? (sideA?.title_english || "")
+        : (sideA?.title || ""),
+      sideB: isArmenianScript(sideB?.title || "")
+        ? (sideB?.title_english || "")
+        : (sideB?.title || ""),
+    },
+    {
+      title: "Title (Armenian)",
+      sideA: isArmenianScript(sideA?.title || "")
+        ? (sideA?.title || "")
+        : (sideA?.title_armenian || ""),
+      sideB: isArmenianScript(sideB?.title || "")
+        ? (sideB?.title || "")
+        : (sideB?.title_armenian || ""),
     },
     {
       title: "Names",
@@ -453,14 +470,18 @@ const CollectionDetail: React.FC = () => {
                     </div>
                     <div className="ara-record-info__song-title-container">
                       <div className="ara-record-info__song-title">
-                        {isArmenianScript(sideA.title || "")
-                          ? sideA.title
-                          : sideA.title_armenian || "No Armenian title"}
+                        {
+                          isArmenianScript(sideA.title || "")
+                            ? (sideA.title ?? "")
+                            : (sideA.title_armenian ?? "")
+                        }
                       </div>
                       <div className="ara-record-info__transliteration">
-                        {isArmenianScript(sideA.title || "")
-                          ? sideA.title_english || "No English transliteration"
-                          : sideA.title}
+                        {
+                          isArmenianScript(sideA.title || "")
+                            ? (sideA.title_english ?? "") 
+                            : (sideA.title ?? "")
+                        }
                       </div>
                     </div>
                     <div className="ara-record-info__song-length">

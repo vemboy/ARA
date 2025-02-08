@@ -37,7 +37,6 @@ function RecordListView(props: any) {
     fetchZoomAmount();
   }, []);
 
-  console.log("RECORDS:", props.records);
 
   return (
     <div id="ara-grid-wrapper" className="ara-grid-wrapper">

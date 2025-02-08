@@ -164,6 +164,14 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
    * We'll apply the correct classes for "active" (included) or "excluded".
    * We'll also handle "disabled" if not in availableFilters set.
    */
+
+  const hasActiveIncluded = Object.values(includedFilters).some(
+  (set) => set.size > 0
+);
+const hasActiveExcluded = Object.values(excludedFilters).some(
+  (set) => set.size > 0
+);
+
   const renderFilterItems = (items: string[], filterType: string) => {
     return items.map((item) => {
       const filterKey =
@@ -316,30 +324,31 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
       </div>
 
       {/* Show selected filters + "Clear All" link if anything is set */}
-      {(
-        Object.keys(includedFilters).length > 0 ||
-        Object.keys(excludedFilters).length > 0
-      ) && (
+      {(hasActiveIncluded || hasActiveExcluded) && (
         <div style={{ marginTop: "10px" }}>
           {/* Included pills */}
           <div className="selected-filters-container">
             {Object.entries(includedFilters).flatMap(([fType, items]) =>
               Array.from(items).map((item) => (
-                <span className="filter-item active" key={`inc-${fType}-${item}`}>
+                <span
+                  className="filter-item active"
+                  key={`inc-${fType}-${item}`}
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent default link/text selection
+                    setIncludedFilters((prev) => {
+                      const copy = structuredClone(prev);
+                      copy[fType]?.delete(item);
+                      // If that set is now empty, remove the key completely (optional):
+                      if (copy[fType] && copy[fType].size === 0) {
+                        delete copy[fType];
+                      }
+                      return copy;
+                    });
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
                   {getLocalizedName(item)}
-                  <button
-                    onClick={(e: React.MouseEvent) => {
-                      e.preventDefault();
-                      // remove from included
-                      setIncludedFilters((prev) => {
-                        const copy = structuredClone(prev);
-                        copy[fType]?.delete(item);
-                        return copy;
-                      });
-                    }}
-                  >
-                    ×
-                  </button>
+                  <span style={{ marginLeft: "0.3rem" }}>×</span>
                 </span>
               ))
             )}
