@@ -735,55 +735,59 @@ const handleScroll = () => {
   };
 
   useEffect(() => {
-    // Only run once allRecords & artists have loaded
-    if (!allRecords.length || !artists.length) return;
+  if (!allRecords.length || !artists.length) return;
 
-    // Build a set of known names in lowercase (both artist_name & artist_name_armenian).
-    const knownLower = new Set<string>();
-    artists.forEach((artist) => {
-      if (artist.artist_name) {
-        knownLower.add(artist.artist_name.trim().toLowerCase());
-      }
-      if (artist.artist_name_armenian) {
-        knownLower.add(artist.artist_name_armenian.trim().toLowerCase());
-      }
-    });
-
-    // For collecting each missing artist => set of ARAIDs
-    const missingArtistsMap: { [artistName: string]: Set<string> } = {};
-
-    allRecords.forEach((rec) => {
-      const orig = rec.artist_original?.trim();
-      if (!orig) return;
-
-      const origLower = orig.toLowerCase();
-      if (!knownLower.has(origLower)) {
-        // This artist is missing from our known list
-        if (!missingArtistsMap[orig]) {
-          missingArtistsMap[orig] = new Set();
-        }
-        // Add the record's ARAID
-        if (rec.ARAID) {
-          missingArtistsMap[orig].add(rec.ARAID);
-        }
-      }
-    });
-
-    // If we found none missing, say so
-    if (Object.keys(missingArtistsMap).length === 0) {
-      setMissingArtistsText("No missing artists! Everything matches.\n");
-      return;
+  // Build a set of known names in lowercase:
+  // 1) artist_name
+  // 2) artist_name_armenian
+  // 3) artist_name_alternate_spelling
+  const knownLower = new Set<string>();
+  artists.forEach((artist) => {
+    if (artist.artist_name) {
+      knownLower.add(artist.artist_name.trim().toLowerCase());
     }
-
-    // Otherwise, build lines of text: 
-    // "ArtistName => ARAID1, ARAID2, ..."
-    let lines = ["Missing Artists:\n"];
-    for (const [artistName, araIds] of Object.entries(missingArtistsMap)) {
-      lines.push(`${artistName} => ${Array.from(araIds).join(", ")}`);
+    if (artist.artist_name_armenian) {
+      knownLower.add(artist.artist_name_armenian.trim().toLowerCase());
     }
+    if (
+      artist.artist_name_alternate_spelling &&
+      artist.artist_name_alternate_spelling.length
+    ) {
+      artist.artist_name_alternate_spelling.forEach((alt) => {
+        knownLower.add(alt.trim().toLowerCase());
+      });
+    }
+  });
 
-    setMissingArtistsText(lines.join("\n"));
-  }, [allRecords, artists]);
+  // Build a map from "missing artist" => set of ARAIDs
+  const missingArtistsMap: { [artistName: string]: Set<string> } = {};
+
+  allRecords.forEach((rec) => {
+    const orig = rec.artist_original?.trim();
+    if (!orig) return;
+    const origLower = orig.toLowerCase();
+
+    if (!knownLower.has(origLower)) {
+      if (!missingArtistsMap[orig]) {
+        missingArtistsMap[orig] = new Set();
+      }
+      if (rec.ARAID) {
+        missingArtistsMap[orig].add(rec.ARAID);
+      }
+    }
+  });
+
+  if (Object.keys(missingArtistsMap).length === 0) {
+    setMissingArtistsText("No missing artists!\n");
+    return;
+  }
+
+  let lines = ["Missing Artists:\n"];
+  for (const [artistName, araIds] of Object.entries(missingArtistsMap)) {
+    lines.push(`${artistName} => ${Array.from(araIds).join(", ")}`);
+  }
+  setMissingArtistsText(lines.join("\n"));
+}, [allRecords, artists]);
 
   return (
     <>
