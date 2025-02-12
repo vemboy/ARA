@@ -1,4 +1,3 @@
-// page.tsx
 "use client";
 
 import { useSearchParams } from "next/navigation";
@@ -10,8 +9,6 @@ import Fuse from "fuse.js";
 import { AudioContext } from "./audioLayout";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-
-
 
 // Import your new filter menu
 import FilterMenu from "./filter-menu";
@@ -143,7 +140,7 @@ export default function Collection() {
     setLanguage(lang);
   };
 
-    useEffect(() => {
+  useEffect(() => {
     if (typeof window === "undefined") return;
 
     // 1) Force manual scroll restoration so the browser doesn't do it automatically
@@ -159,11 +156,11 @@ export default function Collection() {
 
     // 4) If user revisits the page from the BFCache (back-forward cache),
     //    pageshow can also be fired. So we restore again.
-function handlePageShow(event: Event & { persisted: boolean }) {
-  if (event.persisted) {
-    restoreScrollPosition();
-  }
-}
+    function handlePageShow(event: Event & { persisted: boolean }) {
+      if (event.persisted) {
+        restoreScrollPosition();
+      }
+    }
 
     window.addEventListener("pagehide", handlePageHide);
     window.addEventListener("pageshow", handlePageShow);
@@ -212,105 +209,42 @@ function handlePageShow(event: Event & { persisted: boolean }) {
       });
 
     // 2) Fetch genres field options
-
     axios
-  .get("https://ara.directus.app/items/record_archive?limit=-1&fields=genres")
-  .then((response) => {
-    const uniqueGenres: Set<string> = new Set();
-    response.data.data.forEach((item: any) => {
-      if (Array.isArray(item.genres)) {
-        item.genres.forEach((genre: string) => {
-          uniqueGenres.add(genre);
+      .get("https://ara.directus.app/items/record_archive?limit=-1&fields=genres")
+      .then((response) => {
+        const uniqueGenres: Set<string> = new Set();
+        response.data.data.forEach((item: any) => {
+          if (Array.isArray(item.genres)) {
+            item.genres.forEach((genre: string) => {
+              uniqueGenres.add(genre);
+            });
+          }
         });
-      }
-    });
-    setGenres(Array.from(uniqueGenres));
-  })
-  .catch((error) => {
-    console.error("Error fetching genres from DB:", error);
-    setGenres([]);
-  });
-
-    // axios
-    //   .get("https://ara.directus.app/fields/record_archive/genres")
-    //   .then((response) => {
-    //     const fieldData = response.data.data;
-    //     const interfaceOptions = fieldData.meta.options;
-    //     let allGenres: string[] = [];
-
-    //     if (Array.isArray(interfaceOptions.presets)) {
-    //       allGenres = interfaceOptions.presets;
-    //     }
-    //     setGenres(allGenres);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching genres field options:", error);
-    //     // fallback
-    //     setGenres([
-    //       "religious",
-    //       "folk",
-    //       "instrumental",
-    //       "vocal",
-    //       "dance",
-    //       "patriotic",
-    //       "national",
-    //       "opera",
-    //       "kef",
-    //       "children",
-    //       "lullaby",
-    //       "choral",
-    //       "symphony",
-    //       "chamber",
-    //       "prayer",
-    //       "taqsim",
-    //     ]);
-    //   });
+        setGenres(Array.from(uniqueGenres));
+      })
+      .catch((error) => {
+        console.error("Error fetching genres from DB:", error);
+        setGenres([]);
+      });
 
     // 3) Fetch regions field options
-
-    // NEW code for “regions”:
-axios
-  .get("https://ara.directus.app/items/record_archive?limit=-1&fields=regions")
-  .then((response) => {
-    const uniqueRegions: Set<string> = new Set();
-    response.data.data.forEach((item: any) => {
-      if (Array.isArray(item.regions)) {
-        item.regions.forEach((region: string) => {
-          uniqueRegions.add(region);
+    axios
+      .get("https://ara.directus.app/items/record_archive?limit=-1&fields=regions")
+      .then((response) => {
+        const uniqueRegions: Set<string> = new Set();
+        response.data.data.forEach((item: any) => {
+          if (Array.isArray(item.regions)) {
+            item.regions.forEach((region: string) => {
+              uniqueRegions.add(region);
+            });
+          }
         });
-      }
-    });
-    setRegions(Array.from(uniqueRegions));
-  })
-  .catch((error) => {
-    console.error("Error fetching regions from DB:", error);
-    setRegions([]);
-  });
-
-
-    // axios
-    //   .get("https://ara.directus.app/fields/record_archive/regions")
-    //   .then((response) => {
-    //     const fieldData = response.data.data;
-    //     const interfaceOptions = fieldData.meta.options;
-    //     let allRegions: string[] = [];
-
-    //     if (Array.isArray(interfaceOptions.presets)) {
-    //       allRegions = interfaceOptions.presets;
-    //     }
-    //     setRegions(allRegions);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching regions field options:", error);
-    //     // fallback
-    //     setRegions([
-    //       "Europe",
-    //       "North America",
-    //       "South America",
-    //       "Soviet Union",
-    //       "Middle East",
-    //     ]);
-    //   });
+        setRegions(Array.from(uniqueRegions));
+      })
+      .catch((error) => {
+        console.error("Error fetching regions from DB:", error);
+        setRegions([]);
+      });
 
     // 4) Fetch instruments from the record_archive (collect unique)
     axios
@@ -358,55 +292,52 @@ axios
   /**
    * Optionally auto-scroll after mount
    */
-useEffect(() => {
-  // Check if this is a "fresh" load or a "back_forward" load
-  const navEntries = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
-  if (navEntries.length > 0) {
-    const navType = navEntries[0].type;
-    // Only scroll to #ara-main if it's a new navigation or reload
-    if (navType === "navigate" || navType === "reload") {
-      const timer = setTimeout(() => {
-        if (window.scrollY === 0) {
-          smoothScrollToMain();
-        }
-      }, 1500);
-      return () => clearTimeout(timer);
+  useEffect(() => {
+    // Check if this is a "fresh" load or a "back_forward" load
+    const navEntries = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
+    if (navEntries.length > 0) {
+      const navType = navEntries[0].type;
+      // Only scroll to #ara-main if it's a new navigation or reload
+      if (navType === "navigate" || navType === "reload") {
+        const timer = setTimeout(() => {
+          if (window.scrollY === 0) {
+            smoothScrollToMain();
+          }
+        }, 1500);
+        return () => clearTimeout(timer);
+      }
     }
-  }
-}, []);
+  }, []);
 
-useEffect(() => {
-  if (!artists.length || !allRecords.length) return;
+  useEffect(() => {
+    if (!artists.length || !allRecords.length) return;
 
-  // 1) Check if we already merged them by seeing if any record has "artist_alternate_spellings"
-  //    If yes, do nothing (avoid re-merging)
-  const alreadyMerged = allRecords.some(
-    (r) => r.artist_alternate_spellings !== undefined
-  );
-  if (alreadyMerged) return;
+    // 1) Check if we already merged them by seeing if any record has "artist_alternate_spellings"
+    const alreadyMerged = allRecords.some(
+      (r) => r.artist_alternate_spellings !== undefined
+    );
+    if (alreadyMerged) return;
 
-  // 2) Merge them only once
-  const mergedRecords = allRecords.map((rec) => {
-    const foundArtist = artists.find((artist) => {
-      const aName = artist.artist_name?.trim().toLowerCase() ?? "";
-      const aNameArm = artist.artist_name_armenian?.trim().toLowerCase() ?? "";
-      const rName = rec.artist_original?.trim().toLowerCase() ?? "";
-      return rName === aName || rName === aNameArm;
+    // 2) Merge them only once
+    const mergedRecords = allRecords.map((rec) => {
+      const foundArtist = artists.find((artist) => {
+        const aName = artist.artist_name?.trim().toLowerCase() ?? "";
+        const aNameArm = artist.artist_name_armenian?.trim().toLowerCase() ?? "";
+        const rName = rec.artist_original?.trim().toLowerCase() ?? "";
+        return rName === aName || rName === aNameArm;
+      });
+
+      return {
+        ...rec,
+        artist_alternate_spellings: foundArtist?.artist_name_alternate_spelling ?? [],
+      };
     });
 
-    return {
-      ...rec,
-      artist_alternate_spellings: foundArtist?.artist_name_alternate_spelling ?? [],
-    };
-  });
-
-  setAllRecords(mergedRecords);
-}, [artists, allRecords]);
-
-
+    setAllRecords(mergedRecords);
+  }, [artists, allRecords]);
 
   /**
-   * The main effect that filters allRecords to produce "records" 
+   * The main effect that filters allRecords to produce "records"
    * based on searchString, searchYear, searchArtist, plus included/excluded sets.
    */
   useEffect(() => {
@@ -415,7 +346,6 @@ useEffect(() => {
       return;
     }
 
-    // 1) Fuzzy search on many fields (if searchString is not empty)
     let fuseFiltered: any[];
     if (!searchString) {
       fuseFiltered = [...allRecords];
@@ -458,7 +388,6 @@ useEffect(() => {
       fuseFiltered = searchResults.map((r) => r.item);
     }
 
-    // 2) Filter by year
     let postYear: any[];
     if (!searchYear) {
       postYear = fuseFiltered;
@@ -469,41 +398,33 @@ useEffect(() => {
       });
     }
 
-    // 3) Filter by "searchArtist" substring
     let postArtist: any[];
-if (!searchArtist) {
-  postArtist = postYear;
-} else {
-  postArtist = postYear.filter((rec) => {
-    // rec.artist_alternate_spellings might be an array
-    const altSpellings = Array.isArray(rec.artist_alternate_spellings)
-      ? rec.artist_alternate_spellings
-      : [];
+    if (!searchArtist) {
+      postArtist = postYear;
+    } else {
+      postArtist = postYear.filter((rec) => {
+        const altSpellings = Array.isArray(rec.artist_alternate_spellings)
+          ? rec.artist_alternate_spellings
+          : [];
+        const fieldsToCheck = [
+          rec.artist_english,
+          rec.artist_armenian,
+          rec.artist_original,
+          ...altSpellings,
+        ];
+        return fieldsToCheck.some((field) =>
+          field?.toLowerCase().includes(searchArtist.toLowerCase())
+        );
+      });
+    }
 
-    const fieldsToCheck = [
-      rec.artist_english,
-      rec.artist_armenian,
-      rec.artist_original,
-      // flatten altSpellings into strings
-      ...altSpellings,
-    ];
-
-    return fieldsToCheck.some((field) =>
-      field?.toLowerCase().includes(searchArtist.toLowerCase())
-    );
-  });
-}
-
-    // 4) Apply included filters (i.e. must contain all in includedFilters)
     let postFilters = [...postArtist];
 
-    // For each filter type in includedFilters
     Object.keys(includedFilters).forEach((filterName) => {
       const setOfIncluded = includedFilters[filterName];
       if (!setOfIncluded || setOfIncluded.size === 0) return;
 
       if (filterName === "record_label") {
-        // We have label objects. We find the matching label IDs by label_en
         const labelIds = labels
           .filter((lab) => setOfIncluded.has(lab.label_en))
           .map((lab) => lab.id);
@@ -513,7 +434,6 @@ if (!searchArtist) {
           return labelIds.includes(rec.record_label.id);
         });
       } else if (filterName === "artist_original" || filterName === "artists") {
-        // We'll do a substring check in rec.artist_original
         const filterArray = Array.from(setOfIncluded);
         postFilters = postFilters.filter((rec) => {
           const recArtist = (rec.artist_original || "").toLowerCase();
@@ -522,7 +442,6 @@ if (!searchArtist) {
           );
         });
       } else {
-        // "genres", "instruments", "regions"
         postFilters = postFilters.filter((rec) => {
           const recField = Array.isArray(rec[filterName]) ? rec[filterName] : [];
           return Array.from(setOfIncluded).every((val) =>
@@ -534,7 +453,6 @@ if (!searchArtist) {
       }
     });
 
-    // 5) Apply excluded filters (i.e. must NOT contain any in excludedFilters)
     Object.keys(excludedFilters).forEach((filterName) => {
       const setOfExcluded = excludedFilters[filterName];
       if (!setOfExcluded || setOfExcluded.size === 0) return;
@@ -545,11 +463,10 @@ if (!searchArtist) {
           .map((lab) => lab.id);
 
         postFilters = postFilters.filter((rec) => {
-          if (!rec.record_label) return true; // if it has no label, not excluded
+          if (!rec.record_label) return true;
           return !labelIds.includes(rec.record_label.id);
         });
       } else if (filterName === "artist_original" || filterName === "artists") {
-        // exclude if rec.artist_original includes that name
         postFilters = postFilters.filter((rec) => {
           const recArtist = (rec.artist_original || "").toLowerCase();
           return !Array.from(setOfExcluded).some((excludedName) =>
@@ -557,10 +474,8 @@ if (!searchArtist) {
           );
         });
       } else {
-        // "genres", "instruments", "regions"
         postFilters = postFilters.filter((rec) => {
           const recField = Array.isArray(rec[filterName]) ? rec[filterName] : [];
-          // remove the record if it contains ANY excluded item
           return !Array.from(setOfExcluded).some((excludedVal) =>
             recField.some((fieldVal: string) =>
               fieldVal.toLowerCase().includes(excludedVal.toLowerCase())
@@ -570,7 +485,6 @@ if (!searchArtist) {
       }
     });
 
-    // 6) Filter out anything without audio
     const finalRecords = postFilters
       .filter((rec) => rec.audio)
       .map((rec: any) => ({
@@ -593,9 +507,6 @@ if (!searchArtist) {
 
     setRecords(finalRecords);
 
-    /**
-     * Now compute dynamic counts & availability from these finalRecords
-     */
     const newResultCounts: { [key: string]: number } = {};
     const newAvailableFilters = {
       genres: new Set<string>(),
@@ -606,28 +517,24 @@ if (!searchArtist) {
     };
 
     finalRecords.forEach((rec) => {
-      // genres
       if (Array.isArray(rec.genres)) {
         rec.genres.forEach((g: string) => {
           newResultCounts[g] = (newResultCounts[g] || 0) + 1;
           newAvailableFilters.genres.add(g);
         });
       }
-      // instruments
       if (Array.isArray(rec.instruments)) {
         rec.instruments.forEach((instr: string) => {
           newResultCounts[instr] = (newResultCounts[instr] || 0) + 1;
           newAvailableFilters.instruments.add(instr);
         });
       }
-      // regions
       if (Array.isArray(rec.regions)) {
         rec.regions.forEach((r: string) => {
           newResultCounts[r] = (newResultCounts[r] || 0) + 1;
           newAvailableFilters.regions.add(r);
         });
       }
-      // record_label
       if (rec.record_label) {
         const labelName = rec.record_label;
         newResultCounts[labelName] = (newResultCounts[labelName] || 0) + 1;
@@ -635,7 +542,6 @@ if (!searchArtist) {
       }
     });
 
-    // For artists
     finalRecords.forEach((rec) => {
       const recArtist = (rec.artist_original || "").toLowerCase();
       for (const artistObj of artists) {
@@ -680,34 +586,40 @@ if (!searchArtist) {
 
   /**
    * Hide/show the top menu on scroll (if user hasn't toggled it).
+   * This version uses the intro element's position and also forces the menu open when near the top of the page.
    */
   useEffect(() => {
-const handleScroll = () => {
-  if (userToggledMenu) return;
-  if (!introRef.current) return;
-
-  const menuLinks = menuLinksWrapperRef.current;
-  const menuIcon = menuIconRef.current;
-  if (!menuLinks || !menuIcon) return;
-
-  // Suppose we measure just the intro to decide:
-  const introRect = introRef.current.getBoundingClientRect();
-
-  // Example: hide if we scrolled past the intro
-  if (introRect.bottom <= 0) {
-    if (isMenuVisible) {
-      menuLinks.classList.remove("expanded");
-      menuIcon.classList.remove("clicked");
-      setIsMenuVisible(false);
-    }
-  } else {
-    if (!isMenuVisible) {
-      menuLinks.classList.add("expanded");
-      menuIcon.classList.add("clicked");
-      setIsMenuVisible(true);
-    }
-  }
-};
+    const handleScroll = () => {
+      if (userToggledMenu) return;
+      if (!introRef.current) return;
+      const menuLinks = menuLinksWrapperRef.current;
+      const menuIcon = menuIconRef.current;
+      if (!menuLinks || !menuIcon) return;
+      // Always show menu if the page is near the top (scrollY < 50)
+      if (window.scrollY < 50) {
+        if (!isMenuVisible) {
+          menuLinks.classList.add("expanded");
+          menuIcon.classList.add("clicked");
+          setIsMenuVisible(true);
+        }
+        return;
+      }
+      const introRect = introRef.current.getBoundingClientRect();
+      // Hide the menu if the bottom of the intro is very near the top (<= 50px)
+      if (introRect.bottom <= 50) {
+        if (isMenuVisible) {
+          menuLinks.classList.remove("expanded");
+          menuIcon.classList.remove("clicked");
+          setIsMenuVisible(false);
+        }
+      } else {
+        if (!isMenuVisible) {
+          menuLinks.classList.add("expanded");
+          menuIcon.classList.add("clicked");
+          setIsMenuVisible(true);
+        }
+      }
+    };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -724,70 +636,63 @@ const handleScroll = () => {
     if (isMenuVisible) {
       menuLinks.classList.remove("expanded");
       menuIcon.classList.remove("clicked");
+      setIsMenuVisible(false);
     } else {
       menuLinks.classList.add("expanded");
       menuIcon.classList.add("clicked");
+      setIsMenuVisible(true);
     }
-    setIsMenuVisible(!isMenuVisible);
     setTimeout(() => {
       setUserToggledMenu(false);
     }, 300);
   };
 
   useEffect(() => {
-  if (!allRecords.length || !artists.length) return;
+    if (!allRecords.length || !artists.length) return;
 
-  // Build a set of known names in lowercase:
-  // 1) artist_name
-  // 2) artist_name_armenian
-  // 3) artist_name_alternate_spelling
-  const knownLower = new Set<string>();
-  artists.forEach((artist) => {
-    if (artist.artist_name) {
-      knownLower.add(artist.artist_name.trim().toLowerCase());
-    }
-    if (artist.artist_name_armenian) {
-      knownLower.add(artist.artist_name_armenian.trim().toLowerCase());
-    }
-    if (
-      artist.artist_name_alternate_spelling &&
-      artist.artist_name_alternate_spelling.length
-    ) {
-      artist.artist_name_alternate_spelling.forEach((alt) => {
-        knownLower.add(alt.trim().toLowerCase());
-      });
-    }
-  });
-
-  // Build a map from "missing artist" => set of ARAIDs
-  const missingArtistsMap: { [artistName: string]: Set<string> } = {};
-
-  allRecords.forEach((rec) => {
-    const orig = rec.artist_original?.trim();
-    if (!orig) return;
-    const origLower = orig.toLowerCase();
-
-    if (!knownLower.has(origLower)) {
-      if (!missingArtistsMap[orig]) {
-        missingArtistsMap[orig] = new Set();
+    const knownLower = new Set<string>();
+    artists.forEach((artist) => {
+      if (artist.artist_name) {
+        knownLower.add(artist.artist_name.trim().toLowerCase());
       }
-      if (rec.ARAID) {
-        missingArtistsMap[orig].add(rec.ARAID);
+      if (artist.artist_name_armenian) {
+        knownLower.add(artist.artist_name_armenian.trim().toLowerCase());
       }
+      if (artist.artist_name_alternate_spelling && artist.artist_name_alternate_spelling.length) {
+        artist.artist_name_alternate_spelling.forEach((alt) => {
+          knownLower.add(alt.trim().toLowerCase());
+        });
+      }
+    });
+
+    const missingArtistsMap: { [artistName: string]: Set<string> } = {};
+
+    allRecords.forEach((rec) => {
+      const orig = rec.artist_original?.trim();
+      if (!orig) return;
+      const origLower = orig.toLowerCase();
+
+      if (!knownLower.has(origLower)) {
+        if (!missingArtistsMap[orig]) {
+          missingArtistsMap[orig] = new Set();
+        }
+        if (rec.ARAID) {
+          missingArtistsMap[orig].add(rec.ARAID);
+        }
+      }
+    });
+
+    if (Object.keys(missingArtistsMap).length === 0) {
+      setMissingArtistsText("No missing artists!\n");
+      return;
     }
-  });
 
-  if (Object.keys(missingArtistsMap).length === 0) {
-    setMissingArtistsText("No missing artists!\n");
-    return;
-  }
-
-  let lines = ["Missing Artists:\n"];
-  for (const [artistName, araIds] of Object.entries(missingArtistsMap)) {
-    lines.push(`${artistName} => ${Array.from(araIds).join(", ")}`);
-  }
-  setMissingArtistsText(lines.join("\n"));
-}, [allRecords, artists]);
+    let lines = ["Missing Artists:\n"];
+    for (const [artistName, araIds] of Object.entries(missingArtistsMap)) {
+      lines.push(`${artistName} => ${Array.from(araIds).join(", ")}`);
+    }
+    setMissingArtistsText(lines.join("\n"));
+  }, [allRecords, artists]);
 
   return (
     <>
@@ -809,24 +714,16 @@ const handleScroll = () => {
           <div className="ara-menu-title" id="ara-menu-title">
             ARMENIAN RECORD ARCHIVE
           </div>
-          <div
-            className="ara-menu-links-wrapper expanded"
-            id="ara-menu-links-wrapper"
-            ref={menuLinksWrapperRef}
-          >
-            <Link href="#collection">
+          <div className="ara-menu-links-wrapper expanded" id="ara-menu-links-wrapper" ref={menuLinksWrapperRef}>
+            <Link href="/">
               COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ
             </Link>{" "}
             ●
-            <Link href="#about">
+            <Link href="/about">
               ABOUT US <br /> ՄԵՐ ՄԱՍԻՆ
             </Link>
           </div>
-          <div
-            className="ara-menu-toggle"
-            id="ara-menu-toggle"
-            onClick={toggleMenu}
-          >
+          <div className="ara-menu-toggle" id="ara-menu-toggle" onClick={toggleMenu}>
             <div className="ara-menu-icon" id="menu-icon" ref={menuIconRef}>
               <div className="ara-menu-icon-sleeve"></div>
               <div className="ara-menu-icon-record"></div>
@@ -838,15 +735,12 @@ const handleScroll = () => {
         <div className="ara-intro" ref={introRef}>
           <div className="ara-intro-text-english">
             <div>
-              ֎ Welcome to the Armenian Record Archive, where we preserve and
-              celebrate the rich history of Armenian music and culture.
+              ֎ Welcome to the Armenian Record Archive, where we preserve and celebrate the rich history of Armenian music and culture.
             </div>
           </div>
           <div className="ara-intro-text-armenian">
             <div>
-              Բարի գալուստ Հայկական ձայնագրությունների արխիվ, որտեղ մենք
-              պահպանում և տոնում ենք Հայկական երաժշտության և մշակույթի հարուստ
-              պատմությունը: ֍
+              Բարի գալուստ Հայկական ձայնագրությունների արխիվ, որտեղ մենք պահպանում և տոնում ենք Հայկական երաժշտության և մշակույթի հարուստ պատմությունը: ֍
             </div>
           </div>
         </div>
@@ -863,12 +757,8 @@ const handleScroll = () => {
               value={searchString}
               onChange={(e) => setSearchString(e.target.value)}
             />
-            {/* Clear button */}
             {searchString && (
-              <button
-                className="clear-search-button"
-                onClick={() => setSearchString("")}
-              >
+              <button className="clear-search-button" onClick={() => setSearchString("")}>
                 ✕
               </button>
             )}
@@ -907,11 +797,7 @@ const handleScroll = () => {
               </div>
             </div>
 
-            <div
-              className={`ara-filter-menu-wrapper ${
-                isFilterOpen ? "expanded" : ""
-              }`}
-            >
+            <div className={`ara-filter-menu-wrapper ${isFilterOpen ? "expanded" : ""}`}>
               <FilterMenu
                 activeFilter={activeFilter}
                 setActiveFilter={setActiveFilter}
@@ -921,7 +807,6 @@ const handleScroll = () => {
                 artists={artists}
                 labels={labels}
                 labelIdToNameMap={labelIdToNameMap}
-                // Pass our two sets of filters:
                 includedFilters={includedFilters}
                 setIncludedFilters={setIncludedFilters}
                 excludedFilters={excludedFilters}
@@ -945,15 +830,12 @@ const handleScroll = () => {
           />
         </div>
       </div>
-      {missingArtistsText && (
-        <DownloadMissingArtists text={missingArtistsText} />
-      )}
+      {missingArtistsText && <DownloadMissingArtists text={missingArtistsText} />}
     </>
   );
 }
 
 function DownloadMissingArtists({ text }: { text: string }) {
-  // Create a blob from the text
   const blob = new Blob([text], { type: "text/plain" });
   const url = URL.createObjectURL(blob);
 
@@ -962,12 +844,7 @@ function DownloadMissingArtists({ text }: { text: string }) {
       <a
         href={url}
         download="missing-artists.txt"
-        style={{
-          padding: "8px 12px",
-          backgroundColor: "red",
-          color: "white",
-          textDecoration: "none",
-        }}
+        style={{ padding: "8px 12px", backgroundColor: "red", color: "white", textDecoration: "none" }}
       >
         Download Missing Artists
       </a>

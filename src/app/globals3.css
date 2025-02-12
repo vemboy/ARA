@@ -9,6 +9,19 @@
   src: url('FitVariable-NormalVF.ttf') format('truetype');
 }
 
+/* Example: Import one of the variable Fit fonts you have */
+@font-face {
+  font-family: "TestFitVariable";
+  src: url('FitVariable-NormalVF.ttf') format('truetype');
+  /* 
+    Ensure it covers the variation range. 
+    If your font has a narrower or different range, adjust:
+  */
+  font-weight: 100 1000;
+  font-stretch: 50% 300%;
+  font-display: swap; 
+}
+
 @font-face {
   font-family: 'AdelleSansARM';
   src: url('/fonts/AdelleSansARM-Regular.otf') format('opentype');
@@ -1037,6 +1050,181 @@ a, a:visited, a:hover, a:active {
 }
 
 
+
+/**********************************************
+ * ABOUT PAGE - RESPONSIVE DESIGN
+ **********************************************/
+
+/* Grid layout: Left (Record Image) | Right (Text) */
+.ara-about-wrapper {
+  display: grid;
+  grid-template-columns: 45% 55%; /* Left = Record Image, Right = Text */
+  align-items: center;
+  gap: 2rem;
+  padding: 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ========================== RECORD IMAGE (LEFT SIDE) ========================== */
+.ara-about-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.ara-about-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 5px 5px 0px black; /* Brutalist box shadow */
+  object-fit: cover;
+}
+
+/* ========================== ABOUT TEXT (RIGHT SIDE) ========================== */
+.ara-about-text {
+  font-family: 'AdelleSansARM-Regular', sans-serif;
+  color: #333;
+  line-height: 1.7;
+  text-align: left;
+  max-width: 90%;
+}
+
+.ara-about-text h1 {
+  font-family: 'AdelleSansARM-Bold', sans-serif;
+  font-size: clamp(2rem, 4vw, 2.8rem); /* Responsive font */
+  font-weight: bold;
+  color: #091133; /* ARA Blue */
+  margin-bottom: 1.5rem;
+}
+
+.ara-about-text p {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  margin-bottom: 1rem;
+  font-family: 'AdelleSansARM-Regular', sans-serif;
+}
+
+/* ========================== RESPONSIVE FIXES ========================== */
+@media (max-width: 1024px) {
+  .ara-about-wrapper {
+    grid-template-columns: 1fr; /* Switch to single column */
+    text-align: center;
+    gap: 3rem;
+  }
+
+  .ara-about-image-container {
+    order: -1; /* Move image above text */
+  }
+
+  .ara-about-text {
+    max-width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .ara-about-wrapper {
+    padding: 2rem;
+  }
+
+  .ara-about-text h1 {
+    font-size: clamp(1.8rem, 5vw, 2.2rem);
+  }
+
+  .ara-about-text p {
+    font-size: clamp(0.9rem, 4vw, 1rem);
+  }
+
+  .ara-about-image {
+    max-width: 80%; /* Reduce image size for better fit */
+  }
+}
+
+@media (max-width: 480px) {
+  .ara-about-wrapper {
+    padding: 1.5rem;
+  }
+
+  .ara-about-text h1 {
+    font-size: 1.6rem;
+  }
+
+  .ara-about-text p {
+    font-size: 0.9rem;
+  }
+
+  .ara-about-image {
+    max-width: 70%;
+  }
+}
+
+
+
+
+/**********************************************
+ * Footer - Two major sections: 
+ *   Left (80%) => Big text
+ *   Right (20%) => 2 columns 
+ **********************************************/
+.ara-footer {
+  background-color: var(--ara-blue);
+  color: white;
+  display: grid;
+  grid-template-columns: 70% 30%; /* big left, small right */
+  min-height: 120px; /* adjust for a taller/shorter footer */
+}
+
+/* LEFT SIDE (80%) */
+.ara-footer-left {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  padding: 0 1rem;
+}
+
+/* 
+  The big text. 
+  If you have a variable font, rename it (like "TestFitVariable") 
+  or just stick to a system font. 
+*/
+.ara-footer-title {
+  font-family: 'FitVariable';
+  
+  text-transform: uppercase;
+  
+  font-size: 20vh;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+  font-stretch: 100%;
+  text-align: center;
+}
+
+/* RIGHT SIDE (20%) => two columns side by side */
+.ara-footer-right {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* 2 columns equally */
+  align-items: center;
+  padding: 1rem;
+  column-gap: 2rem; /* space between the two columns */
+}
+
+/* Each column stacks its items vertically */
+.ara-footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; 
+}
+
+/* Links in the columns */
+.ara-footer-column a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+}
+.ara-footer-column a:hover {
+  text-decoration: underline;
+}
 
 
 

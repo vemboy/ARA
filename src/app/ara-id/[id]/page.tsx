@@ -375,11 +375,11 @@ const CollectionDetail: React.FC = () => {
           }`}
           id="ara-menu-links-wrapper"
         >
-          <Link href="https://ara-jet.vercel.app/">
+          <Link href="/">
             COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ
           </Link>{" "}
           ●
-          <a href="#about">
+          <a href="/about">
             ABOUT US
             <br />
             ՄԵՐ ՄԱՍԻՆ
