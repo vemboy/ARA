@@ -1055,55 +1055,28 @@ a, a:visited, a:hover, a:active {
  * ABOUT PAGE - RESPONSIVE DESIGN
  **********************************************/
 
-/* Grid layout: Left (Record Image) | Right (Text) */
+/* About Page Wrapper: two columns */
 .ara-about-wrapper {
   display: grid;
-  grid-template-columns: 45% 55%; /* Left = Record Image, Right = Text */
-  align-items: center;
+  grid-template-columns: 45% 55%; /* or 50% 50% if you prefer */
   gap: 2rem;
   padding: 4rem;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/* ========================== RECORD IMAGE (LEFT SIDE) ========================== */
-.ara-about-image-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-.ara-about-image {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 5px 5px 0px black; /* Brutalist box shadow */
-  object-fit: cover;
-}
-
-/* ========================== ABOUT TEXT (RIGHT SIDE) ========================== */
-.ara-about-text {
-  font-family: 'AdelleSansARM-Regular', sans-serif;
-  color: #333;
-  line-height: 1.7;
+.ara-about-text-left,
+.ara-about-text-right {
   text-align: left;
-  max-width: 90%;
 }
 
-.ara-about-text h1 {
-  font-family: 'AdelleSansARM-Bold', sans-serif;
-  font-size: clamp(2rem, 4vw, 2.8rem); /* Responsive font */
-  font-weight: bold;
-  color: #091133; /* ARA Blue */
-  margin-bottom: 1.5rem;
-}
-
-.ara-about-text p {
-  font-size: clamp(1rem, 2vw, 1.2rem);
+/* Optional: adjust heading styles */
+.ara-about-text-left h1,
+.ara-about-text-right h1 {
+  font-size: 2rem;
   margin-bottom: 1rem;
-  font-family: 'AdelleSansARM-Regular', sans-serif;
 }
+
 
 /* ========================== RESPONSIVE FIXES ========================== */
 @media (max-width: 1024px) {
@@ -1162,70 +1135,105 @@ a, a:visited, a:hover, a:active {
 
 
 
-/**********************************************
- * Footer - Two major sections: 
- *   Left (80%) => Big text
- *   Right (20%) => 2 columns 
- **********************************************/
-.ara-footer {
-  background-color: var(--ara-blue);
+/* Footer Section */
+
+.blurb {
   color: white;
-  display: grid;
-  grid-template-columns: 70% 30%; /* big left, small right */
-  min-height: 120px; /* adjust for a taller/shorter footer */
 }
 
-/* LEFT SIDE (80%) */
-.ara-footer-left {
-  display: flex;
-  align-items: center;
-  justify-content: center; 
-  padding: 0 1rem;
+
+
+.footer,
+.footer_grid {
+  background-color: var(--ara-blue);
 }
 
-/* 
-  The big text. 
-  If you have a variable font, rename it (like "TestFitVariable") 
-  or just stick to a system font. 
-*/
-.ara-footer-title {
-  font-family: 'FitVariable';
-  
-  text-transform: uppercase;
-  
-  font-size: 20vh;
-  margin-top: 5vh;
-  margin-bottom: 5vh;
-  font-stretch: 100%;
+.footer {
+  text-align: center;
+}
+.footer img {
+  max-width: 100%;
+  height: auto;
+}
+
+.footer {
+  max-width: 1800px; /* Or your desired max width */
+  margin: 0 auto;
+  border-left: 2px solid var(--ara-blue);
+  border-right: 2px solid var(--ara-blue);
+  padding: 1rem; /* Optional, for spacing */
   text-align: center;
 }
 
-/* RIGHT SIDE (20%) => two columns side by side */
-.ara-footer-right {
+.footer img {
+  display: block;       /* Remove inline spacing */
+  width: 2000px;         /* or your desired fixed width */
+  max-width: 100%;      /* Responsive scaling */
+  height: auto;
+  margin: 0 auto;
+}
+
+.footer img {
+  
+}
+
+
+/* Footer Grid */
+.footer_grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr; /* 2 columns equally */
+  grid-template-columns: repeat(3, 1fr);
+  text-align: center;
+  justify-content: center;
   align-items: center;
-  padding: 1rem;
-  column-gap: 2rem; /* space between the two columns */
+  font-size: 1.5rem;
+  line-height: 1.5;
+  margin: 0 0;
+  gap: 2rem;
+  height: 30vh;
 }
 
-/* Each column stacks its items vertically */
-.ara-footer-column {
+/* Social Media Links */
+.social_media_links {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem; 
+  justify-content: center;
+  color: white;
 }
-
-/* Links in the columns */
-.ara-footer-column a {
+.social_media_links a {
   color: white;
   text-decoration: none;
-  font-size: 1rem;
+  font-weight: normal;
 }
-.ara-footer-column a:hover {
-  text-decoration: underline;
+.social_media_links a:not(:last-child)::after {
+  content: " • ";
+  color: white !important;
+  padding-left: 0.5rem;
+  padding-right: 1rem;
 }
 
+/* Animated Text */
+.animated-text {
+  font-family: monospace;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+}
+.rotating {
+  display: inline-block;
+  animation: rotateCharacter 1.818s linear infinite;
+}
+@keyframes rotateCharacter {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.rotating.paused {
+  animation-play-state: paused;
+}
 
 
 

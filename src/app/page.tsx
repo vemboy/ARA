@@ -9,6 +9,8 @@ import Fuse from "fuse.js";
 import { AudioContext } from "./audioLayout";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import Footer from "./footer";
+
 
 // Import your new filter menu
 import FilterMenu from "./filter-menu";
@@ -56,6 +58,8 @@ const smoothScrollToMain = () => {
     requestAnimationFrame(animate);
   }
 };
+
+
 
 /**
  * Main collection component
@@ -139,6 +143,20 @@ export default function Collection() {
   const changeLanguage = (lang: string) => {
     setLanguage(lang);
   };
+
+const sortedArtists = React.useMemo(() => {
+  return [...artists].sort((a, b) => {
+    const getLastName = (fullName: string) => {
+      const nameParts = fullName.split(" ");
+      if (nameParts[0].toLowerCase() === "the") {
+        nameParts.shift();
+      }
+      return nameParts[nameParts.length - 1].toLowerCase();
+    };
+    return getLastName(a.artist_name).localeCompare(getLastName(b.artist_name));
+  });
+}, [artists]);
+
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -309,32 +327,35 @@ export default function Collection() {
     }
   }, []);
 
-  useEffect(() => {
-    if (!artists.length || !allRecords.length) return;
-
-    // 1) Check if we already merged them by seeing if any record has "artist_alternate_spellings"
-    const alreadyMerged = allRecords.some(
-      (r) => r.artist_alternate_spellings !== undefined
-    );
-    if (alreadyMerged) return;
-
-    // 2) Merge them only once
-    const mergedRecords = allRecords.map((rec) => {
-      const foundArtist = artists.find((artist) => {
-        const aName = artist.artist_name?.trim().toLowerCase() ?? "";
-        const aNameArm = artist.artist_name_armenian?.trim().toLowerCase() ?? "";
-        const rName = rec.artist_original?.trim().toLowerCase() ?? "";
-        return rName === aName || rName === aNameArm;
-      });
-
-      return {
-        ...rec,
-        artist_alternate_spellings: foundArtist?.artist_name_alternate_spelling ?? [],
-      };
+useEffect(() => {
+  if (!artists.length || !allRecords.length) return;
+  // Guard: if already merged, skip merging to avoid infinite loop
+  if (allRecords.some((rec) => rec.artist_normalized !== undefined)) return;
+  
+  const normalize = (str: string) =>
+    str.trim().toLowerCase().replace(/^the\s+/, "");
+  
+  const mergedRecords = allRecords.map((rec) => {
+    const recName = rec.artist_original ? normalize(rec.artist_original) : "";
+    const foundArtist = artists.find((artist) => {
+      const primary = artist.artist_name ? normalize(artist.artist_name) : "";
+      const alternate = (artist.artist_name_alternate_spelling || []).map((s: string) =>
+        normalize(s)
+      );
+      return recName === primary || alternate.includes(recName);
     });
+    return {
+      ...rec,
+      artist_alternate_spellings: foundArtist?.artist_name_alternate_spelling ?? [],
+      artist_normalized: foundArtist ? normalize(foundArtist.artist_name) : recName,
+    };
+  });
+  
+  setAllRecords(mergedRecords);
+}, [artists, allRecords]);
 
-    setAllRecords(mergedRecords);
-  }, [artists, allRecords]);
+
+
 
   /**
    * The main effect that filters allRecords to produce "records"
@@ -434,14 +455,17 @@ export default function Collection() {
           return labelIds.includes(rec.record_label.id);
         });
       } else if (filterName === "artist_original" || filterName === "artists") {
-        const filterArray = Array.from(setOfIncluded);
-        postFilters = postFilters.filter((rec) => {
-          const recArtist = (rec.artist_original || "").toLowerCase();
-          return filterArray.every((artistName) =>
-            recArtist.includes(artistName.toLowerCase())
-          );
-        });
-      } else {
+  const filterArray = Array.from(setOfIncluded);
+  const normalize = (s: string) => s.trim().toLowerCase().replace(/^the\s+/, "");
+  postFilters = postFilters.filter((rec) => {
+    const recArtistNormalized = rec.artist_normalized || "";
+    return filterArray.every((artistName) => {
+      const lowerArtistNameNormalized = normalize(artistName);
+      return recArtistNormalized.includes(lowerArtistNameNormalized);
+    });
+  });
+}
+else {
         postFilters = postFilters.filter((rec) => {
           const recField = Array.isArray(rec[filterName]) ? rec[filterName] : [];
           return Array.from(setOfIncluded).every((val) =>
@@ -542,17 +566,22 @@ export default function Collection() {
       }
     });
 
-    finalRecords.forEach((rec) => {
-      const recArtist = (rec.artist_original || "").toLowerCase();
-      for (const artistObj of artists) {
-        const aName = artistObj.artist_name?.trim() || "";
-        if (!aName) continue;
-        if (recArtist.includes(aName.toLowerCase())) {
-          newResultCounts[aName] = (newResultCounts[aName] || 0) + 1;
-          newAvailableFilters.artists.add(aName);
-        }
-      }
-    });
+finalRecords.forEach((rec) => {
+  const recArtist = (rec.artist_original || "").toLowerCase();
+  for (const artistObj of artists) {
+    const primaryName = artistObj.artist_name?.trim().toLowerCase() || "";
+    const alternateSpellings = (artistObj.artist_name_alternate_spelling || []).map(sp => sp.trim().toLowerCase());
+
+    // Check if the record's artist matches the primary name or any alternate spelling
+    if (
+      recArtist.includes(primaryName) ||
+      alternateSpellings.some(alt => recArtist.includes(alt))
+    ) {
+      newResultCounts[artistObj.artist_name] = (newResultCounts[artistObj.artist_name] || 0) + 1;
+      newAvailableFilters.artists.add(artistObj.artist_name);
+    }
+  }
+});
 
     setResultCounts(newResultCounts);
     setAvailableFilters(newAvailableFilters);
@@ -798,23 +827,24 @@ export default function Collection() {
             </div>
 
             <div className={`ara-filter-menu-wrapper ${isFilterOpen ? "expanded" : ""}`}>
-              <FilterMenu
-                activeFilter={activeFilter}
-                setActiveFilter={setActiveFilter}
-                genres={genres}
-                instruments={instruments}
-                regions={regions}
-                artists={artists}
-                labels={labels}
-                labelIdToNameMap={labelIdToNameMap}
-                includedFilters={includedFilters}
-                setIncludedFilters={setIncludedFilters}
-                excludedFilters={excludedFilters}
-                setExcludedFilters={setExcludedFilters}
-                availableFilters={availableFilters}
-                resultCounts={resultCounts}
-                language={language}
-              />
+            <FilterMenu
+              activeFilter={activeFilter}
+              setActiveFilter={setActiveFilter}
+              genres={genres}
+              instruments={instruments}
+              regions={regions}
+              artists={sortedArtists}
+              labels={labels}
+              labelIdToNameMap={labelIdToNameMap}
+              includedFilters={includedFilters}
+              setIncludedFilters={setIncludedFilters}
+              excludedFilters={excludedFilters}
+              setExcludedFilters={setExcludedFilters}
+              availableFilters={availableFilters}
+              resultCounts={resultCounts}
+              language={language}
+            />
+
             </div>
           </div>
 
@@ -828,9 +858,11 @@ export default function Collection() {
             audioPlayerRef={audioPlayerRef}
             records={records}
           />
+          
         </div>
+        
       </div>
-      {missingArtistsText && <DownloadMissingArtists text={missingArtistsText} />}
+      <Footer />
     </>
   );
 }

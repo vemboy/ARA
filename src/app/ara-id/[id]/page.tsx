@@ -16,6 +16,7 @@ import {
 import SharePopup from "@/app/SharePopup";
 import _ from "lodash";
 
+import Footer from "@/app/footer";
 interface RecordType {
   [key: string]: any;
 }
@@ -363,6 +364,7 @@ const CollectionDetail: React.FC = () => {
   // 9) Render final JSX
   // ----------------------------------------------------------------
   return (
+    <>
     <div className="ara-main" id="ara-main">
       {/* Top Menu */}
       <div className="ara-menu" id="ara-menu">
@@ -804,7 +806,10 @@ const CollectionDetail: React.FC = () => {
         recordTitle={currentRecord.title || "Record"}
         recordId={araId}
       />
+      
     </div>
+    <Footer />
+    </>
   );
 };
 

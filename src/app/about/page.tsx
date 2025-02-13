@@ -3,28 +3,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Link from "next/link";
-import Footer from "../footer";
+import Footer from "@/app/footer";
 
 export default function AboutPage() {
   const [aboutHtml, setAboutHtml] = useState<string>("");
-  const [recordImage, setRecordImage] = useState<string | null>(null);
+  const [aboutHtmlAr, setAboutHtmlAr] = useState<string>("");
 
   // Menu state and refs
   const [isMenuVisible, setIsMenuVisible] = useState(true);
   const [userToggledMenu, setUserToggledMenu] = useState(false);
   const menuLinksWrapperRef = useRef<HTMLDivElement>(null);
   const menuIconRef = useRef<HTMLDivElement>(null);
-
-  // Use a ref to track the last time the menu was toggled
   const lastToggleTimeRef = useRef<number>(0);
   const toggleDelay = 300; // milliseconds delay before next toggle is allowed
 
-  // Remodeled scroll effect using fixed thresholds and a time guard
+  // Scroll effect for menu
   useEffect(() => {
-    // Set thresholds that create a dead zone (hysteresis)
-    const collapseThreshold = 120; // if scrollY exceeds 120 and menu is visible, collapse it
-    const expandThreshold = 80; // if scrollY falls below 80 and menu is collapsed, expand it
-
+    const collapseThreshold = 120;
+    const expandThreshold = 80;
     let ticking = false;
 
     const handleScroll = () => {
@@ -64,7 +60,7 @@ export default function AboutPage() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [isMenuVisible, userToggledMenu]);
 
-  // Manual menu toggle function
+  // Manual menu toggle
   const toggleMenu = () => {
     setUserToggledMenu(true);
     const menuLinks = menuLinksWrapperRef.current;
@@ -84,13 +80,19 @@ export default function AboutPage() {
     }, toggleDelay);
   };
 
-  // Fetch About Us text
+  // Fetch About Us text (both languages)
   useEffect(() => {
     axios
-      .get("https://ara.directus.app/items/Copy/1?fields=Text")
+      .get("https://ara.directus.app/items/Copy/1?fields=Text,text_ar")
       .then((response) => {
-        if (response.data?.data?.Text) {
-          setAboutHtml(response.data.data.Text);
+        if (response.data?.data) {
+          const data = response.data.data;
+          if (data.Text) {
+            setAboutHtml(data.Text);
+          }
+          if (data.text_ar) {
+            setAboutHtmlAr(data.text_ar);
+          }
         }
       })
       .catch((error) => {
@@ -98,58 +100,41 @@ export default function AboutPage() {
       });
   }, []);
 
-  // Fetch a random record image
-  useEffect(() => {
-    axios
-      .get("https://ara.directus.app/items/record_archive?fields=record_image&limit=-1")
-      .then((response) => {
-        const records = response.data?.data;
-        if (Array.isArray(records) && records.length > 0) {
-          const randomRecord = records[Math.floor(Math.random() * records.length)];
-          if (randomRecord?.record_image) {
-            setRecordImage(`https://ara.directus.app/assets/${randomRecord.record_image}`);
-          }
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching random record image:", error);
-      });
-  }, []);
-
   return (
-    <div className="ara-main">
-      <div className="ara-menu">
-        <div className="ara-menu-title">ARMENIAN RECORD ARCHIVE</div>
-        <div className="ara-menu-links-wrapper expanded" ref={menuLinksWrapperRef}>
-          <Link href="/">
-            COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ
-          </Link>
-          ●
-          <Link href="/about">
-            ABOUT US <br /> ՄԵՐ ՄԱՍԻՆ
-          </Link>
+    <>
+      <div className="ara-main">
+        {/* Top Menu */}
+        <div className="ara-menu">
+          <div className="ara-menu-title">ARMENIAN RECORD ARCHIVE</div>
+          <div
+            className="ara-menu-links-wrapper expanded"
+            ref={menuLinksWrapperRef}
+          >
+            <Link href="/">COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ</Link>
+            ●
+            <Link href="/about">ABOUT US <br /> ՄԵՐ ՄԱՍԻՆ</Link>
+          </div>
+          <div className="ara-menu-toggle" onClick={toggleMenu}>
+            <div className="ara-menu-icon" ref={menuIconRef}>
+              <div className="ara-menu-icon-sleeve"></div>
+              <div className="ara-menu-icon-record"></div>
+            </div>
+          </div>
         </div>
-        <div className="ara-menu-toggle" onClick={toggleMenu}>
-          <div className="ara-menu-icon" ref={menuIconRef}>
-            <div className="ara-menu-icon-sleeve"></div>
-            <div className="ara-menu-icon-record"></div>
+
+        {/* About Content: Two-column layout */}
+        <div className="ara-about-wrapper">
+          <div className="ara-about-text-left">
+            <h1>About Us</h1>
+            <div dangerouslySetInnerHTML={{ __html: aboutHtml }} />
+          </div>
+          <div className="ara-about-text-right">
+            <h1>Text AR</h1>
+            <div dangerouslySetInnerHTML={{ __html: aboutHtmlAr }} />
           </div>
         </div>
       </div>
-
-      <div className="ara-about-wrapper">
-        <div className="ara-about-image-container">
-          {recordImage && (
-            <img src={recordImage} alt="Random Record" className="ara-about-image" />
-          )}
-        </div>
-        <div className="ara-about-text">
-          <h1>About Us</h1>
-          <div dangerouslySetInnerHTML={{ __html: aboutHtml }} />
-        </div>
-      </div>
-
       <Footer />
-    </div>
+    </>
   );
 }
