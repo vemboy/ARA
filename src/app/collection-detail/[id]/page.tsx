@@ -132,7 +132,7 @@ const CollectionDetail: React.FC = () => {
   const [currentTrackUrl, setCurrentTrackUrl] = useState<string | null>(null);
   const [durations, setDurations] = useState<{ [key: string]: string }>({});
   const [isShareOpen, setIsShareOpen] = useState(false);
-
+  const currentIsPlaceholder = images[currentImageIndex] === null;
   // Get the record ID from the URL
   const pathName = usePathname();
   const araId = pathName.split("/").slice(-1)[0];
@@ -544,34 +544,38 @@ setImages(recordImages);
           </div>
 
           {/* Left: Image + Thumbnails */}
-          <div className="ara-record-image" onClick={handleImageClick}>
-            <div className="ara-record-image__container">
-{images[currentImageIndex] ? (
-  <img
-    src={images[currentImageIndex]!}
-    alt="Record"
-    draggable="false"
-    className={`ara-record-image__main ${isPlaying ? "spinning-record" : ""}`}
-  />
-) : (
-  <NewSampleRecordImage
-    className="ara-record-image__main"
-    isPlaying={isPlaying}
-  />
-)}
-
-            </div>
-{hasImage && (
-  <div className="ara-record-image__dots-container">
-    {images.map((_, idx) => (
-      <span
-        key={idx}
-        className={"ara-record-image__dot" + (idx === currentImageIndex ? " active" : "")}
-      ></span>
-    ))}
-  </div>
-)}
-          </div>
+    <div
+      className="ara-record-image"
+      onClick={handleImageClick}
+      // Set aspect ratio dynamically: 1.2 for placeholder, 1 for real image
+      style={{ aspectRatio: currentIsPlaceholder ? "1.2" : "1" }}
+    >
+      <div className="ara-record-image__container">
+        {images[currentImageIndex] ? (
+          <img
+            src={images[currentImageIndex]!}
+            alt="Record"
+            draggable="false"
+            className={`ara-record-image__main ${isPlaying ? "spinning-record" : ""}`}
+          />
+        ) : (
+          <NewSampleRecordImage
+            className="ara-record-image__main"
+            isPlaying={isPlaying}
+          />
+        )}
+      </div>
+      {hasImage && (
+        <div className="ara-record-image__dots-container">
+          {images.map((_, idx) => (
+            <span
+              key={idx}
+              className={"ara-record-image__dot" + (idx === currentImageIndex ? " active" : "")}
+            ></span>
+          ))}
+        </div>
+      )}
+    </div>
 
           {/* Right: Text Information */}
           <div className="ara-record-info">
