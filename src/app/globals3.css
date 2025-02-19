@@ -83,7 +83,6 @@
 .ara-record-info__track-number,
 .ara-record-info__song-length,
 .ara-record-player-time,
-.ara-filter-option:hover,
 .filter-item:hover,
 .selected-filters-container .filter-item,
 .ara-filter-items .filter-item.active,
@@ -747,7 +746,7 @@ strong {
 }
 
 .ara-filter-option:hover{
-  font-weight: bold;
+font-weight: bold;
   cursor: pointer;
 }
 
@@ -767,16 +766,19 @@ strong {
   padding-bottom: 1rem;
 }
 
+.ara-filter-items[data-filter="genre"],
+.ara-filter-items[data-filter="instrument"],
+.ara-filter-items[data-filter="label"],
 .ara-filter-items[data-filter="artist"] {
-  /* Let’s say you want 3 columns */
-  column-count: 6;
+  display: block;          /* override grid */
+  column-count: 6;         /* adjust the number of columns as desired */
   column-gap: 1rem;
+}
 
-  /* 
-    Each .filter-item is displayed in its own "block" 
-    so each item appears on its own line.
-  */
-  display: block;
+/* Prevent individual filter items from breaking across columns */
+.filter-item {
+  break-inside: avoid;
+  margin-bottom: 0.5rem;
 }
 
 

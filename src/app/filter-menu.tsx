@@ -173,40 +173,45 @@ const hasActiveExcluded = Object.values(excludedFilters).some(
 );
 
   const renderFilterItems = (items: string[], filterType: string) => {
-    return items.map((item) => {
-      const filterKey =
-        filterType === "artist_original" ? "artists" : filterType; // for indexing availableFilters
-      const isAvailable =
-        availableFilters[filterKey as keyof typeof availableFilters].has(item);
+  // For filters other than regions, sort alphabetically
+  const sortedItems = filterType !== "regions" 
+    ? [...items].sort((a, b) => a.localeCompare(b))
+    : items;
+  
+  return sortedItems.map((item) => {
+    const filterKey =
+      filterType === "artist_original" ? "artists" : filterType; // for indexing availableFilters
+    const isAvailable =
+      availableFilters[filterKey as keyof typeof availableFilters].has(item);
 
-      const isIncluded = includedFilters[filterType]?.has(item) ?? false;
-      const isExcluded = excludedFilters[filterType]?.has(item) ?? false;
+    const isIncluded = includedFilters[filterType]?.has(item) ?? false;
+    const isExcluded = excludedFilters[filterType]?.has(item) ?? false;
 
-      // Build className
-      let className = "filter-item";
-      if (!isAvailable) {
-        className += " disabled";
-      }
-      if (isIncluded) {
-        className += " active"; // "active" = included
-      }
-      if (isExcluded) {
-        className += " excluded"; // "excluded" = double-click
-      }
+    // Build className
+    let className = "filter-item";
+    if (!isAvailable) {
+      className += " disabled";
+    }
+    if (isIncluded) {
+      className += " active"; // "active" = included
+    }
+    if (isExcluded) {
+      className += " excluded"; // "excluded" = double-click
+    }
 
-      return (
-        <div
-          key={item}
-          className={className}
-          onClick={() => isAvailable && handleItemClick(filterType, item)}
-          onDoubleClick={() => isAvailable && handleItemDoubleClick(filterType, item)}
-        >
-          <span className="ara-filter-icon-circle"></span>
-          {getLocalizedName(item)} ({resultCounts[item] || 0})
-        </div>
-      );
-    });
-  };
+    return (
+      <div
+        key={item}
+        className={className}
+        onClick={() => isAvailable && handleItemClick(filterType, item)}
+        onDoubleClick={() => isAvailable && handleItemDoubleClick(filterType, item)}
+      >
+        <span className="ara-filter-icon-circle"></span>
+        {getLocalizedName(item)} ({resultCounts[item] || 0})
+      </div>
+    );
+  });
+};
 
   return (
     <>
@@ -239,37 +244,39 @@ const hasActiveExcluded = Object.values(excludedFilters).some(
         )}
 
         {activeFilter === "record_label" && (
-          <div className="ara-filter-items" data-filter="label">
-            {labels.map((label) => {
-              const labelName = label.label_en;
-              const isAvailable = availableFilters.record_label.has(labelName);
-              const isIncluded =
-                includedFilters.record_label?.has(labelName) ?? false;
-              const isExcluded =
-                excludedFilters.record_label?.has(labelName) ?? false;
+  <div className="ara-filter-items" data-filter="label">
+    {[...labels]
+      .sort((a, b) => a.label_en.localeCompare(b.label_en))
+      .map((label) => {
+        const labelName = label.label_en;
+        const isAvailable = availableFilters.record_label.has(labelName);
+        const isIncluded =
+          includedFilters.record_label?.has(labelName) ?? false;
+        const isExcluded =
+          excludedFilters.record_label?.has(labelName) ?? false;
 
-              let className = "filter-item";
-              if (!isAvailable) className += " disabled";
-              if (isIncluded) className += " active";
-              if (isExcluded) className += " excluded";
+        let className = "filter-item";
+        if (!isAvailable) className += " disabled";
+        if (isIncluded) className += " active";
+        if (isExcluded) className += " excluded";
 
-              return (
-                <div
-                  key={label.id}
-                  className={className}
-                  onClick={() => isAvailable && handleItemClick("record_label", labelName)}
-                  onDoubleClick={() =>
-                    isAvailable &&
-                    handleItemDoubleClick("record_label", labelName)
-                  }
-                >
-                  <span className="ara-filter-icon-circle"></span>
-                  {labelName} ({resultCounts[labelName] || 0})
-                </div>
-              );
-            })}
+        return (
+          <div
+            key={label.id}
+            className={className}
+            onClick={() => isAvailable && handleItemClick("record_label", labelName)}
+            onDoubleClick={() =>
+              isAvailable && handleItemDoubleClick("record_label", labelName)
+            }
+          >
+            <span className="ara-filter-icon-circle"></span>
+            {labelName} ({resultCounts[labelName] || 0})
           </div>
-        )}
+        );
+      })}
+  </div>
+)}
+
 
         {activeFilter === "regions" && (
           <div className="ara-filter-items" data-filter="region">
