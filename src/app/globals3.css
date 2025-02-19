@@ -421,6 +421,161 @@ strong {
   transform: translateX(50%);
 }
 
+/* ------------------------------
+   SAMPLE RECORD PLACEHOLDER CSS
+   ------------------------------ */
+
+/* The parent container for your placeholder record */
+.sample-record-image {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  /* Spin animation, paused by default */
+  animation: spin 1.5s linear infinite;
+  animation-play-state: paused;
+  transform-origin: 50% 50%;
+}
+
+/* When playing, un-pause the spin */
+.sample-record-image.playing {
+  animation-play-state: running;
+}
+
+/* 
+  .record replicates your original 
+  code's outer container, but fluid. 
+*/
+.record {
+  width: 100%;
+  height: 100%;
+  background-color: #ddd; /* or remove if you don't want a gray square behind the circles */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* New Sample Record Image Styles */
+
+.new-sample-record-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto; /* Let the height adjust naturally */
+}
+
+.new-record {
+  position: relative;
+  width: 80%;
+  /* Use the padding-top trick to enforce a square */
+  padding-top: 80%;
+  border-radius: 50%;
+  background-color: #ddd;
+  overflow: hidden;
+}
+
+.new-outer-circle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.new-middle-circle {
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  background-color: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.new-outline-circle {
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.new-center-circle {
+  width: 20%;
+  height: 20%;
+  border-radius: 50%;
+  background-color: white;
+}
+
+/* Optional spinning animation */
+@keyframes new-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.new-playing {
+  animation: new-spin 1.5s linear infinite;
+}
+
+
+
+/* The nested circles from your original snippet */
+.outer-circle {
+  width: 60%;
+  height: 60%;
+  background-color: #666;  /* originally #666 or #fff */
+  border-radius: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.middle-circle {
+  width: 50%;
+  height: 50%;
+  background-color: #ddd; /* or var(--ara-blue) if desired */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.outline-circle {
+  width: 90%;
+  height: 90%;
+  background-color: transparent;
+  border: 2px solid white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-circle {
+  width: 10%;
+  height: 10%;
+  background-color: white;
+  border-radius: 50%;
+}
+
+/* Reuse your existing keyframes or define anew */
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+
+
 /* ============================== INTRO SECTION STYLES ============================== */
 .ara-intro {
   display: grid;
@@ -612,6 +767,19 @@ strong {
   padding-bottom: 1rem;
 }
 
+.ara-filter-items[data-filter="artist"] {
+  /* Let’s say you want 3 columns */
+  column-count: 6;
+  column-gap: 1rem;
+
+  /* 
+    Each .filter-item is displayed in its own "block" 
+    so each item appears on its own line.
+  */
+  display: block;
+}
+
+
 .filter-item {
   font-size: var(--filter-item-font-size);
   color: var(--ara-blue);
@@ -662,6 +830,7 @@ strong {
 .ara-grid-item-circle {
   width: 70%;
   height: 0;
+  margin-bottom: 10px;
   padding-bottom: 70%;
   position: relative;
   border-radius: 50%;
@@ -669,6 +838,7 @@ strong {
   display: flex;
   justify-content: center;
   align-items: center;
+  
 }
 
 .ara-grid-item-circle img {
@@ -1078,6 +1248,7 @@ a, a:visited, a:hover, a:active {
 }
 
 
+
 /* ========================== RESPONSIVE FIXES ========================== */
 @media (max-width: 1024px) {
   .ara-about-wrapper {
@@ -1173,9 +1344,7 @@ a, a:visited, a:hover, a:active {
   margin: 0 auto;
 }
 
-.footer img {
-  
-}
+
 
 
 /* Footer Grid */
@@ -1461,6 +1630,7 @@ body {
 
 /* MAIN IMAGE SECTION */
 .ara-record-image {
+
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1469,7 +1639,7 @@ body {
   background-color: lightgray;
   padding: 50px;
   position: relative;
-  aspect-ratio: 1;
+  aspect-ratio: 1.2;
   overflow: hidden;
 }
 

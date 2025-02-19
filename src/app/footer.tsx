@@ -24,11 +24,11 @@ const Footer: React.FC = () => {
         <img src="/ara_footer.svg" alt="Armenian Record Archive" />
       </div>
       <div className="footer_grid">
-        <div className="social_media_links">
-          <a href="#">Facebook</a>
-          <a href="#">Instagram</a>
-          <a href="#">YouTube</a>
-        </div>
+<div className="social_media_links">
+  <a href="https://www.facebook.com/ArmenianRecordArchive/" target="_blank" rel="noopener noreferrer">Facebook</a>
+  <a href="https://www.instagram.com/armenianrecordarchive" target="_blank" rel="noopener noreferrer">Instagram</a>
+  <a href="https://www.youtube.com/@armenianrecordarchive6025" target="_blank" rel="noopener noreferrer">YouTube</a>
+</div>
         <div className="blurb">
           Made with 💙 սեր և սուճ ☕
         </div>

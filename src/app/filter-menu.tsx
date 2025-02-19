@@ -72,10 +72,10 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
     },
     HY: {
       artist_original: "Երաժիշտ",
-      genres: "ոճ",
-      instruments: "նուագարան",
-      record_label: "պիտակ",
-      regions: "շրջան",
+      genres: "Ոճ",
+      instruments: "Նուագարան",
+      record_label: "Պիտակ",
+      regions: "Շրջան",
       clear_all: "Մաքրել բոլորը",
     },
   };
