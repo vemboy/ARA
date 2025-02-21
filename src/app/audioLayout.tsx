@@ -234,8 +234,7 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
                       left: 0,
                       bottom: 0,
                       width: progressPercent,
-                      backgroundColor: "black",
-                      borderRadius: "2px",
+                      backgroundColor: "hsl(225, 15%, 60%)",
                       transition: "width 0.1s linear",
                     }}
                   />
