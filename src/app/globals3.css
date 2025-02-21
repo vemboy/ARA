@@ -1,25 +1,14 @@
-/* styles.css */
-/* Copy the provided CSS from the designer's code here verbatim. 
-   The spinning of the landing page image is controlled by JavaScript (rotateLogoOnScroll),
-   not by CSS. The CSS just sets the layout and styling. */
-
-/* ============================== FONT SETTINGS ============================== */
 @font-face {
   font-family: 'FitVariable';
   src: url('FitVariable-NormalVF.ttf') format('truetype');
 }
 
-/* Example: Import one of the variable Fit fonts you have */
 @font-face {
   font-family: "TestFitVariable";
   src: url('FitVariable-NormalVF.ttf') format('truetype');
-  /* 
-    Ensure it covers the variation range. 
-    If your font has a narrower or different range, adjust:
-  */
   font-weight: 100 1000;
   font-stretch: 50% 300%;
-  font-display: swap; 
+  font-display: swap;
 }
 
 @font-face {
@@ -43,7 +32,6 @@
   font-style: normal;
 }
 
-/* Regular font styles */
 .ara-intro-text-english,
 .ara-intro-text-armenian,
 .search-input,
@@ -58,7 +46,6 @@
   font-family: 'AdelleSansARM', Arial, sans-serif;
 }
 
-/* Semi-bold font styles */
 .ara-menu-links-wrapper a,
 .ara-filters-title,
 .ara-filter-option.selected,
@@ -75,7 +62,6 @@
   font-family: 'AdelleSansARM-Semibold', Arial, sans-serif;
 }
 
-/* Group all bold elements */
 .ara-intro-text-english div,
 .ara-intro-text-armenian div,
 .ara-header__recording-catalog-number,
@@ -92,38 +78,35 @@
   font-family: 'AdelleSansARM-Bold', Arial, sans-serif;
 }
 
-
-/* ============================== ROOT VARIABLES ============================== */
 :root {
-  --ara-blue: #091133;
+  --ara-blue: hsl(225, 73%, 12%);
+  --ara-gray_light: hsl(225, 15%, 90%);
+  --ara-gray_dark: hsl(225, 15%, 60%);
   --circle-size: 30%;
   --border-thickness-debug: 0px;
-
-  --main-border-thickness:20px;
+  --main-border-thickness: 20px;
+  --record-player-wrapper-height: 10vh;
+  --about-text-left-font-size-heading: 8rem;
+  --about-text-left-font-size-body: 2rem;
   --menu-title-font-size: 5rem;
-  --menu-icon-size:3.7rem;
+  --menu-icon-size: 3.7rem;
   --menu-links-font-size: 1rem;
-
   --intro-text-font-size: 2.2rem;
   --search-icon-font-size: 5rem;
   --search-input-font-size: 1.8rem;
-  --search-bar-line-height:1.2;
-
+  --search-bar-line-height: 1.2;
   --filter-title-font-size: 2rem;
-  --filter-option-font-size: 1.2rem;	  
+  --filter-option-font-size: 1.2rem;
   --filter-item-font-size: 1rem;
-  --filter-icon-circle-size: .8rem;  
-
+  --filter-icon-circle-size: 0.8rem;
   --grid-item-title-armenian-font-size: 1rem;
-  --grid-item-title-transliteration-font-size: .9rem;
+  --grid-item-title-transliteration-font-size: 0.9rem;
   --filter-language-switcher-font-size: 1rem;
-
   --player-song-title-font-size: 1rem;
-  --player-artist-name-font-size: .8rem;
+  --player-artist-name-font-size: 0.8rem;
   --player-time-font-size: 1rem;
 }
 
-/* ============================== GLOBAL STYLES ============================== */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -134,7 +117,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #091133;
-  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
+  font-family: 'AdelleSansARM', Arial, sans-serif;
 }
 
 p {
@@ -154,7 +137,6 @@ strong {
   font-weight: bold;
 }
 
-/* Selection */
 ::selection {
   color: white;
   background-color: var(--ara-blue);
@@ -165,7 +147,6 @@ strong {
   background-color: var(--ara-blue);
 }
 
-/* ============================== LANDING PAGE STYLES ============================== */
 .ara-landing-page {
   width: 100vw;
   height: 100vh;
@@ -178,14 +159,13 @@ strong {
 }
 
 .ara-landing-page img {
-  width: 400px; /* Adjust the width as needed */
-  height: 400px; /* Adjust the height as needed */
+  width: 400px;
+  height: 400px;
   object-fit: contain;
   transition: transform 0.1s ease-out;
   cursor: pointer;
 }
 
-/* ============================== MAIN CONTAINER STYLES ============================== */
 .ara-main {
   display: grid;
   grid-template-columns: 1fr;
@@ -197,8 +177,6 @@ strong {
   padding: 2rem;
 }
 
-/* ============================== MENU STYLES ============================== */
-/* ============================== MENU STYLES ============================== */
 .ara-menu {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -210,8 +188,7 @@ strong {
   z-index: 10;
   padding-top: 10px;
   padding-bottom: 10px;
-  /* OPTIONAL: Helps avoid jitter by telling browser to optimize 'top' changes */
-  will-change: top; 
+  will-change: top;
 }
 
 .ara-menu-title {
@@ -234,8 +211,6 @@ strong {
   overflow: hidden;
   max-height: 0;
   opacity: 0;
-
-  /* Smoother transitions + will-change to reduce layout thrash */
   transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
   will-change: max-height, opacity;
 }
@@ -245,25 +220,21 @@ strong {
   opacity: 1;
 }
 
-/* Mark “excluded” with strikethrough */
 .filter-item.excluded {
   text-decoration: line-through;
   opacity: 0.7;
 }
 
-/* Maybe highlight the circle border in red or something for excluded */
 .filter-item.excluded .ara-filter-icon-circle {
   border-color: red;
 }
 
 .filter-item {
-  /* Whatever you have already */
-  user-select: none;             /* Standard */
-  -webkit-user-select: none;     /* For older WebKit */
-  -moz-user-select: none;        /* For older Firefox */
-  -ms-user-select: none;         /* For older IE/Edge */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
-
 
 .ara-menu-links-wrapper a {
   font-family: 'AdelleSansARM-Semibold', Arial, sans-serif;
@@ -271,13 +242,11 @@ strong {
   margin: 0 10px;
   text-decoration: none;
   font-weight: bold;
-    display: inline-block;
+  display: inline-block;
   text-align: center;
 }
 
-
 .ara-search-bar {
-  /* If you haven't already, 3 columns: [search-icon] [input] [clear button] */
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -296,13 +265,8 @@ strong {
   color: lightgray;
 }
 
-/*
-   ================================
-   FILTER ITEM RULES
-   ================================
-*/
 .filter-item {
-  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
+  font-family: 'AdelleSansARM', Arial, sans-serif;
   font-weight: normal;
   font-style: normal;
   color: var(--ara-blue);
@@ -312,7 +276,6 @@ strong {
   margin-bottom: 0.5rem;
 }
 
-/* The circle on the left */
 .filter-item .ara-filter-icon-circle {
   width: var(--filter-icon-circle-size);
   height: var(--filter-icon-circle-size);
@@ -323,39 +286,29 @@ strong {
   transition: background-color 0.2s ease, border 0.2s ease;
 }
 
-/* 
-   1) SELECTED => "active" 
-      => bold text, filled circle 
-*/
 .filter-item.active {
   font-weight: bold;
 }
+
 .filter-item.active .ara-filter-icon-circle {
   background-color: var(--ara-blue);
   border: none;
 }
 
-/* 
-   2) NON-SELECTABLE => "disabled"
-      => italic, partial opacity, no pointer 
-*/
 .filter-item.disabled {
   font-style: italic;
   opacity: 0.6;
   cursor: not-allowed;
 }
+
 .filter-item.disabled .ara-filter-icon-circle {
   border-color: #aaa;
 }
 
-/* 
-   3) Regular => normal 
-      => covered by .filter-item, 
-         (hover effect optional)
-*/
 .filter-item:not(.active):not(.disabled):hover {
   font-weight: bold;
 }
+
 .ara-menu-toggle {
   font-size: 5rem;
   margin-right: 1rem;
@@ -398,7 +351,7 @@ strong {
 }
 
 .ara-menu-icon-record {
-  background-color: var(--ara-blue);
+  background-color: var(--ara-gray_dark);
   border-radius: 50%;
   position: relative;
   transition: transform 0.3s ease;
@@ -417,58 +370,64 @@ strong {
 }
 
 .ara-menu-icon.clicked .ara-menu-icon-record {
-  transform: translateX(50%);
+  transform: translateY(50%);
 }
 
-/* ------------------------------
-   SAMPLE RECORD PLACEHOLDER CSS
-   ------------------------------ */
+@media (max-width: 768px) {
+  :root {
+    --search-icon-font-size: 4rem;   /* Instead of 5rem */
+    --search-input-font-size: 1.2rem; /* Instead of 1.8rem */
+  }
+}
 
-/* The parent container for your placeholder record */
 .sample-record-image {
   width: 100%;
   height: 100%;
   position: relative;
-
-  /* Spin animation, paused by default */
   animation: spin 1.5s linear infinite;
   animation-play-state: paused;
   transform-origin: 50% 50%;
 }
 
-/* When playing, un-pause the spin */
 .sample-record-image.playing {
   animation-play-state: running;
 }
 
-/* 
-  .record replicates your original 
-  code's outer container, but fluid. 
-*/
 .record {
   width: 100%;
   height: 100%;
-  background-color: #ddd; /* or remove if you don't want a gray square behind the circles */
+  background-color: var(--ara-gray_light);
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
 }
 
-/* New Sample Record Image Styles */
+@media (max-width: 768px) {
+  .ara-filters-section {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .ara-grid-wrapper {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
 
 .new-sample-record-image {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: auto; /* Let the height adjust naturally */
+  height: auto;
 }
 
 .new-record {
   position: relative;
   width: 80%;
-  /* Use the padding-top trick to enforce a square */
   padding-top: 80%;
   border-radius: 50%;
   background-color: #ddd;
@@ -515,7 +474,6 @@ strong {
   background-color: white;
 }
 
-/* Optional spinning animation */
 @keyframes new-spin {
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -525,23 +483,32 @@ strong {
   animation: new-spin 1.5s linear infinite;
 }
 
-
-
-/* The nested circles from your original snippet */
 .outer-circle {
   width: 60%;
   height: 60%;
-  background-color: #666;  /* originally #666 or #fff */
+  background-color: #666;
   border-radius: 60%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.ara-filters-language-switcher span,
+.ara-filters-language-switcher span:active,
+.ara-filters-language-switcher span:focus {
+  font-family: 'AdelleSansARM-Semibold', Arial, sans-serif;
+}
+
+.ara-filters-title,
+.ara-filters-title:active,
+.ara-filters-title:focus {
+  font-family: 'AdelleSansARM-Semibold', Arial, sans-serif;
+}
+
 .middle-circle {
   width: 50%;
   height: 50%;
-  background-color: #ddd; /* or var(--ara-blue) if desired */
+  background-color: #ddd;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -566,16 +533,11 @@ strong {
   border-radius: 50%;
 }
 
-/* Reuse your existing keyframes or define anew */
 @keyframes spin {
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-
-
-
-/* ============================== INTRO SECTION STYLES ============================== */
 .ara-intro {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -586,7 +548,7 @@ strong {
 }
 
 .ara-intro-text-english, .ara-intro-text-armenian {
-  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
+  font-family: 'AdelleSansARM', Arial, sans-serif;
   font-size: var(--intro-text-font-size);
   font-weight: bold;
   line-height: 1.1;
@@ -595,11 +557,9 @@ strong {
   padding-top: 1rem;
 }
 
-/* ============================== SEARCH BAR STYLES ============================== */
 .ara-search-bar {
   grid-column: 1 / span 1;
   display: grid;
-  /* Change from 2 columns → 3 columns */
   grid-template-columns: auto 1fr auto;
   align-items: center;
   border-bottom: 10px solid var(--ara-blue);
@@ -613,11 +573,13 @@ strong {
   color: white;
   padding-right: 1.5rem;
   padding-left: 2rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.25rem; /* Keep this margin to align properly */
+  display: flex; /* Make it a flex container */
+  align-self: flex-start; /* Align to the top of the container */
 }
 
 .search-input {
-  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
+  font-family: 'AdelleSansARM', Arial, sans-serif;
   font-size: var(--search-input-font-size);
   color: white;
   border: none;
@@ -628,17 +590,14 @@ strong {
 }
 
 ::placeholder {
-  color:lightgray;
+  color: lightgray;
   opacity: 1;
 }
 
-/* ============================== FILTER SECTION STYLES ============================== */
 .ara-filters-section {
   display: grid;
   margin-top: 2rem;
 }
-
-
 
 .filter-arrow {
   display: inline-block;
@@ -648,6 +607,7 @@ strong {
 .filter-arrow.open {
   transform: rotate(180deg);
 }
+
 .ara-filters-header {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -657,9 +617,8 @@ strong {
 .ara-filters-title {
   font-size: var(--filter-title-font-size);
   font-weight: bold;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
   padding-top: 2rem;
+  padding-bottom: 1rem;
 }
 
 .ara-filters-title span {
@@ -667,7 +626,6 @@ strong {
   transition: transform 0.3s;
 }
 
-/* When open, rotate 180deg */
 .ara-filter-menu-wrapper.expanded ~ .ara-filters-title span {
   transform: rotate(180deg);
 }
@@ -689,14 +647,10 @@ strong {
 
 .ara-filter-menu-wrapper {
   margin-top: 1rem;
-    /* Start collapsed */
   max-height: 0;
   overflow: hidden;
-
   opacity: 0;
   visibility: hidden;
-
-  /* Animate any property changes over 0.3s */
   transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
 }
 
@@ -709,11 +663,7 @@ strong {
 }
 
 .ara-filter-menu-wrapper.expanded {
-  /* Expand to some large max-height 
-     (9999px is a common hack to mimic “auto”) */
   max-height: 9999px;
-
-  /* Fade in */
   opacity: 1;
   visibility: visible;
 }
@@ -745,8 +695,8 @@ strong {
   font-weight: bold;
 }
 
-.ara-filter-option:hover{
-font-weight: bold;
+.ara-filter-option:hover {
+  font-weight: bold;
   cursor: pointer;
 }
 
@@ -770,17 +720,15 @@ font-weight: bold;
 .ara-filter-items[data-filter="instrument"],
 .ara-filter-items[data-filter="label"],
 .ara-filter-items[data-filter="artist"] {
-  display: block;          /* override grid */
-  column-count: 6;         /* adjust the number of columns as desired */
+  display: block;
+  column-count: 6;
   column-gap: 1rem;
 }
 
-/* Prevent individual filter items from breaking across columns */
 .filter-item {
   break-inside: avoid;
   margin-bottom: 0.5rem;
 }
-
 
 .filter-item {
   font-size: var(--filter-item-font-size);
@@ -794,18 +742,19 @@ font-weight: bold;
 
 .ara-filter-icon-circle {
   display: inline-block;
-  width: var(--filter-icon-circle-size);
-  height: var(--filter-icon-circle-size);
+  min-width: 0.7rem; /* Smaller than original 0.8rem */
+  width: 0.7rem; /* Smaller than original 0.8rem */
+  height: 0.7rem; /* Keep height and width the same */
+  flex-shrink: 0; /* Prevent the circle from shrinking */
   border-radius: 50%;
   border: 2px solid #000;
   margin-right: 10px;
 }
 
-.filter-item:hover  .ara-filter-icon-circle {
+.filter-item:hover .ara-filter-icon-circle {
   background-color: var(--ara-blue);
 }
 
-/* ============================== GRID STYLES ============================== */
 .ara-grid-wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -824,7 +773,7 @@ font-weight: bold;
   aspect-ratio: 1;
   justify-items: center;
   align-items: center;
-  border-radius: .2rem;
+  border-radius: 0.2rem;
   cursor: pointer;
   position: relative;
 }
@@ -840,7 +789,6 @@ font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
-  
 }
 
 .ara-grid-item-circle img {
@@ -850,7 +798,6 @@ font-weight: bold;
   border-radius: 50%;
   transition: transform 0.3s ease, mix-blend-mode 0.3s ease;
   mix-blend-mode: normal;
-  /* Remove position: absolute; top:50%; left:50%; transform: ... */
 }
 
 .ara-grid-item:hover .ara-grid-item-circle img {
@@ -890,7 +837,7 @@ font-weight: bold;
 }
 
 .ara-grid-item:hover .ara-grid-item-circle img {
-  filter: blur(.5px);
+  filter: blur(0.5px);
 }
 
 .ara-grid-item-title {
@@ -904,7 +851,7 @@ font-weight: bold;
 }
 
 .ara-grid_item_title_transliteration {
-  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
+  font-family: 'AdelleSansARM', Arial, sans-serif;
   font-style: italic;
   font-size: var(--grid-item-title-transliteration-font-size);
 }
@@ -913,7 +860,7 @@ font-weight: bold;
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 90%;
-  padding-top: .5rem;
+  padding-top: 0.5rem;
 }
 
 .grid_item_info {
@@ -929,7 +876,6 @@ font-weight: bold;
   opacity: 1;
 }
 
-/* ============================== PLAYER STYLES ============================== */
 .ara-record-player-wrapper {
   position: fixed;
   bottom: 0;
@@ -939,7 +885,7 @@ font-weight: bold;
   display: grid;
   grid-template-columns: max-content 1fr;
   padding-left: 0;
-  color:white;
+  color: white;
   z-index: 999;
 }
 
@@ -984,42 +930,38 @@ font-weight: bold;
 .ara-record-player-time {
   font-size: var(--player-time-font-size);
   text-align: right;
-  padding-left:2rem;
-  padding-right:2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 html {
-  scroll-padding-top: 2rem; /* Adjust this value to control the margin */
+  scroll-padding-top: 2rem;
 }
 
-
-a, a:visited, a:hover, a:active {
+a,
+a:visited,
+a:hover,
+a:active {
   color: var(--ara-blue);
   text-decoration: none;
 }
 
-/* Mobile layout: Single column */
 @media (max-width: 768px) {
   :root {
     --menu-title-font-size: 3rem;
-    --menu-icon-size:2.3rem;
+    --menu-icon-size: 2.3rem;
     --intro-text-font-size: 1.5rem;
   }
-
   .ara-intro {
     display: grid;
     grid-template-columns: 1fr;
   }
-
-  .ara-intro-text-english, .ara-intro-text-armenian {
+  .ara-intro-text-english,
+  .ara-intro-text-armenian {
     width: 100%;
     margin-bottom: 15px;
   }
 }
-
-
-
-
 
 .error-message {
   color: var(--ara-blue);
@@ -1028,35 +970,30 @@ a, a:visited, a:hover, a:active {
   font-size: 1.2rem;
 }
 
-
-	/* Mobile layout: Single column */
-	@media (max-width: 768px) {
-		:root {
-			--menu-title-font-size: 3rem;
-			--menu-icon-size:2.3rem;
-			--intro-text-font-size: 1.5rem;
-		}
-
-		.ara-intro {
-			display: grid;
-			grid-template-columns: 1fr;
-		}
-
-		.ara-intro-text-english, .ara-intro-text-armenian {
-			width: 100%;  /* Full width for each section */
-			margin-bottom: 15px;  /* Space between the sections */
-		}
-	}
-
-/* ============================== PLAYER STYLES ============================== */
+@media (max-width: 768px) {
+  :root {
+    --menu-title-font-size: 3rem;
+    --menu-icon-size: 2.3rem;
+    --intro-text-font-size: 1.5rem;
+  }
+  .ara-intro {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .ara-intro-text-english,
+  .ara-intro-text-armenian {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+}
 
 .audio-player-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%; /* Full width for the wrapper */
-  max-width: 1200px; /* Limit the max width of the player */
-  margin: 0 auto; /* Center the player */
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   background-color: #fff;
   padding: 15px;
   box-sizing: border-box;
@@ -1065,7 +1002,7 @@ a, a:visited, a:hover, a:active {
   left: 0;
   right: 0;
   z-index: 1000;
-  animation: slideIn 1s ease forwards; /* Slide in animation */
+  animation: slideIn 1s ease forwards;
 }
 
 .audio-player-wrapper-hidden {
@@ -1131,7 +1068,6 @@ a, a:visited, a:hover, a:active {
   padding: 0 !important;
 }
 
-/* Custom styles for controls */
 .rhap_main .rhap_play-pause-button,
 .rhap_main .rhap_volume,
 .rhap_main .rhap_progress-bar,
@@ -1152,19 +1088,18 @@ a, a:visited, a:hover, a:active {
 
 @keyframes slideIn {
   0% {
-    transform: translateX(100vw); /* Start off-screen to the right */
+    transform: translateX(100vw);
   }
   100% {
-    transform: translateX(0); /* End at the normal position */
+    transform: translateX(0);
   }
 }
 
-/* The container gets the inline transform from containerStyle */
 .record-image-container {
-  position: relative; /* or absolute if you prefer, but we set that inline */
+  position: relative;
   width: 100%;
   height: 100%;
-  overflow: hidden; /* ensure no spillover */
+  overflow: hidden;
 }
 
 .record-image {
@@ -1172,15 +1107,12 @@ a, a:visited, a:hover, a:active {
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-
-  /* Everyone has the spin animation but starts paused */
   animation: spin 1.5s linear infinite;
   animation-play-state: paused;
   animation-timing-function: linear;
 }
 
 .record-image.playing {
-  /* This class sets the animation running */
   animation-play-state: running;
 }
 
@@ -1188,10 +1120,7 @@ a, a:visited, a:hover, a:active {
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-      
 
-
-/* Pill-style selected filters */
 .selected-filters-container .filter-item {
   display: inline-block;
   padding: 0.3rem 0.8rem;
@@ -1221,20 +1150,19 @@ a, a:visited, a:hover, a:active {
   color: white;
 }
 
-
-
-/**********************************************
- * ABOUT PAGE - RESPONSIVE DESIGN
- **********************************************/
-
-/* About Page Wrapper: two columns */
 .ara-about-wrapper {
   display: grid;
-  grid-template-columns: 45% 55%; /* or 50% 50% if you prefer */
+  grid-template-columns: 1fr 1.3fr; /* on desktop */
   gap: 2rem;
   padding: 4rem;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  .ara-about-wrapper {
+    grid-template-columns: 1fr; /* collapse to single column */
+  }
 }
 
 .ara-about-text-left,
@@ -1242,27 +1170,25 @@ a, a:visited, a:hover, a:active {
   text-align: left;
 }
 
-/* Optional: adjust heading styles */
 .ara-about-text-left h1,
 .ara-about-text-right h1 {
-  font-size: 2rem;
+  font-size: var(--about-text-left-font-size-heading);
   margin-bottom: 1rem;
 }
+.ara-about-text-left p,
+.ara-about-text-right p {
+  font-size: var(--about-text-left-font-size-body);
+}
 
-
-
-/* ========================== RESPONSIVE FIXES ========================== */
 @media (max-width: 1024px) {
   .ara-about-wrapper {
-    grid-template-columns: 1fr; /* Switch to single column */
+    grid-template-columns: 1fr;
     text-align: center;
     gap: 3rem;
   }
-
   .ara-about-image-container {
-    order: -1; /* Move image above text */
+    order: -1;
   }
-
   .ara-about-text {
     max-width: 100%;
     text-align: center;
@@ -1273,17 +1199,14 @@ a, a:visited, a:hover, a:active {
   .ara-about-wrapper {
     padding: 2rem;
   }
-
   .ara-about-text h1 {
     font-size: clamp(1.8rem, 5vw, 2.2rem);
   }
-
   .ara-about-text p {
     font-size: clamp(0.9rem, 4vw, 1rem);
   }
-
   .ara-about-image {
-    max-width: 80%; /* Reduce image size for better fit */
+    max-width: 80%;
   }
 }
 
@@ -1291,30 +1214,20 @@ a, a:visited, a:hover, a:active {
   .ara-about-wrapper {
     padding: 1.5rem;
   }
-
   .ara-about-text h1 {
     font-size: 1.6rem;
   }
-
   .ara-about-text p {
     font-size: 0.9rem;
   }
-
   .ara-about-image {
     max-width: 70%;
   }
 }
 
-
-
-
-/* Footer Section */
-
 .blurb {
   color: white;
 }
-
-
 
 .footer,
 .footer_grid {
@@ -1324,56 +1237,54 @@ a, a:visited, a:hover, a:active {
 .footer {
   text-align: center;
 }
+
 .footer img {
   max-width: 100%;
   height: auto;
 }
 
 .footer {
-  max-width: 1800px; /* Or your desired max width */
+  /* match .ara-main’s width & borders */
+  max-width: 100%; /* or whatever your .ara-main is */
   margin: 0 auto;
-  border-left: 2px solid var(--ara-blue);
-  border-right: 2px solid var(--ara-blue);
-  padding: 1rem; /* Optional, for spacing */
+  height: auto;
+  border-left: var(--main-border-thickness) solid var(--ara-blue);
+  border-right: var(--main-border-thickness) solid var(--ara-blue);
   text-align: center;
+  
 }
 
 .footer img {
-  display: block;       /* Remove inline spacing */
-  width: 2000px;         /* or your desired fixed width */
-  max-width: 100%;      /* Responsive scaling */
-  height: auto;
-  margin: 0 auto;
+            max-width: 100%;
+            height: auto;
 }
 
-
-
-
-/* Footer Grid */
 .footer_grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.5rem;
-  line-height: 1.5;
-  margin: 0 0;
-  gap: 2rem;
-  height: 30vh;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            line-height: 1.5;
+            margin: 2rem 0;
+            gap: 2rem;
+            height: 30vh;
 }
 
-/* Social Media Links */
+
 .social_media_links {
   display: flex;
   justify-content: center;
   color: white;
 }
+
 .social_media_links a {
   color: white;
   text-decoration: none;
   font-weight: normal;
 }
+
 .social_media_links a:not(:last-child)::after {
   content: " • ";
   color: white !important;
@@ -1381,7 +1292,6 @@ a, a:visited, a:hover, a:active {
   padding-right: 1rem;
 }
 
-/* Animated Text */
 .animated-text {
   font-family: monospace;
   display: flex;
@@ -1390,10 +1300,12 @@ a, a:visited, a:hover, a:active {
   gap: 0.5rem;
   color: white;
 }
+
 .rotating {
   display: inline-block;
   animation: rotateCharacter 1.818s linear infinite;
 }
+
 @keyframes rotateCharacter {
   0% {
     transform: rotate(0deg);
@@ -1402,15 +1314,10 @@ a, a:visited, a:hover, a:active {
     transform: rotate(360deg);
   }
 }
+
 .rotating.paused {
   animation-play-state: paused;
 }
-
-
-
-
-
-
 
 @font-face {
   font-family: 'FitVariable';
@@ -1424,23 +1331,19 @@ a, a:visited, a:hover, a:active {
   --menu-title-font-size: 5rem;
   --menu-icon-size: 3.7rem;
   --menu-links-font-size: 1rem;
-
   --intro-text-font-size: 2.2rem;
   --search-icon-font-size: 5rem;
   --search-input-font-size: 1.8rem;
   --search-bar-line-height: 1.2;
-
   --filter-title-font-size: 2rem;
-  --filter-option-font-size: 1.2rem;    
+  --filter-option-font-size: 1.2rem;
   --filter-item-font-size: 1rem;
-  --filter-icon-circle-size: .8rem;
-
+  --filter-icon-circle-size: 0.7rem;
   --grid-item-title-armenian-font-size: 1rem;
-  --grid-item-title-transliteration-font-size: .9rem;
+  --grid-item-title-transliteration-font-size: 0.9rem;
   --filter-language-switcher-font-size: 1rem;
-
   --player-song-title-font-size: 1rem;
-  --player-artist-name-font-size: .8rem;
+  --player-artist-name-font-size: 0.8rem;
   --player-time-font-size: 1rem;
 }
 
@@ -1578,7 +1481,6 @@ body {
   transform: translateX(50%);
 }
 
-/* CONTAINER LAYOUT */
 .container {
   border-top: 5px solid var(--ara-blue);
   padding-top: 2rem;
@@ -1604,15 +1506,14 @@ body {
   }
 }
 
-/* HEADER SECTION */
 .ara-record-header {
   display: grid;
   grid-template-columns: max-content 1fr;
   border-bottom: 2px solid black;
   padding-bottom: 13.5px;
   grid-area: heading;
-  grid-gap: .5rem;
-  margin-bottom: -10px;  /* Add this line to reduce the bottom gap */
+  grid-gap: 0.5rem;
+  margin-bottom: -10px;
 }
 
 .ara-header__recording-label {
@@ -1630,9 +1531,7 @@ body {
   font-size: 16px;
 }
 
-/* MAIN IMAGE SECTION */
 .ara-record-image {
-
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1651,19 +1550,17 @@ body {
   cursor: default;
 }
 
-/* Keyframe for continuous spinning */
 @keyframes spin {
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-/* The base image style (already likely in your CSS) */
 .ara-record-image__main {
   width: 100%;
   height: auto;
   border-radius: 50%;
   animation: spin 5s linear infinite;
-  animation-play-state: paused; /* default paused */
+  animation-play-state: paused;
 }
 
 .ara-record-info__pills-container {
@@ -1680,7 +1577,6 @@ body {
   white-space: nowrap;
 }
 
-/* When playing, we un-pause the animation */
 .spinning-record {
   animation-play-state: running;
 }
@@ -1725,7 +1621,6 @@ body {
   background-color: #333;
 }
 
-/* TRACKLIST SECTION */
 .ara-record-info__side-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1745,6 +1640,7 @@ body {
 .ara-record-info__side-title:hover {
   opacity: 0.7;
 }
+
 .ara-record-info__track-list {
   display: grid;
   grid-template-columns: 2ch 1fr 6ch;
@@ -1782,7 +1678,7 @@ body {
 }
 
 .ara-record-info__transliteration {
-  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
+  font-family: 'AdelleSansARM', Arial, sans-serif;
   font-style: italic;
   font-size: 16px;
   color: #555;
@@ -1795,7 +1691,6 @@ body {
   font-size: 18px;
 }
 
-/* DETAILS SECTION */
 .ara-record-info__details-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1809,7 +1704,6 @@ body {
   .ara-record-info__side-section {
     grid-template-columns: 1fr;
   }
-
   .ara-record-info__details-section {
     grid-template-columns: 1fr;
   }
@@ -1855,7 +1749,6 @@ body {
   cursor: pointer;
 }
 
-/* METADATA SECTION */
 .ara-record-meta-section {
   display: grid;
   grid-template-columns: 1fr;
@@ -1880,6 +1773,10 @@ body {
   border-right: 1px solid #ddd;
 }
 
+.ara-record-meta-section__metadata-row:first-child > div {
+  font-weight: bold;
+}
+
 .ara-record-meta-section__side-a-data,
 .ara-record-meta-section__side-a-data-armenian {
   border-right: 1px solid #ddd;
@@ -1891,28 +1788,27 @@ body {
 
 .ara-record-meta-section__side-a-data,
 .ara-record-meta-section__side-b-data {
-  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
+  font-family: 'AdelleSansARM', Arial, sans-serif;
 }
 
 .ara-record-player-artist-name {
-  font-family: 'AdelleSansARM', Arial, sans-serif;  /* Updated */
+  font-family: 'AdelleSansARM', Arial, sans-serif;
   font-size: var(--player-artist-name-font-size);
 }
 
-/* PLAYER SECTION */
 .ara-record-player-wrapper {
   position: fixed;
   bottom: 0;
-  left: 0; 
-  right: 0; 
+  left: 0;
+  right: 0;
   height: 10vh;
-  max-width: 100vw; 
-  margin: 0 auto; 
+  max-width: 100vw;
+  margin: 0 auto;
   background-color: var(--ara-blue);
   display: grid;
   grid-template-columns: max-content 1fr;
-  padding-left:0;
-  color:white;
+  padding-left: 0;
+  color: white;
   z-index: 999;
 }
 
@@ -1929,8 +1825,6 @@ body {
   object-fit: cover;
   border-radius: 50%;
 }
-
-
 
 .ara-record-player-song-title {
   text-transform: uppercase;
@@ -1955,14 +1849,14 @@ body {
 .ara-record-player-time {
   font-size: var(--player-time-font-size);
   text-align: right;
-  padding-left:2rem;
-  padding-right:2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 @media (max-width: 768px) {
   :root {
     --menu-title-font-size: 3rem;
-    --menu-icon-size:2.3rem;
+    --menu-icon-size: 2.3rem;
     --intro-text-font-size: 1.5rem;
   }
 }

@@ -96,9 +96,9 @@ function SingleRecordView(props: {
           ref={containerRef}
           style={{ fontSize }}
         >
-          <Link href={`collection-detail/${record.id}`}>
-            {record.display_title}
-          </Link>
+<Link href={`record-details/${record.id}`}>
+  {record.display_title}
+</Link>
         </div>
       </div>
     </div>

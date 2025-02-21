@@ -8,8 +8,10 @@ import { usePathname } from "next/navigation";
 import { AudioContext } from "@/app/audioLayout";
 import Link from "next/link";
 import {
-  getDefaultImageDetailUrl,
+  getDefaultImageThumbnailUrl,
+  getImageThumbnailUrl,
   getImageDetailUrl,
+  getPlaceholderRecordImageUrl
 } from "@/utils/assetUtils";
 import SharePopup from "@/app/SharePopup";
 import _ from "lodash";
@@ -71,7 +73,47 @@ type AvailableFilters = {
 };
 
 const CollectionDetail: React.FC = () => {
+
+  const pathName = usePathname();
   const router = useRouter();
+
+  const smoothScrollToFilters = () => {
+    const filterEl = document.getElementById("filters");
+    if (filterEl) {
+      const offset = 200; // adjust as needed
+      const start = window.scrollY;
+      const end = Math.max(filterEl.offsetTop - offset, 0);
+      const duration = 1000;
+      const startTime = performance.now();
+
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeInOutCubic =
+          progress < 0.5
+            ? 4 * progress * progress * progress
+            : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+        window.scrollTo(0, start + (end - start) * easeInOutCubic);
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    }
+  };
+
+  const handleArchiveClick = () => {
+    if (pathName === "/") {
+      smoothScrollToFilters();
+    } else {
+      router.push("/");
+      setTimeout(() => {
+        smoothScrollToFilters();
+      }, 500);
+    }
+  };
+
 
   // Update handlePillClick to use #filters in the URL hash
   const handlePillClick = (filterType: string, value: string) => {
@@ -134,7 +176,7 @@ const CollectionDetail: React.FC = () => {
   const [isShareOpen, setIsShareOpen] = useState(false);
   const currentIsPlaceholder = images[currentImageIndex] === null;
   // Get the record ID from the URL
-  const pathName = usePathname();
+  
   const araId = pathName.split("/").slice(-1)[0];
   console.log("path:", pathName, araId);
 
@@ -234,30 +276,23 @@ setImages(recordImages);
       setCurrentImageIndex(imageIndex);
     }
 
-    if (audioPlayer.src === record.audioUrl) {
-      // Toggle play/pause if the same track is clicked
-      if (audioPlayer.paused) {
-        void audioPlayer.play();
-        setIsPlaying(true);
-      } else {
-        audioPlayer.pause();
-        setIsPlaying(false);
-      }
-    } else {
-      // Play new track
-      setSong(record.audioUrl);
-      setName(record.title || "Unknown Title");
-      setArtistName(record.artist_original || "Unknown Artist");
-      setAlbumArt(images[imageIndex]);
-      if (record.id) setSongId(record.id);
-
-      setCurrentTrackUrl(record.audioUrl);
-      setIsPlaying(true);
-
-      setTimeout(() => {
-        void audioPlayer.play();
-      }, 100);
-    }
+if (audioPlayer.src === record.audioUrl) {
+  // Toggle play/pause if the same track is clicked
+  if (audioPlayer.paused) {
+    void audioPlayer.play();
+    setIsPlaying(true);
+  } else {
+    audioPlayer.pause();
+    setIsPlaying(false);
+  }
+} else {
+  // Play new track
+  setSong(record.audioUrl);
+  setName(record.title || "Unknown Title");
+  setArtistName(record.artist_original || "Unknown Artist");
+  setAlbumArt(images[imageIndex] || getPlaceholderRecordImageUrl());
+  if (record.id) setSongId(record.id);
+}
   };
 
   const handleImageClick = (
@@ -491,9 +526,14 @@ setImages(recordImages);
       <div className="ara-main" id="ara-main">
         {/* Top Menu */}
         <div className="ara-menu" id="ara-menu">
-          <div className="ara-menu-title" id="ara-menu-title">
-            ARMENIAN RECORD ARCHIVE
-          </div>
+      <div
+        className="ara-menu-title"
+        id="ara-menu-title"
+        onClick={handleArchiveClick}
+        style={{ cursor: "pointer" }}
+      >
+        ARMENIAN RECORD ARCHIVE
+      </div>
           <div
             className={`ara-menu-links-wrapper ${
               isMenuVisible ? "expanded" : ""

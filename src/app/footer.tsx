@@ -20,9 +20,9 @@ const Footer: React.FC = () => {
 
   return (
     <>
-      <div className="footer">
-        <img src="/ara_footer.svg" alt="Armenian Record Archive" />
-      </div>
+<div className="footer">
+  <img src="/ara_footer.svg" alt="Armenian Record Archive" />
+</div>
       <div className="footer_grid">
 <div className="social_media_links">
   <a href="https://www.facebook.com/ArmenianRecordArchive/" target="_blank" rel="noopener noreferrer">Facebook</a>

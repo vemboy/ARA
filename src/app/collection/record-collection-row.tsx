@@ -150,11 +150,11 @@ function RecordCollectionRow(props: any) {
           ref={containerRef}
           style={{ fontSize }}
         >
-          <Link className="Armenian" href={`collection-detail/${props.ARAID}`}>
+          <Link className="Armenian" href={`record-details/${props.ARAID}`}>
             {props.title_armenian}
             <br />
           </Link>
-          <Link className="English" href={`collection-detail/${props.ARAID}`}>
+          <Link className="English" href={`record-details/${props.ARAID}`}>
             {props.title}
           </Link>
         </div>

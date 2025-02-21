@@ -4,8 +4,55 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Link from "next/link";
 import Footer from "@/app/footer";
+import AboutStats from "@/app/AboutStats"; // or wherever you placed it
+import { useRouter, usePathname } from "next/navigation";
 
 export default function AboutPage() {
+    const router = useRouter();
+  const pathName = usePathname();
+
+  // This function scrolls to the element with id "filters" with a 200px offset
+const smoothScrollToFilters = () => {
+  const filterEl = document.getElementById("filters");
+  if (filterEl) {
+    const offset = 200; // 200px offset; adjust as needed
+    const start = window.scrollY;
+    const end = Math.max(filterEl.offsetTop - offset, 0);
+    const duration = 1000; // duration in ms
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeInOutCubic =
+        progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      window.scrollTo(0, start + (end - start) * easeInOutCubic);
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }
+};
+
+// Handler that checks the current pathname and either smooth scrolls
+// or redirects to "/" and then scrolls.
+const handleArchiveClick = () => {
+  if (pathName === "/") {
+    // On the collection page—smooth scroll to the Filters element.
+    smoothScrollToFilters();
+  } else {
+    // Not on the collection page—redirect to "/" then scroll.
+    router.push("/");
+    setTimeout(() => {
+      smoothScrollToFilters();
+    }, 500);
+  }
+};
+
   const [aboutHtml, setAboutHtml] = useState<string>("");
   const [aboutHtmlAr, setAboutHtmlAr] = useState<string>("");
 
@@ -105,7 +152,14 @@ export default function AboutPage() {
       <div className="ara-main">
         {/* Top Menu */}
         <div className="ara-menu">
-          <div className="ara-menu-title">ARMENIAN RECORD ARCHIVE</div>
+                <div
+        className="ara-menu-title"
+        id="ara-menu-title"
+        onClick={handleArchiveClick}
+        style={{ cursor: "pointer" }}
+      >
+        ARMENIAN RECORD ARCHIVE
+      </div>
           <div
             className="ara-menu-links-wrapper expanded"
             ref={menuLinksWrapperRef}
@@ -132,7 +186,9 @@ export default function AboutPage() {
             <h1>Text AR</h1>
             <div dangerouslySetInnerHTML={{ __html: aboutHtmlAr }} />
           </div>
+
         </div>
+        <AboutStats />
       </div>
       <Footer />
     </>

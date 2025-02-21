@@ -65,6 +65,53 @@ const smoothScrollToMain = () => {
  * Main collection component
  */
 export default function Collection() {
+
+// Create a smooth scroll function that scrolls to the Filters element
+const smoothScrollToFilters = () => {
+  const filterEl = document.getElementById("filters");
+  if (filterEl) {
+    const offset = 200; // Adjust this value to your needs
+    const start = window.scrollY;
+    const end = Math.max(filterEl.offsetTop - offset, 0);
+    const duration = 1000; // duration in ms
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeInOutCubic =
+        progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      window.scrollTo(0, start + (end - start) * easeInOutCubic);
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }
+};
+
+
+// Modify your archive title click handler to use smoothScrollToFilters
+const handleArchiveClick = () => {
+  if (pathname === "/") {
+    // Already on the collection page, so smooth scroll to the Filters element.
+    smoothScrollToFilters();
+  } else {
+    // Redirect to home (collection page)
+    router.push("/");
+    // After a short delay, smooth scroll to the Filters element.
+    setTimeout(() => {
+      smoothScrollToFilters();
+    }, 500);
+  }
+};
+
+
+
+
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -740,9 +787,15 @@ finalRecords.forEach((rec) => {
       <div className="ara-main" id="ara-main">
         {/* MENU */}
         <div className="ara-menu" id="ara-menu" ref={menuRef}>
-          <div className="ara-menu-title" id="ara-menu-title">
-            ARMENIAN RECORD ARCHIVE
-          </div>
+        <div
+          className="ara-menu-title"
+          id="ara-menu-title"
+          onClick={handleArchiveClick}
+          style={{ cursor: "pointer" }}
+        >
+          ARMENIAN RECORD ARCHIVE
+        </div>
+
           <div className="ara-menu-links-wrapper expanded" id="ara-menu-links-wrapper" ref={menuLinksWrapperRef}>
             <Link href="/">
               COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ

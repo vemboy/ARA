@@ -8,6 +8,7 @@ import {
   getDefaultImageThumbnailUrl,
   getImageThumbnailUrl,
   getImageDetailUrl,
+  getPlaceholderRecordImageUrl
 } from "@/utils/assetUtils";
 
 // Import your new component
@@ -34,11 +35,11 @@ function RecordCollectionRow(props: any) {
       props.setCurrentSongId(songId);
       props.setCurrentName(props.title);
       props.setCurrentArtistName(props.author);
-      props.setAlbumArt(
-        imageUrl
-          ? getImageThumbnailUrl(imageUrl)
-          : getDefaultImageThumbnailUrl()
-      );
+props.setAlbumArt(
+  imageUrl
+    ? getImageThumbnailUrl(imageUrl)
+    : getPlaceholderRecordImageUrl() // New function specific for record placeholders
+);
       props.setSongId(props.id);
 
       setIsPlaying(true);
@@ -91,23 +92,23 @@ function RecordCollectionRow(props: any) {
 
       <div className="ara-grid-item-circle" onClick={handleRecordClick}>
         <div className="record-image-container" style={containerStyle}>
-          {imageUrl ? (
-            <Image
-              loading="lazy"
-              src={getImageDetailUrl(imageUrl)}
-              alt="Record Image"
-              width={500}
-              height={500}
-              quality={100}
-              blurDataURL={getImageThumbnailUrl(imageUrl)}
-              className={`record-image ${
-                isPlaying && currentSongId === songId ? "playing" : ""
-              }`}
-            />
-          ) : (
-            // <SampleRecordImage> has the nested circles
-            <SampleRecordImage isPlaying={isPlaying && currentSongId === songId} />
-          )}
+{imageUrl ? (
+  <Image
+    loading="lazy"
+    src={getImageDetailUrl(imageUrl)}
+    alt="Record Image"
+    width={500}
+    height={500}
+    quality={100}
+    blurDataURL={getImageThumbnailUrl(imageUrl)}
+    className={`record-image ${
+      isPlaying && currentSongId === songId ? "playing" : ""
+    }`}
+  />
+) : (
+  // <SampleRecordImage> has the nested circles but doesn't spin
+  <SampleRecordImage isPlaying={false} />
+)}
         </div>
         <div className="ara-grid-item-circle-overlay">
           {isPlaying && currentSongId === songId ? '❚❚' : '►'}
@@ -116,12 +117,12 @@ function RecordCollectionRow(props: any) {
 
       <div className="ara-grid-item-title">
         <div className="ara-grid_item_title_armenian">
-          <Link href={`/collection-detail/${props.araId}`}>
+          <Link href={`/record-details/${props.araId}`}>
             {props.title_armenian}
           </Link>
         </div>
         <div className="ara-grid_item_title_transliteration">
-          <Link href={`/collection-detail/${props.araId}`}>{props.title}</Link>
+          <Link href={`/record-details/${props.araId}`}>{props.title}</Link>
         </div>
       </div>
     </div>

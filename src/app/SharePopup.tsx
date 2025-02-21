@@ -14,8 +14,8 @@ const SharePopup = ({ open, onOpenChange, recordTitle, recordId }: SharePopupPro
   
   if (!open) return null;
 
-  const url = typeof window !== 'undefined' ? 
-    `${window.location.origin}/collection-detail/${recordId}` : '';
+const url = typeof window !== 'undefined' ? 
+  `${window.location.origin}/record-details/${recordId}` : '';
 
   const handleCopyLink = async () => {
     try {

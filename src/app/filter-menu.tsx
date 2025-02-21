@@ -172,31 +172,64 @@ const hasActiveExcluded = Object.values(excludedFilters).some(
   (set) => set.size > 0
 );
 
-  const renderFilterItems = (items: string[], filterType: string) => {
-  // For filters other than regions, sort alphabetically
-  const sortedItems = filterType !== "regions" 
-    ? [...items].sort((a, b) => a.localeCompare(b))
-    : items;
+const renderFilterItems = (items: string[], filterType: string) => {
+  let sortedItems: string[];
   
+  // Special handling for regions - west to east geographical order
+if (filterType === "regions") {
+  const regionOrder = {
+    "North America": 1,
+    "South America": 2,
+    "Europe": 3,
+    "Soviet Union": 4,
+  };
+
+  sortedItems = [...items].map(item => item.trim()).sort((a, b) => {
+    let aOrder = 999;
+    let bOrder = 999;
+
+    for (const [region, order] of Object.entries(regionOrder)) {
+      if (a.toLowerCase().includes(region.toLowerCase())) {
+        aOrder = order;
+        break;
+      }
+    }
+    for (const [region, order] of Object.entries(regionOrder)) {
+      if (b.toLowerCase().includes(region.toLowerCase())) {
+        bOrder = order;
+        break;
+      }
+    }
+
+    if (aOrder !== bOrder) {
+      return aOrder - bOrder;
+    }
+    return a.localeCompare(b);
+  });
+} else {
+    // For other filter types, just sort alphabetically
+    sortedItems = [...items].sort((a, b) => a.localeCompare(b));
+  }
+  
+  // Render filter items
   return sortedItems.map((item) => {
     const filterKey =
-      filterType === "artist_original" ? "artists" : filterType; // for indexing availableFilters
+      filterType === "artist_original" ? "artists" : filterType;
     const isAvailable =
       availableFilters[filterKey as keyof typeof availableFilters].has(item);
 
     const isIncluded = includedFilters[filterType]?.has(item) ?? false;
     const isExcluded = excludedFilters[filterType]?.has(item) ?? false;
 
-    // Build className
     let className = "filter-item";
     if (!isAvailable) {
       className += " disabled";
     }
     if (isIncluded) {
-      className += " active"; // "active" = included
+      className += " active";
     }
     if (isExcluded) {
-      className += " excluded"; // "excluded" = double-click
+      className += " excluded";
     }
 
     return (

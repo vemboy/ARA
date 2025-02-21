@@ -18,6 +18,18 @@ export function getDefaultImageDetailUrl() {
   return getImageDetailUrl(DETAULT_IMAGE_ID);
 }
 
+export function getPlaceholderRecordImageUrl(): string {
+  // SVG representing the placeholder record
+  const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="100" fill="#666"/>
+    <circle cx="100" cy="100" r="80" fill="#ddd"/>
+    <circle cx="100" cy="100" r="70" fill="#666" stroke="white" stroke-width="2"/>
+    <circle cx="100" cy="100" r="20" fill="white"/>
+  </svg>`;
+  
+  return `data:image/svg+xml;base64,${btoa(svgContent)}`;
+}
+
 // // assetUtils.ts
 // const DIRECTUS_ASSETS_URL = "https://ara.directus.app/assets";
 // const DEFAULT_IMAGE_ID = "bfcf94c6-e40d-4fe1-8fbc-df54dc96ec48";
