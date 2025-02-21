@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import styles from "./AboutStats.module.css";
 
 interface Stats {
   distinctSongs: number | null;
@@ -84,8 +85,7 @@ export default function AboutStats() {
             },
           }
         );
-        const armenianTitlesCount =
-          armenianTitlesRes.data.meta.filter_count ?? 0;
+        const armenianTitlesCount = armenianTitlesRes.data.meta.filter_count ?? 0;
 
         setStats({
           distinctSongs: distinctSongsCount,
@@ -102,34 +102,34 @@ export default function AboutStats() {
   }, []);
 
   return (
-    <div style={{ display: "grid", gap: "1rem", marginTop: "2rem" }}>
-      <div>
+    <div className={styles.statsContainer}>
+      <div className={styles.statItem}>
         <strong># of distinct songs</strong>
-        <div style={{ fontSize: "2rem" }}>
+        <div className={styles.statNumber}>
           {stats.distinctSongs !== null ? stats.distinctSongs : "Loading..."}
         </div>
       </div>
-      <div>
+      <div className={styles.statItem}>
         <strong># of records with a photo</strong>
-        <div style={{ fontSize: "2rem" }}>
+        <div className={styles.statNumber}>
           {stats.recordsWithPhoto !== null ? stats.recordsWithPhoto : "Loading..."}
         </div>
       </div>
-      <div>
+      <div className={styles.statItem}>
         <strong># of Record Labels</strong>
-        <div style={{ fontSize: "2rem" }}>
+        <div className={styles.statNumber}>
           {stats.recordLabels !== null ? stats.recordLabels : "Loading..."}
         </div>
       </div>
-      <div>
+      <div className={styles.statItem}>
         <strong># of Artists</strong>
-        <div style={{ fontSize: "2rem" }}>
+        <div className={styles.statNumber}>
           {stats.artists !== null ? stats.artists : "Loading..."}
         </div>
       </div>
-      <div>
+      <div className={styles.statItem}>
         <strong># of songs with Armenian titles</strong>
-        <div style={{ fontSize: "2rem" }}>
+        <div className={styles.statNumber}>
           {stats.armenianTitles !== null ? stats.armenianTitles : "Loading..."}
         </div>
       </div>

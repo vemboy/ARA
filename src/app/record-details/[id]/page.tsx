@@ -544,11 +544,11 @@ if (audioPlayer.src === record.audioUrl) {
               COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ
             </Link>{" "}
             ●
-            <a href="#about">
+            <Link href="/about">
               ABOUT US
               <br />
               ՄԵՐ ՄԱՍԻՆ
-            </a>
+            </Link>
           </div>
           <div
             className="ara-menu-toggle"

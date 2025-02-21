@@ -1825,3 +1825,15 @@ a:active {
     --intro-text-font-size: 1.5rem;
   }
 }
+
+
+.statsContainer {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+
+.statNumber {
+  font-size: 2rem;
+}
