@@ -1827,13 +1827,13 @@ a:active {
 }
 
 
-.statsContainer {
+.aboutStatsContainer {
   display: grid;
   gap: 1rem;
   margin-top: 2rem;
 }
 
 
-.statNumber {
+.aboutStatNumber {
   font-size: 2rem;
 }
