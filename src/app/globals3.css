@@ -191,7 +191,7 @@ a:active {
 }
 
 .ara-landing-page img {
-  width2: clamp(200px, 80vw, 80vh);
+  width: clamp(200px, 80vw, 80vh);
   object-fit: contain;
   transition: transform 0.1s ease-out;
   cursor: pointer;
