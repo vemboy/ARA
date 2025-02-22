@@ -1276,7 +1276,7 @@ a:active {
 
   
   .ara-grid-item:hover .ara-grid-item-circle img {
-    filter: blur(0);
+    filter: blur(0px);
   }
 
   .ara-grid-circle-overlay {
@@ -1304,9 +1304,6 @@ a:active {
   
 
 }
-
-
-
 
 
 .error-message {
