@@ -191,7 +191,7 @@ a:active {
 }
 
 .ara-landing-page img {
-  width: clamp(200px, 80vw, 80vh);
+  width: clamp(200px, 80vw, 50vh);
   object-fit: contain;
   transition: transform 0.1s ease-out;
   cursor: pointer;
@@ -1185,7 +1185,7 @@ a:active {
 
     --grid-gap-size: .5rem;
 
-    --menu-title-font-size: 2rem;
+    --menu-title-font-size: 2.3rem;
     --menu-icon-size: 1.7rem;
     --menu-links-font-size: .7rem;
 
@@ -1205,10 +1205,9 @@ a:active {
 
 
 /*  TEST FOR EXPANDED IN Y-DIRECTION FOR MOBILE*/
-  /*.ara-menu-icon.clicked .ara-menu-icon-record {
+  .ara-menu-icon.clicked .ara-menu-icon-record {
     transform: translateY(50%);
-  }*/
-
+  }
 
 
   .ara-intro {
