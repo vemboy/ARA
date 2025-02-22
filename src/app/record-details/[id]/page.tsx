@@ -542,7 +542,7 @@ if (audioPlayer.src === record.audioUrl) {
           >
             <Link href="https://ara-jet.vercel.app/">
               COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ
-            </Link>{" "}
+            </Link>{" "} 
             ●
             <Link href="/about">
               ABOUT US
