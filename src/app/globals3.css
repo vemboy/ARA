@@ -86,11 +86,13 @@
 :root {
 /*  --ara-blue: #091133;*/
   --ara-blue: hsl(225, 73%, 12%);
-  --ara-gray_light: hsl(225, 15%, 90%);;
-  --ara-gray_dark: hsl(225, 15%, 60%);;
+  --ara-gray_light: hsl(225, 15%, 90%);
+  --ara-gray_dark: hsl(225, 15%, 60%);
+  --grid-gap-size: 1rem;
   --circle-size: 30%;
   --border-thickness-debug: 0px;
-  --main-border-thickness: 20px;
+  --main-border-thickness: 1rem;
+  --main-border-padding: 2rem;
   --menu-title-font-size: 5rem;
   --menu-icon-size: 3.7rem;
   --menu-links-font-size: 1rem;
@@ -189,11 +191,11 @@ a:active {
 }
 
 .ara-landing-page img {
-  width: 400px;
-  height: 400px;
+  widthL: clamp(200px, 80vw, 1000px);
   object-fit: contain;
   transition: transform 0.1s ease-out;
   cursor: pointer;
+
 }
 
 
@@ -207,7 +209,7 @@ a:active {
   border-right: var(--main-border-thickness) solid var(--ara-blue);
   background-color: white;
   color: var(--ara-blue);
-  padding: 2rem;
+  padding: var(--main-border-padding);
 }
 
 
@@ -235,7 +237,7 @@ a:active {
   grid-row: 1;
   font-family: 'FitVariable';
   font-size: var(--menu-title-font-size);
-  font-weight: bold;
+/*  font-weight: bold;*/
   color: var(--ara-blue);
   font-variation-settings: 'wdth' 500, 'wght' 1000;
 }
@@ -244,6 +246,7 @@ a:active {
 .ara-menu-links-wrapper {
   grid-column: 1 / span 2;
   font-size: var(--menu-links-font-size);
+  line-height: 1;
   color: var(--ara-blue);
   display: flex;
   justify-content: center;
@@ -383,6 +386,8 @@ a:active {
   align-items: center;
   line-height: var(--search-bar-line-height);
   background-color: var(--ara-blue);
+  border-top: 2px solid var(--ara-blue);
+  border-bottom: 2px solid var(--ara-blue);
 }
 
 
@@ -793,11 +798,11 @@ a:active {
 .ara-grid-wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
+  gap: var(--grid-gap-size);
   max-width: 100%;
   background-color: white;
   margin-top: 2rem;
-  margin-bottom: 6rem;
+  margin-bottom: 1rem;
 }
 
 .ara-grid-item {
@@ -1106,6 +1111,22 @@ a:active {
   margin-bottom: 1rem;
 }
 
+.aboutStatsContainer {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+  aboutStatItem {
+    font-family: 'AdelleSansARM-Bold';
+  }
+
+.aboutStatNumber {
+  font-family: FitVariable;
+  font-variation-settings: 'wdth' 500, 'wght' 1000;
+  font-size: 2rem;
+}
+
 
 /* ============================== MOBILE MEDIA QUERY — ABOUT US ============================== */
 
@@ -1159,17 +1180,24 @@ a:active {
 
 @media (max-width: 768px) {
   :root {
-    --menu-title-font-size: 3rem;
-    --menu-icon-size: 2.3rem;
-    --intro-text-font-size: 1.5rem;
+    --main-border-thickness: 1rem;
+    --main-border-padding: 1rem;
 
-    --search-icon-font-size: 4rem;
-    --search-input-font-size: 1.2rem;
+    --grid-gap-size: .5rem;
 
-    --grid-item-circle-size: 60%;
+    --menu-title-font-size: 2rem;
+    --menu-icon-size: 1.7rem;
+    --menu-links-font-size: .7rem;
 
-    --grid-item-title-armenian-font-size: .6rem;
-    --grid-item-title-transliteration-font-size: .6rem;
+    --intro-text-font-size: 1.2rem;
+
+    --search-icon-font-size: 3rem;
+    --search-input-font-size: 1rem;
+
+    --grid-item-circle-size: 50%;
+
+    --grid-item-title-armenian-font-size: .5rem;
+    --grid-item-title-transliteration-font-size: .5rem;
 
     --about-text-left-font-size-heading: 8rem;
     --about-text-left-font-size-body: 1.2rem;
@@ -1177,9 +1205,9 @@ a:active {
 
 
 /*  TEST FOR EXPANDED IN Y-DIRECTION FOR MOBILE*/
-  .ara-menu-icon.clicked .ara-menu-icon-record {
+  /*.ara-menu-icon.clicked .ara-menu-icon-record {
     transform: translateY(50%);
-  }
+  }*/
 
   .ara-intro {
     grid-template-columns: 1fr;
@@ -1218,13 +1246,14 @@ a:active {
 
   .ara-grid_item_title_transliteration {
     font-size: var(--grid-item-title-transliteration-font-size);
+    line-height: 1.2;
   }
 
   .footer_grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1rem;
-    font-size: 1.3rem;
+    gap: .5rem;
+    font-size: 1rem;
   }
 
 
@@ -1827,13 +1856,4 @@ a:active {
 }
 
 
-.aboutStatsContainer {
-  display: grid;
-  gap: 1rem;
-  margin-top: 2rem;
-}
 
-
-.aboutStatNumber {
-  font-size: 2rem;
-}
