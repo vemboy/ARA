@@ -320,6 +320,24 @@ a:active {
   position: absolute;
 }
 
+.record-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.record-image-container {
+  transform: translate(-50%, -50%) scale(2);
+  overflow: visible;
+  height: 100%;
+  width: 100%;
+  transform-origin: 50% 50%;
+  left: 50%;
+  top: 50%;
+  
+
+}
 
 .ara-menu-icon-record {
 /*  background-color: var(--ara-blue);*/
@@ -1417,24 +1435,7 @@ a:active {
   }
 }
 
-.record-image-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
 
-.record-image-container {
-  transform: translate(-50%, -50%) scale(2);
-  overflow: visible;
-  height: 100%;
-  width: 100%;
-  transform-origin: 50% 50%;
-  left: 50%;
-  top: 50%;
-  
-
-}
 
 .record-image {
   width: 100%;
