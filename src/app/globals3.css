@@ -191,7 +191,7 @@ a:active {
 }
 
 .ara-landing-page img {
-  width: clamp(200px, 80vw, 1000px);
+  width2: clamp(200px, 80vw, 80vh);
   object-fit: contain;
   transition: transform 0.1s ease-out;
   cursor: pointer;
@@ -1194,7 +1194,7 @@ a:active {
     --search-icon-font-size: 3rem;
     --search-input-font-size: 1rem;
 
-    --grid-item-circle-size: 50%;
+    --grid-item-circle-size: 80%;
 
     --grid-item-title-armenian-font-size: .5rem;
     --grid-item-title-transliteration-font-size: .5rem;
@@ -1208,6 +1208,8 @@ a:active {
   /*.ara-menu-icon.clicked .ara-menu-icon-record {
     transform: translateY(50%);
   }*/
+
+
 
   .ara-intro {
     grid-template-columns: 1fr;
@@ -1231,6 +1233,11 @@ a:active {
 
   .ara-grid-wrapper {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ara-grid-item {
+    grid-template-rows: .25fr auto 1fr;
+    aspect-ratio: 0.8;
   }
 
   .ara-grid-item-circle {
@@ -1847,13 +1854,6 @@ a:active {
   padding-right: 2rem;
 }
 
-@media (max-width: 768px) {
-  :root {
-    --menu-title-font-size: 3rem;
-    --menu-icon-size: 2.3rem;
-    --intro-text-font-size: 1.5rem;
-  }
-}
 
 
 
