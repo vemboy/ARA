@@ -1298,17 +1298,7 @@ a:active {
 /* ============================== END — MOBILE MEDIA QUERY 768px ============================== */
 
 
-.record-image-container {
-  transform: translate(-50%, -50%) scale(2);
-  overflow: visible;
-  height: 100%;
-  width: 100%;
-  transform-origin: 50% 50%;
-  left: 50%;
-  top: 50%;
-  
 
-}
 
 
 .error-message {
@@ -1432,6 +1422,18 @@ a:active {
   width: 100%;
   height: 100%;
   overflow: hidden;
+}
+
+.record-image-container {
+  transform: translate(-50%, -50%) scale(2);
+  overflow: visible;
+  height: 100%;
+  width: 100%;
+  transform-origin: 50% 50%;
+  left: 50%;
+  top: 50%;
+  
+
 }
 
 .record-image {
