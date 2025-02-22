@@ -1231,7 +1231,7 @@ a:active {
   }
 
   .ara-grid-wrapper {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .ara-grid-item {
@@ -1273,6 +1273,18 @@ a:active {
   .ara-about-text-right p {
     font-size: var(--about-text-left-font-size-body);
   } 
+}
+
+.record-image-container {
+  transform: translate(-50%, -50%) scale(2);
+  overflow: visible;
+  height: 100%;
+  width: 100%;
+  transform-origin: 50% 50%;
+  left: 50%;
+  top: 50%;
+  
+
 }
 
 /* ============================== END — MOBILE MEDIA QUERY 768px ============================== */
