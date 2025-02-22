@@ -1283,6 +1283,10 @@ a:active {
     display: none;
   }
 
+  .ara-grid-item:hover .ara-grid-item-circle-overlay {
+   opacity: 0;
+}
+
   .record-image-container {
     transform: translate(-50%, -50%) scale(2.4);
   }
