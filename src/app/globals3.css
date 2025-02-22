@@ -1273,7 +1273,25 @@ a:active {
   .ara-about-text-right p {
     font-size: var(--about-text-left-font-size-body);
   } 
+
+  
+  .ara-grid-item:hover .ara-grid-item-circle img {
+    filter: blur(0);
+  }
+
+  .ara-grid-circle-overlay {
+    display: none;
+  }
+
+  .record-image-container {
+    transform: translate(-50%, -50%) scale(2.4);
+  }
 }
+
+
+
+/* ============================== END — MOBILE MEDIA QUERY 768px ============================== */
+
 
 .record-image-container {
   transform: translate(-50%, -50%) scale(2);
@@ -1286,10 +1304,6 @@ a:active {
   
 
 }
-
-/* ============================== END — MOBILE MEDIA QUERY 768px ============================== */
-
-
 
 
 
