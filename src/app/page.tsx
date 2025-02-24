@@ -143,6 +143,8 @@ const handleArchiveClick = () => {
   const [searchString, setSearchString] = useState<string>("");
   const [searchYear, setSearchYear] = useState<string>("");
   const [searchArtist, setSearchArtist] = useState<string>("");
+    const [collectionHeaderEn, setCollectionHeaderEn] = useState("");
+  const [collectionHeaderAr, setCollectionHeaderAr] = useState("");
 
   // Active filter tab
   const [activeFilter, setActiveFilter] = useState<string | null>("genres");
@@ -351,6 +353,25 @@ const sortedArtists = React.useMemo(() => {
       })
       .catch((error) => {
         console.error("Error fetching all records from Directus:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("https://ara.directus.app/items/Copy/4?fields=Text,text_ar")
+      .then((response) => {
+        if (response.data?.data) {
+          const data = response.data.data;
+          if (data.Text) {
+            setCollectionHeaderEn(data.Text);
+          }
+          if (data.text_ar) {
+            setCollectionHeaderAr(data.text_ar);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching Collection Header copy:", error);
       });
   }, []);
 
@@ -815,16 +836,15 @@ finalRecords.forEach((rec) => {
 
         {/* INTRO */}
         <div className="ara-intro" ref={introRef}>
-          <div className="ara-intro-text-english">
-            <div>
-              ֎ Welcome to the Armenian Record Archive, where we preserve and celebrate the rich history of Armenian music and culture.
-            </div>
-          </div>
-          <div className="ara-intro-text-armenian">
-            <div>
-              Բարի գալուստ Հայկական ձայնագրությունների արխիվ, որտեղ մենք պահպանում և տոնում ենք Հայկական երաժշտության և մշակույթի հարուստ պատմությունը: ֍
-            </div>
-          </div>
+          <div
+            className="ara-intro-text-english"
+            // Render the fetched English copy; if not loaded, it could show nothing or a fallback
+            dangerouslySetInnerHTML={{ __html: collectionHeaderEn }}
+          />
+          <div
+            className="ara-intro-text-armenian"
+            dangerouslySetInnerHTML={{ __html: collectionHeaderAr }}
+          />
         </div>
 
         {/* COLLECTION */}
