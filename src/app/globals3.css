@@ -964,6 +964,7 @@ a:active {
 }
 
 .ara-record-player-thumbnail-img {
+
 }
 
 .ara-record-player-song-info {
@@ -1855,6 +1856,7 @@ a:active {
   margin-left: 1.5rem;
   object-fit: cover;
   border-radius: 50%;
+  transform: scale(1.0);
 }
 
 .ara-record-player-song-title {
