@@ -8,8 +8,6 @@ import { usePathname } from "next/navigation";
 import { AudioContext } from "@/app/audioLayout";
 import Link from "next/link";
 import {
-  getDefaultImageThumbnailUrl,
-  getImageThumbnailUrl,
   getImageDetailUrl,
   getPlaceholderRecordImageUrl
 } from "@/utils/assetUtils";
@@ -18,7 +16,7 @@ import _ from "lodash";
 import Footer from "@/app/footer";
 import NewSampleRecordImage from "@/app/NewSampleRecordImage";
 
-// Helper for bilingual field splitting
+/** Helper to split a bilingual field, e.g. "English|Հայերեն" */
 const splitBilingualField = (value: any) => {
   if (!value) return { en: "", am: "" };
   if (typeof value !== "string") {
@@ -32,11 +30,13 @@ const splitBilingualField = (value: any) => {
   };
 };
 
+/** Check if text includes any Armenian characters */
 const isArmenianScript = (text: string) => {
   const armenianPattern = /[\u0530-\u058F]/;
   return armenianPattern.test(text);
 };
 
+/** If a field has "english-|-armenian" format, return just the English side */
 const getEnglishVersion = (text: string) => {
   if (!text) return text;
   if (text.includes("-|-")) {
@@ -45,12 +45,14 @@ const getEnglishVersion = (text: string) => {
   return text;
 };
 
+/** Convert total seconds into M:SS format */
 const formatDuration = (durationInSeconds: number) => {
   const minutes = Math.floor(durationInSeconds / 60);
   const seconds = Math.floor(durationInSeconds % 60);
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 };
 
+/** Load audio to get its duration in seconds */
 const getAudioDuration = (audioUrl: string): Promise<number> => {
   return new Promise((resolve) => {
     const audio = new Audio(audioUrl);
@@ -72,50 +74,70 @@ type AvailableFilters = {
   record_label: Set<string>;
 };
 
-const CollectionDetail: React.FC = () => {
+/**
+ * Smoothly scroll to an element by id with an offset
+ */
+const smoothScrollToElement = (elementId: string, offset = 0) => {
+  const targetEl = document.getElementById(elementId);
+  if (!targetEl) return;
 
+  const start = window.scrollY;
+  const end = targetEl.getBoundingClientRect().top + window.scrollY - offset;
+  const duration = 1000; // 1 second
+  const startTime = performance.now();
+
+  const animate = (currentTime: number) => {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+
+    // Easing
+    const easeInOutCubic =
+      progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+    window.scrollTo(0, start + (end - start) * easeInOutCubic);
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  };
+
+  requestAnimationFrame(animate);
+};
+
+const CollectionDetail: React.FC = () => {
   const pathName = usePathname();
   const router = useRouter();
 
-  const smoothScrollToFilters = () => {
-    const filterEl = document.getElementById("filters");
-    if (filterEl) {
-      const offset = 200; // adjust as needed
-      const start = window.scrollY;
-      const end = Math.max(filterEl.offsetTop - offset, 0);
-      const duration = 1000;
-      const startTime = performance.now();
-
-      const animate = (currentTime: number) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easeInOutCubic =
-          progress < 0.5
-            ? 4 * progress * progress * progress
-            : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-        window.scrollTo(0, start + (end - start) * easeInOutCubic);
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        }
-      };
-
-      requestAnimationFrame(animate);
+  // --- Scroll logic for top menu: same behavior as homepage ---
+  const handleCollectionClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    if (pathName === "/") {
+      smoothScrollToElement("ara-search-bar", 150);
+    } else {
+      router.push("/");
+      setTimeout(() => {
+        smoothScrollToElement("ara-search-bar", 150);
+      }, 500);
     }
   };
 
   const handleArchiveClick = () => {
     if (pathName === "/") {
-      smoothScrollToFilters();
+      smoothScrollToElement("ara-main", 25);
     } else {
       router.push("/");
       setTimeout(() => {
-        smoothScrollToFilters();
+        smoothScrollToElement("ara-main", 25);
       }, 500);
     }
   };
+  // -----------------------------------------------------------
 
-
-  // Update handlePillClick to use #filters in the URL hash
+  // For filter "pills": jump back to home, show #filters
   const handlePillClick = (filterType: string, value: string) => {
     const filterParam = encodeURIComponent(
       JSON.stringify({
@@ -125,7 +147,7 @@ const CollectionDetail: React.FC = () => {
     router.push(`/?filter=${filterParam}#filters`);
   };
 
-  // Set up available filters state – here we only fetch unique artists
+  // We'll store some filter data if needed
   const [availableFilters, setAvailableFilters] = useState<AvailableFilters>({
     genres: new Set<string>(),
     instruments: new Set<string>(),
@@ -134,6 +156,7 @@ const CollectionDetail: React.FC = () => {
     record_label: new Set<string>(),
   });
 
+  // Example: fetch unique artists for pill linking
   useEffect(() => {
     axios
       .get("https://ara.directus.app/items/record_archive?groupBy[]=artist_original")
@@ -156,7 +179,7 @@ const CollectionDetail: React.FC = () => {
       });
   }, []);
 
-  // Audio Context
+  // Global audio context
   const audioContext = useContext(AudioContext);
   const setSong = audioContext?.setSong;
   const setName = audioContext?.setName;
@@ -172,13 +195,14 @@ const CollectionDetail: React.FC = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackUrl, setCurrentTrackUrl] = useState<string | null>(null);
-  const [durations, setDurations] = useState<{ [key: string]: string }>({});
+
+  /** Only one isShareOpen declaration */
   const [isShareOpen, setIsShareOpen] = useState(false);
-  const currentIsPlaceholder = images[currentImageIndex] === null;
-  // Get the record ID from the URL
-  
+
+  const [durations, setDurations] = useState<{ [key: string]: string }>({});
+
+  // ARAID from the URL path
   const araId = pathName.split("/").slice(-1)[0];
-  console.log("path:", pathName, araId);
 
   useEffect(() => {
     axios
@@ -187,9 +211,13 @@ const CollectionDetail: React.FC = () => {
       )
       .then((response) => {
         const initialRecord: any = _.first(response.data.data);
-        console.log("initialRecord", initialRecord);
+        if (!initialRecord) {
+          console.log("No records found for ARAID:", araId);
+          return;
+        }
         const ARAID = initialRecord.ARAID;
 
+        // Now fetch all matching records for that ARAID
         axios
           .get(
             `https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}&fields=*,title_english,audio.id,record_label.*`
@@ -197,20 +225,20 @@ const CollectionDetail: React.FC = () => {
           .then(async (recordsResponse) => {
             let fetchedRecords = recordsResponse.data.data;
 
-            // Sort sides
+            // Sort by side A/B
             fetchedRecords.sort((a: RecordType, b: RecordType) => {
               const sideA = a.track_side || "A";
               const sideB = b.track_side || "B";
               return sideA.localeCompare(sideB);
             });
 
-            // Get durations for all tracks
+            // Build durations
             const durationsObj: { [key: string]: string } = {};
-
             for (const record of fetchedRecords) {
               if (record.audio) {
                 const audioUrl = `https://ara.directus.app/assets/${record.audio.id}`;
                 record.audioUrl = audioUrl;
+
                 try {
                   const duration = await getAudioDuration(audioUrl);
                   durationsObj[record.id] = formatDuration(duration);
@@ -224,16 +252,18 @@ const CollectionDetail: React.FC = () => {
             setDurations(durationsObj);
             setRecords(fetchedRecords);
 
-const recordImages = fetchedRecords.map((record: RecordType) =>
-  record["record_image"]
-    ? getImageDetailUrl(record["record_image"])
-    : null
-);
-setImages(recordImages);
+            const recordImages = fetchedRecords.map((rec: RecordType) =>
+              rec.record_image ? getImageDetailUrl(rec.record_image) : null
+            );
+            setImages(recordImages);
           });
+      })
+      .catch((error) => {
+        console.error("Error loading detail:", error);
       });
   }, [araId]);
 
+  // Listen for global audio events
   useEffect(() => {
     const handleGlobalPause = () => setIsPlaying(false);
     const handleGlobalPlay = () => {
@@ -245,7 +275,6 @@ setImages(recordImages);
 
     window.addEventListener("audioPause", handleGlobalPause);
     window.addEventListener("audioPlay", handleGlobalPlay);
-
     return () => {
       window.removeEventListener("audioPause", handleGlobalPause);
       window.removeEventListener("audioPlay", handleGlobalPlay);
@@ -258,41 +287,38 @@ setImages(recordImages);
 
   const handleTrackClick = (record: RecordType) => {
     if (!audioContext || !record.audioUrl) return;
-    const {
-      setSong,
-      setName,
-      setArtistName,
-      setAlbumArt,
-      setSongId,
-      audioPlayerRef,
-    } = audioContext;
-
     const audioPlayer = audioPlayerRef?.current?.audio?.current;
     if (!audioPlayer) return;
 
-    // Switch images based on track side
+    // Switch images based on track
     const imageIndex = records.findIndex((r) => r.id === record.id);
     if (imageIndex !== -1) {
       setCurrentImageIndex(imageIndex);
     }
 
-if (audioPlayer.src === record.audioUrl) {
-  // Toggle play/pause if the same track is clicked
-  if (audioPlayer.paused) {
-    void audioPlayer.play();
-    setIsPlaying(true);
-  } else {
-    audioPlayer.pause();
-    setIsPlaying(false);
-  }
-} else {
-  // Play new track
-  setSong(record.audioUrl);
-  setName(record.title || "Unknown Title");
-  setArtistName(record.artist_original || "Unknown Artist");
-  setAlbumArt(images[imageIndex] || getPlaceholderRecordImageUrl());
-  if (record.id) setSongId(record.id);
-}
+    if (audioPlayer.src === record.audioUrl) {
+      // Toggle play/pause
+      if (audioPlayer.paused) {
+        void audioPlayer.play();
+        setIsPlaying(true);
+      } else {
+        audioPlayer.pause();
+        setIsPlaying(false);
+      }
+    } else {
+      // New track
+      if (setSong) setSong(record.audioUrl);
+      if (setName) setName(record.title || "Unknown Title");
+      if (setArtistName) setArtistName(record.artist_original || "Unknown Artist");
+      if (setAlbumArt) {
+        const imageToUse = images[imageIndex] || getPlaceholderRecordImageUrl();
+        setAlbumArt(imageToUse);
+      }
+      if (setSongId && record.id) setSongId(record.id);
+
+      setCurrentTrackUrl(record.audioUrl);
+      setIsPlaying(true);
+    }
   };
 
   const handleImageClick = (
@@ -302,20 +328,23 @@ if (audioPlayer.src === record.audioUrl) {
     const clickX = event.nativeEvent.offsetX;
 
     if (clickX < containerWidth / 2) {
-      // Previous image
+      // Previous
       const newIndex = (currentImageIndex - 1 + images.length) % images.length;
       setCurrentImageIndex(newIndex);
     } else {
-      // Next image
+      // Next
       const newIndex = (currentImageIndex + 1) % images.length;
       setCurrentImageIndex(newIndex);
     }
   };
 
+  // Menu
+  const [isMenuVisibleState, setIsMenuVisibleState] = useState(true);
   const handleMenuToggle = () => {
-    setIsMenuVisible((prev) => !prev);
+    setIsMenuVisibleState((prev) => !prev);
   };
 
+  const currentIsPlaceholder = images[currentImageIndex] === null;
   const hasImage = images.some((img) => img !== null);
 
   const currentRecord = records[0];
@@ -327,7 +356,7 @@ if (audioPlayer.src === record.audioUrl) {
       .filter(Boolean)
       .join("|") || "Unknown Cat#";
 
-  // Bilingual Metadata Array (including Armenian translations)
+  // Bilingual metadata
   const metadataEntries = [
     {
       title: "ARA ID",
@@ -357,11 +386,9 @@ if (audioPlayer.src === record.audioUrl) {
       title: "Recording Catalog Number",
       titleAm: "Կատալոգի համար",
       sideA: sideA?.record_catalog_number ?? "No catalog number",
-      sideAAm:
-        sideA?.record_catalog_number ?? "Կատալոգի համար չկա",
+      sideAAm: sideA?.record_catalog_number ?? "Կատալոգի համար չկա",
       sideB: sideB?.record_catalog_number ?? "No catalog number",
-      sideBAm:
-        sideB?.record_catalog_number ?? "Կատալոգի համար չկա",
+      sideBAm: sideB?.record_catalog_number ?? "Կատալոգի համար չկա",
     },
     {
       title: "Language",
@@ -388,30 +415,22 @@ if (audioPlayer.src === record.audioUrl) {
       titleAm: "Գործիքներ",
       sideA: Array.isArray(sideA?.instruments)
         ? sideA.instruments
-            .map((i: string) =>
-              splitBilingualField(i).en.replace(/-$/, "")
-            )
+            .map((i: string) => splitBilingualField(i).en.replace(/-$/, ""))
             .join(", ")
         : "Unknown instruments",
       sideAAm: Array.isArray(sideA?.instruments)
         ? sideA.instruments
-            .map((i: string) =>
-              splitBilingualField(i).am.replace(/^-/, "")
-            )
+            .map((i: string) => splitBilingualField(i).am.replace(/^-/, ""))
             .join(", ")
         : "Անհայտ գործիքներ",
       sideB: Array.isArray(sideB?.instruments)
         ? sideB.instruments
-            .map((i: string) =>
-              splitBilingualField(i).en.replace(/-$/, "")
-            )
+            .map((i: string) => splitBilingualField(i).en.replace(/-$/, ""))
             .join(", ")
         : "Unknown instruments",
       sideBAm: Array.isArray(sideB?.instruments)
         ? sideB.instruments
-            .map((i: string) =>
-              splitBilingualField(i).am.replace(/^-/, "")
-            )
+            .map((i: string) => splitBilingualField(i).am.replace(/^-/, ""))
             .join(", ")
         : "Անհայտ գործիքներ",
     },
@@ -420,30 +439,22 @@ if (audioPlayer.src === record.audioUrl) {
       titleAm: "Տեղ",
       sideA: Array.isArray(sideA?.regions)
         ? sideA.regions
-            .map((r: string) =>
-              splitBilingualField(r).en.replace(/-$/, "")
-            )
+            .map((r: string) => splitBilingualField(r).en.replace(/-$/, ""))
             .join(", ")
         : "Unknown location",
       sideAAm: Array.isArray(sideA?.regions)
         ? sideA.regions
-            .map((r: string) =>
-              splitBilingualField(r).am.replace(/^-/, "")
-            )
+            .map((r: string) => splitBilingualField(r).am.replace(/^-/, ""))
             .join(", ")
         : "Անհայտ վայր",
       sideB: Array.isArray(sideB?.regions)
         ? sideB.regions
-            .map((r: string) =>
-              splitBilingualField(r).en.replace(/-$/, "")
-            )
+            .map((r: string) => splitBilingualField(r).en.replace(/-$/, ""))
             .join(", ")
         : "Unknown location",
       sideBAm: Array.isArray(sideB?.regions)
         ? sideB.regions
-            .map((r: string) =>
-              splitBilingualField(r).am.replace(/^-/, "")
-            )
+            .map((r: string) => splitBilingualField(r).am.replace(/^-/, ""))
             .join(", ")
         : "Անհայտ վայր",
     },
@@ -452,30 +463,22 @@ if (audioPlayer.src === record.audioUrl) {
       titleAm: "Ժանր",
       sideA: Array.isArray(sideA?.genres)
         ? sideA.genres
-            .map((g: string) =>
-              splitBilingualField(g).en.replace(/-$/, "")
-            )
+            .map((g: string) => splitBilingualField(g).en.replace(/-$/, ""))
             .join(", ")
         : "Unknown genre",
       sideAAm: Array.isArray(sideA?.genres)
         ? sideA.genres
-            .map((g: string) =>
-              splitBilingualField(g).am.replace(/^-/, "")
-            )
+            .map((g: string) => splitBilingualField(g).am.replace(/^-/, ""))
             .join(", ")
         : "Անհայտ ժանր",
       sideB: Array.isArray(sideB?.genres)
         ? sideB.genres
-            .map((g: string) =>
-              splitBilingualField(g).en.replace(/-$/, "")
-            )
+            .map((g: string) => splitBilingualField(g).en.replace(/-$/, ""))
             .join(", ")
         : "Unknown genre",
       sideBAm: Array.isArray(sideB?.genres)
         ? sideB.genres
-            .map((g: string) =>
-              splitBilingualField(g).am.replace(/^-/, "")
-            )
+            .map((g: string) => splitBilingualField(g).am.replace(/^-/, ""))
             .join(", ")
         : "Անհայտ ժանր",
     },
@@ -526,24 +529,24 @@ if (audioPlayer.src === record.audioUrl) {
       <div className="ara-main" id="ara-main">
         {/* Top Menu */}
         <div className="ara-menu" id="ara-menu">
-      <div
-        className="ara-menu-title"
-        id="ara-menu-title"
-        onClick={handleArchiveClick}
-        style={{ cursor: "pointer" }}
-      >
-        ARMENIAN RECORD ARCHIVE
-      </div>
+          <div
+            className="ara-menu-title"
+            id="ara-menu-title"
+            onClick={handleArchiveClick}
+            style={{ cursor: "pointer" }}
+          >
+            ARMENIAN RECORD ARCHIVE
+          </div>
           <div
             className={`ara-menu-links-wrapper ${
-              isMenuVisible ? "expanded" : ""
+              isMenuVisibleState ? "expanded" : ""
             }`}
             id="ara-menu-links-wrapper"
           >
-            <Link href="https://ara-jet.vercel.app/">
+            <Link href="/" onClick={handleCollectionClick}>
               COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ
-            </Link>{" "} 
-            ●
+            </Link>
+            {" ● "}
             <Link href="/about">
               ABOUT US
               <br />
@@ -556,7 +559,7 @@ if (audioPlayer.src === record.audioUrl) {
             onClick={handleMenuToggle}
           >
             <div
-              className={`ara-menu-icon ${isMenuVisible ? "clicked" : ""}`}
+              className={`ara-menu-icon ${isMenuVisibleState ? "clicked" : ""}`}
               id="menu-icon"
             >
               <div className="ara-menu-icon-sleeve"></div>
@@ -584,38 +587,42 @@ if (audioPlayer.src === record.audioUrl) {
           </div>
 
           {/* Left: Image + Thumbnails */}
-    <div
-      className="ara-record-image"
-      onClick={handleImageClick}
-      // Set aspect ratio dynamically: 1.2 for placeholder, 1 for real image
-      style={{ aspectRatio: currentIsPlaceholder ? "1.2" : "1" }}
-    >
-      <div className="ara-record-image__container">
-        {images[currentImageIndex] ? (
-          <img
-            src={images[currentImageIndex]!}
-            alt="Record"
-            draggable="false"
-            className={`ara-record-image__main ${isPlaying ? "spinning-record" : ""}`}
-          />
-        ) : (
-          <NewSampleRecordImage
-            className="ara-record-image__main"
-            isPlaying={isPlaying}
-          />
-        )}
-      </div>
-      {hasImage && (
-        <div className="ara-record-image__dots-container">
-          {images.map((_, idx) => (
-            <span
-              key={idx}
-              className={"ara-record-image__dot" + (idx === currentImageIndex ? " active" : "")}
-            ></span>
-          ))}
-        </div>
-      )}
-    </div>
+          <div
+            className="ara-record-image"
+            onClick={handleImageClick}
+            style={{ aspectRatio: currentIsPlaceholder ? "1.2" : "1" }}
+          >
+            <div className="ara-record-image__container">
+              {images[currentImageIndex] ? (
+                <img
+                  src={images[currentImageIndex]!}
+                  alt="Record"
+                  draggable="false"
+                  className={`ara-record-image__main ${
+                    isPlaying ? "spinning-record" : ""
+                  }`}
+                />
+              ) : (
+                <NewSampleRecordImage
+                  className="ara-record-image__main"
+                  isPlaying={isPlaying}
+                />
+              )}
+            </div>
+            {hasImage && (
+              <div className="ara-record-image__dots-container">
+                {images.map((_, idx) => (
+                  <span
+                    key={idx}
+                    className={
+                      "ara-record-image__dot" +
+                      (idx === currentImageIndex ? " active" : "")
+                    }
+                  ></span>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* Right: Text Information */}
           <div className="ara-record-info">
@@ -729,7 +736,9 @@ if (audioPlayer.src === record.audioUrl) {
                             return (
                               <span
                                 key={index}
-                                className={`ara-record-info__pill ${!isAvailable ? "disabled" : ""}`}
+                                className={`ara-record-info__pill ${
+                                  !isAvailable ? "disabled" : ""
+                                }`}
                                 onClick={() =>
                                   isAvailable && handlePillClick("artist_original", processedArtist)
                                 }
@@ -841,7 +850,9 @@ if (audioPlayer.src === record.audioUrl) {
                             return (
                               <span
                                 key={index}
-                                className={`ara-record-info__pill ${!isAvailable ? "disabled" : ""}`}
+                                className={`ara-record-info__pill ${
+                                  !isAvailable ? "disabled" : ""
+                                }`}
                                 onClick={() =>
                                   isAvailable && handlePillClick("artist_original", processedArtist)
                                 }
@@ -939,40 +950,25 @@ if (audioPlayer.src === record.audioUrl) {
           {/* Metadata Section */}
           <div className="ara-record-meta-section">
             <div className="ara-record-meta-section__metadata-row">
-              <div className="ara-record-meta-section__data-title">
-                DATA CATEGORY
-              </div>
-              <div className="ara-record-meta-section__side-a-data">
-                SIDE A DATA
-              </div>
+              <div className="ara-record-meta-section__data-title">DATA CATEGORY</div>
+              <div className="ara-record-meta-section__side-a-data">SIDE A DATA</div>
               <div className="ara-record-meta-section__side-a-data-armenian">
                 ԿՈՂՄ Ա ՏՎՅԱԼՆԵՐ
               </div>
-              <div className="ara-record-meta-section__side-b-data">
-                SIDE B DATA
-              </div>
+              <div className="ara-record-meta-section__side-b-data">SIDE B DATA</div>
               <div className="ara-record-meta-section__side-b-data-armenian">
                 ԿՈՂՄ Բ ՏՎՅԱԼՆԵՐ
               </div>
             </div>
 
             {metadataEntries.map((entry, idx) => (
-              <div
-                className="ara-record-meta-section__metadata-row"
-                key={idx}
-              >
-                <div className="ara-record-meta-section__data-title">
-                  {entry.title}
-                </div>
-                <div className="ara-record-meta-section__side-a-data">
-                  {entry.sideA}
-                </div>
+              <div className="ara-record-meta-section__metadata-row" key={idx}>
+                <div className="ara-record-meta-section__data-title">{entry.title}</div>
+                <div className="ara-record-meta-section__side-a-data">{entry.sideA}</div>
                 <div className="ara-record-meta-section__side-a-data-armenian">
                   {entry.sideAAm}
                 </div>
-                <div className="ara-record-meta-section__side-b-data">
-                  {entry.sideB}
-                </div>
+                <div className="ara-record-meta-section__side-b-data">{entry.sideB}</div>
                 <div className="ara-record-meta-section__side-b-data-armenian">
                   {entry.sideBAm}
                 </div>
