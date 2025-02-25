@@ -30,6 +30,42 @@ interface ArtistType {
  * Optional helper to do a smooth scroll to the #ara-main section.
  * Feel free to customize or remove.
  */
+
+/**
+ * Smoothly scroll to an element by id, applying a positive offset (scroll above the element).
+ * E.g., offset = 25 will stop 25px *above* the element's top.
+ */
+const smoothScrollToElement = (elementId: string, offset = 0) => {
+  const targetEl = document.getElementById(elementId);
+  if (!targetEl) return;
+
+  const start = window.scrollY;
+  // If we want the final position 100 px above the element, we subtract 100 from the element's offsetTop
+  const end = targetEl.getBoundingClientRect().top + window.scrollY - offset;
+  const duration = 1000; // 1 second
+  const startTime = performance.now();
+
+  const animate = (currentTime: number) => {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+
+    // A simple cubic ease
+    const easeInOutCubic =
+      progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+    window.scrollTo(0, start + (end - start) * easeInOutCubic);
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  };
+
+  requestAnimationFrame(animate);
+};
+
+
 const smoothScrollToMain = () => {
   const main = document.getElementById("ara-main");
   if (main) {
@@ -93,18 +129,32 @@ const smoothScrollToFilters = () => {
   }
 };
 
+const handleCollectionClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  e.preventDefault(); // Prevent normal link jump
+
+  if (pathname === "/") {
+    // Already on home page
+    smoothScrollToElement("ara-search-bar", 150);
+  } else {
+    // Go home first, then scroll
+    router.push("/");
+    setTimeout(() => {
+      smoothScrollToElement("ara-search-bar", 150);
+    }, 500);
+  }
+};
+
 
 // Modify your archive title click handler to use smoothScrollToFilters
 const handleArchiveClick = () => {
   if (pathname === "/") {
-    // Already on the collection page, so smooth scroll to the Filters element.
-    smoothScrollToFilters();
+    // Already on home. Smooth scroll to #ara-main with 25px offset
+    smoothScrollToElement("ara-main", 25);
   } else {
-    // Redirect to home (collection page)
+    // If not on home, navigate there, then scroll after a delay
     router.push("/");
-    // After a short delay, smooth scroll to the Filters element.
     setTimeout(() => {
-      smoothScrollToFilters();
+      smoothScrollToElement("ara-main", 25);
     }, 500);
   }
 };
@@ -397,28 +447,65 @@ const sortedArtists = React.useMemo(() => {
 
 useEffect(() => {
   if (!artists.length || !allRecords.length) return;
-  // Guard: if already merged, skip merging to avoid infinite loop
+  // Guard: if already merged, skip to avoid infinite loop
   if (allRecords.some((rec) => rec.artist_normalized !== undefined)) return;
-  
+
   const normalize = (str: string) =>
     str.trim().toLowerCase().replace(/^the\s+/, "");
-  
-  const mergedRecords = allRecords.map((rec) => {
-    const recName = rec.artist_original ? normalize(rec.artist_original) : "";
-    const foundArtist = artists.find((artist) => {
-      const primary = artist.artist_name ? normalize(artist.artist_name) : "";
-      const alternate = (artist.artist_name_alternate_spelling || []).map((s: string) =>
-        normalize(s)
-      );
-      return recName === primary || alternate.includes(recName);
-    });
-    return {
-      ...rec,
-      artist_alternate_spellings: foundArtist?.artist_name_alternate_spelling ?? [],
-      artist_normalized: foundArtist ? normalize(foundArtist.artist_name) : recName,
-    };
+
+const mergedRecords = allRecords.map((rec) => {
+  // 1) Merge main artist
+  const recName = rec.artist_original ? normalize(rec.artist_original) : "";
+  const foundArtist = artists.find((artist) => {
+    const primary = artist.artist_name ? normalize(artist.artist_name) : "";
+    const alternate = (artist.artist_name_alternate_spelling || []).map((s) =>
+      normalize(s)
+    );
+    return recName === primary || alternate.includes(recName);
   });
-  
+
+  // 2) Merge composer
+  const recComposer = rec.composed_by ? normalize(rec.composed_by) : "";
+  const foundComposer = artists.find((artist) => {
+    const primary = artist.artist_name ? normalize(artist.artist_name) : "";
+    const alternate = (artist.artist_name_alternate_spelling || []).map((s) =>
+      normalize(s)
+    );
+    return recComposer === primary || alternate.includes(recComposer);
+  });
+
+  return {
+    ...rec,
+
+    // MAIN ARTIST
+    artist_normalized: foundArtist
+      ? normalize(foundArtist.artist_name)
+      : recName,
+
+    // ➜ FIX: Always include the primary artist name in the alt array
+    artist_alternate_spellings: foundArtist
+      ? [
+          foundArtist.artist_name,           // primary name
+          ...(foundArtist.artist_name_alternate_spelling || [])
+        ]
+      : [],
+
+    // COMPOSER
+    composer_normalized: foundComposer
+      ? normalize(foundComposer.artist_name)
+      : recComposer,
+
+    // ➜ FIX: Also always include the primary composer name
+    composer_alternate_spellings: foundComposer
+      ? [
+          foundComposer.artist_name,         // composer’s primary
+          ...(foundComposer.artist_name_alternate_spelling || [])
+        ]
+      : [],
+  };
+});
+
+
   setAllRecords(mergedRecords);
 }, [artists, allRecords]);
 
@@ -439,39 +526,54 @@ useEffect(() => {
     if (!searchString) {
       fuseFiltered = [...allRecords];
     } else {
-      const fuseOptions = {
-        isCaseSensitive: false,
-        includeScore: true,
-        threshold: 0.2,
-        distance: 100,
-        ignoreLocation: true,
-        minMatchCharLength: 2,
-        keys: [
-          "id",
-          "ARAID",
-          "record_catalog_number",
-          "title",
-          "title_armenian",
-          "title_english",
-          "title_translation",
-          "display_title",
-          "artist_original",
-          "artist_english",
-          "artist_armenian",
-          "arranged_by",
-          "composed_by",
-          "conducted_by",
-          "lyrics_by",
-          "record_label.label_en",
-          "language",
-          "genres",
-          "instruments",
-          "regions",
-          "comment",
-          "song_lyrics",
-          "artist_alternate_spellings"
-        ],
-      };
+ const fuseOptions = {
+  isCaseSensitive: false,
+  includeScore: true,
+
+  // Lower threshold from 0.2 -> 0.1 to be stricter about fuzzy matches.
+  // This helps avoid "pouni" matching "altounian."
+  threshold: 0.1,
+
+  // Make distance smaller. Only allow small positional misalignments.
+  distance: 3,
+
+  // Decide if you want to respect location. Maybe start with false
+  // so small edits anywhere in the word can still match "oscar" -> "osgar."
+  // If you turn it to false, it gets pickier about match location.
+  ignoreLocation: true,
+
+  // Keep or adjust. Possibly minMatchCharLength: 2 or 3
+  minMatchCharLength: 2,
+
+  keys: [
+    "id",
+    "ARAID",
+    "record_catalog_number",
+    "title",
+    "title_armenian",
+    "title_english",
+    "title_translation",
+    "display_title",
+    "artist_original",
+    "artist_english",
+    "artist_armenian",
+    "arranged_by",
+    "composed_by",
+    "conducted_by",
+    "lyrics_by",
+    "record_label.label_en",
+    "language",
+    "genres",
+    "instruments",
+    "regions",
+    "comment",
+    "song_lyrics",
+    "artist_alternate_spellings",
+    "composer_alternate_spellings"
+  ],
+};
+
+
       const fuse = new Fuse(allRecords, fuseOptions);
       const searchResults = fuse.search(searchString);
       fuseFiltered = searchResults.map((r) => r.item);
@@ -808,19 +910,19 @@ finalRecords.forEach((rec) => {
       <div className="ara-main" id="ara-main">
         {/* MENU */}
         <div className="ara-menu" id="ara-menu" ref={menuRef}>
-        <div
-          className="ara-menu-title"
-          id="ara-menu-title"
-          onClick={handleArchiveClick}
-          style={{ cursor: "pointer" }}
-        >
-          ARMENIAN RECORD ARCHIVE
-        </div>
+<div
+  className="ara-menu-title"
+  id="ara-menu-title"
+  onClick={handleArchiveClick}
+  style={{ cursor: "pointer" }}
+>
+  ARMENIAN RECORD ARCHIVE
+</div>
 
           <div className="ara-menu-links-wrapper expanded" id="ara-menu-links-wrapper" ref={menuLinksWrapperRef}>
-            <Link href="/">
-              COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ
-            </Link>{" "}
+<Link href="/" onClick={handleCollectionClick}>
+  COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ
+</Link>
             ●
             <Link href="/about">
               ABOUT US <br /> ՄԵՐ ՄԱՍԻՆ
@@ -850,7 +952,7 @@ finalRecords.forEach((rec) => {
         {/* COLLECTION */}
         <div className="ara-collection-wrapper" id="collection">
           {/* SEARCH BAR */}
-          <div className="ara-search-bar">
+          <div className="ara-search-bar" id="ara-search-bar">
             <span className="search-icon">⌕</span>
             <input
               type="text"
