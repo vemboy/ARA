@@ -40,7 +40,7 @@ props.setAlbumArt(
     ? getImageThumbnailUrl(imageUrl)
     : getPlaceholderRecordImageUrl() // New function specific for record placeholders
 );
-      props.setSongId(props.id);
+      props.setSongId(props.araId);
 
       setIsPlaying(true);
       setTimeout(() => {

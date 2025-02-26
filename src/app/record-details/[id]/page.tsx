@@ -2,65 +2,78 @@
 export const dynamic = "force-dynamic";
 
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import { usePathname } from "next/navigation";
 import { AudioContext } from "@/app/audioLayout";
 import Link from "next/link";
-import {
-  getImageDetailUrl,
-  getPlaceholderRecordImageUrl
-} from "@/utils/assetUtils";
-import SharePopup from "@/app/SharePopup";
 import _ from "lodash";
 import Footer from "@/app/footer";
 import NewSampleRecordImage from "@/app/NewSampleRecordImage";
+import {
+  getImageDetailUrl,
+  getPlaceholderRecordImageUrl,
+} from "@/utils/assetUtils";
+  
+function smoothScrollToElement(elementId: string, offset = 0) {
+  const targetEl = document.getElementById(elementId);
+  if (!targetEl) return;
+  const start = window.scrollY;
+  const end = targetEl.getBoundingClientRect().top + window.scrollY - offset;
+  const duration = 1000;
+  const startTime = performance.now();
+  const animate = (currentTime: number) => {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const easeInOutCubic =
+      progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+    window.scrollTo(0, start + (end - start) * easeInOutCubic);
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  };
+  requestAnimationFrame(animate);
+}
 
-/** Helper to split a bilingual field, e.g. "English|Հայերեն" */
-const splitBilingualField = (value: any) => {
+function splitBilingualField(value: any) {
   if (!value) return { en: "", am: "" };
-  if (typeof value !== "string") {
-    console.warn("Non-string value passed to splitBilingualField:", value);
-    return { en: String(value), am: String(value) };
-  }
+  if (typeof value !== "string") return { en: String(value), am: String(value) };
   const parts = value.split("|").map((part) => part.trim());
   return {
     en: parts[0] || "",
     am: parts[1] || parts[0],
   };
-};
+}
 
-/** Check if text includes any Armenian characters */
-const isArmenianScript = (text: string) => {
+function isArmenianScript(text: string) {
   const armenianPattern = /[\u0530-\u058F]/;
   return armenianPattern.test(text);
-};
+}
 
-/** If a field has "english-|-armenian" format, return just the English side */
-const getEnglishVersion = (text: string) => {
+function getEnglishVersion(text: string) {
   if (!text) return text;
   if (text.includes("-|-")) {
     return text.split("-|-")[0].trim();
   }
   return text;
-};
+}
 
-/** Convert total seconds into M:SS format */
-const formatDuration = (durationInSeconds: number) => {
+function formatDuration(durationInSeconds: number) {
   const minutes = Math.floor(durationInSeconds / 60);
   const seconds = Math.floor(durationInSeconds % 60);
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-};
+}
 
-/** Load audio to get its duration in seconds */
-const getAudioDuration = (audioUrl: string): Promise<number> => {
+function getAudioDuration(audioUrl: string): Promise<number> {
   return new Promise((resolve) => {
     const audio = new Audio(audioUrl);
     audio.addEventListener("loadedmetadata", () => {
       resolve(audio.duration);
     });
   });
-};
+}
 
 interface RecordType {
   [key: string]: any;
@@ -74,46 +87,35 @@ type AvailableFilters = {
   record_label: Set<string>;
 };
 
-/**
- * Smoothly scroll to an element by id with an offset
- */
-const smoothScrollToElement = (elementId: string, offset = 0) => {
-  const targetEl = document.getElementById(elementId);
-  if (!targetEl) return;
-
-  const start = window.scrollY;
-  const end = targetEl.getBoundingClientRect().top + window.scrollY - offset;
-  const duration = 1000; // 1 second
-  const startTime = performance.now();
-
-  const animate = (currentTime: number) => {
-    const elapsed = currentTime - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-
-    // Easing
-    const easeInOutCubic =
-      progress < 0.5
-        ? 4 * progress * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-
-    window.scrollTo(0, start + (end - start) * easeInOutCubic);
-
-    if (progress < 1) {
-      requestAnimationFrame(animate);
-    }
-  };
-
-  requestAnimationFrame(animate);
-};
-
-const CollectionDetail: React.FC = () => {
+export default function CollectionDetail() {
   const pathName = usePathname();
   const router = useRouter();
+  const [availableFilters, setAvailableFilters] = useState<AvailableFilters>({
+    genres: new Set<string>(),
+    instruments: new Set<string>(),
+    regions: new Set<string>(),
+    artists: new Set<string>(),
+    record_label: new Set<string>(),
+  });
+  const audioContext = useContext(AudioContext);
+  const setSong = audioContext?.setSong;
+  const setName = audioContext?.setName;
+  const setArtistName = audioContext?.setArtistName;
+  const setSongId = audioContext?.setSongId;
+  const setAlbumArt = audioContext?.setAlbumArt;
+  const audioPlayerRef = audioContext?.audioPlayerRef;
+  const [records, setRecords] = useState<RecordType[]>([]);
+  const [images, setImages] = useState<string[]>([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+  const [isMenuVisible, setIsMenuVisible] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTrackUrl, setCurrentTrackUrl] = useState<string | null>(null);
+  const [durations, setDurations] = useState<{ [key: string]: string }>({});
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const araId = pathName.split("/").slice(-1)[0];
+  const currentIsPlaceholder = images[currentImageIndex] === null;
 
-  // --- Scroll logic for top menu: same behavior as homepage ---
-  const handleCollectionClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
+  function handleCollectionClick(e: React.MouseEvent<HTMLAnchorElement>) {
     e.preventDefault();
     if (pathName === "/") {
       smoothScrollToElement("ara-search-bar", 150);
@@ -123,9 +125,9 @@ const CollectionDetail: React.FC = () => {
         smoothScrollToElement("ara-search-bar", 150);
       }, 500);
     }
-  };
+  }
 
-  const handleArchiveClick = () => {
+  function handleArchiveClick() {
     if (pathName === "/") {
       smoothScrollToElement("ara-main", 25);
     } else {
@@ -134,29 +136,17 @@ const CollectionDetail: React.FC = () => {
         smoothScrollToElement("ara-main", 25);
       }, 500);
     }
-  };
-  // -----------------------------------------------------------
+  }
 
-  // For filter "pills": jump back to home, show #filters
-  const handlePillClick = (filterType: string, value: string) => {
+  function handlePillClick(filterType: string, value: string) {
     const filterParam = encodeURIComponent(
       JSON.stringify({
         [filterType]: [value],
       })
     );
     router.push(`/?filter=${filterParam}#filters`);
-  };
+  }
 
-  // We'll store some filter data if needed
-  const [availableFilters, setAvailableFilters] = useState<AvailableFilters>({
-    genres: new Set<string>(),
-    instruments: new Set<string>(),
-    regions: new Set<string>(),
-    artists: new Set<string>(),
-    record_label: new Set<string>(),
-  });
-
-  // Example: fetch unique artists for pill linking
   useEffect(() => {
     axios
       .get("https://ara.directus.app/items/record_archive?groupBy[]=artist_original")
@@ -173,97 +163,47 @@ const CollectionDetail: React.FC = () => {
           ...prev,
           artists: uniqueArtists,
         }));
-      })
-      .catch((error) => {
-        console.error("Error fetching artists:", error);
       });
   }, []);
 
-  // Global audio context
-  const audioContext = useContext(AudioContext);
-  const setSong = audioContext?.setSong;
-  const setName = audioContext?.setName;
-  const setArtistName = audioContext?.setArtistName;
-  const setSongId = audioContext?.setSongId;
-  const setAlbumArt = audioContext?.setAlbumArt;
-  const audioPlayerRef = audioContext?.audioPlayerRef;
-
-  // Local states
-  const [records, setRecords] = useState<RecordType[]>([]);
-  const [images, setImages] = useState<string[]>([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
-  const [isMenuVisible, setIsMenuVisible] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrackUrl, setCurrentTrackUrl] = useState<string | null>(null);
-
-  /** Only one isShareOpen declaration */
-  const [isShareOpen, setIsShareOpen] = useState(false);
-
-  const [durations, setDurations] = useState<{ [key: string]: string }>({});
-
-  // ARAID from the URL path
-  const araId = pathName.split("/").slice(-1)[0];
-
   useEffect(() => {
     axios
-      .get(
-        `https://ara.directus.app/items/record_archive/?filter[ARAID][_eq]=${araId}`
-      )
+      .get(`https://ara.directus.app/items/record_archive/?filter[ARAID][_eq]=${araId}`)
       .then((response) => {
         const initialRecord: any = _.first(response.data.data);
-        if (!initialRecord) {
-          console.log("No records found for ARAID:", araId);
-          return;
-        }
         const ARAID = initialRecord.ARAID;
-
-        // Now fetch all matching records for that ARAID
         axios
-          .get(
-            `https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}&fields=*,title_english,audio.id,record_label.*`
-          )
+          .get(`https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}&fields=*,title_english,audio.id,record_label.*`)
           .then(async (recordsResponse) => {
             let fetchedRecords = recordsResponse.data.data;
-
-            // Sort by side A/B
             fetchedRecords.sort((a: RecordType, b: RecordType) => {
               const sideA = a.track_side || "A";
               const sideB = b.track_side || "B";
               return sideA.localeCompare(sideB);
             });
-
-            // Build durations
             const durationsObj: { [key: string]: string } = {};
             for (const record of fetchedRecords) {
               if (record.audio) {
                 const audioUrl = `https://ara.directus.app/assets/${record.audio.id}`;
                 record.audioUrl = audioUrl;
-
                 try {
                   const duration = await getAudioDuration(audioUrl);
                   durationsObj[record.id] = formatDuration(duration);
-                } catch (error) {
-                  console.error("Error getting duration:", error);
+                } catch {
                   durationsObj[record.id] = "0:00";
                 }
               }
             }
-
             setDurations(durationsObj);
             setRecords(fetchedRecords);
-
-            const recordImages = fetchedRecords.map((rec: RecordType) =>
-              rec.record_image ? getImageDetailUrl(rec.record_image) : null
+            const recordImages = fetchedRecords.map((record: RecordType) =>
+              record["record_image"] ? getImageDetailUrl(record["record_image"]) : null
             );
             setImages(recordImages);
           });
-      })
-      .catch((error) => {
-        console.error("Error loading detail:", error);
       });
   }, [araId]);
 
-  // Listen for global audio events
   useEffect(() => {
     const handleGlobalPause = () => setIsPlaying(false);
     const handleGlobalPlay = () => {
@@ -272,7 +212,6 @@ const CollectionDetail: React.FC = () => {
         setIsPlaying(true);
       }
     };
-
     window.addEventListener("audioPause", handleGlobalPause);
     window.addEventListener("audioPlay", handleGlobalPlay);
     return () => {
@@ -285,19 +224,15 @@ const CollectionDetail: React.FC = () => {
     return <div style={{ color: "white" }}>Loading or No Records Found</div>;
   }
 
-  const handleTrackClick = (record: RecordType) => {
+  function handleTrackClick(record: RecordType) {
     if (!audioContext || !record.audioUrl) return;
     const audioPlayer = audioPlayerRef?.current?.audio?.current;
     if (!audioPlayer) return;
-
-    // Switch images based on track
     const imageIndex = records.findIndex((r) => r.id === record.id);
     if (imageIndex !== -1) {
       setCurrentImageIndex(imageIndex);
     }
-
     if (audioPlayer.src === record.audioUrl) {
-      // Toggle play/pause
       if (audioPlayer.paused) {
         void audioPlayer.play();
         setIsPlaying(true);
@@ -306,57 +241,40 @@ const CollectionDetail: React.FC = () => {
         setIsPlaying(false);
       }
     } else {
-      // New track
       if (setSong) setSong(record.audioUrl);
       if (setName) setName(record.title || "Unknown Title");
       if (setArtistName) setArtistName(record.artist_original || "Unknown Artist");
       if (setAlbumArt) {
-        const imageToUse = images[imageIndex] || getPlaceholderRecordImageUrl();
-        setAlbumArt(imageToUse);
+        setAlbumArt(images[imageIndex] || getPlaceholderRecordImageUrl());
       }
-      if (setSongId && record.id) setSongId(record.id);
-
-      setCurrentTrackUrl(record.audioUrl);
-      setIsPlaying(true);
+      if (record.id && setSongId) setSongId(record.id);
     }
-  };
+    setCurrentTrackUrl(record.audioUrl);
+  }
 
-  const handleImageClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
+  function handleImageClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     const containerWidth = (event.currentTarget as HTMLElement).offsetWidth;
     const clickX = event.nativeEvent.offsetX;
-
     if (clickX < containerWidth / 2) {
-      // Previous
       const newIndex = (currentImageIndex - 1 + images.length) % images.length;
       setCurrentImageIndex(newIndex);
     } else {
-      // Next
       const newIndex = (currentImageIndex + 1) % images.length;
       setCurrentImageIndex(newIndex);
     }
-  };
+  }
 
-  // Menu
-  const [isMenuVisibleState, setIsMenuVisibleState] = useState(true);
-  const handleMenuToggle = () => {
-    setIsMenuVisibleState((prev) => !prev);
-  };
+  function handleMenuToggle() {
+    setIsMenuVisible((prev) => !prev);
+  }
 
-  const currentIsPlaceholder = images[currentImageIndex] === null;
   const hasImage = images.some((img) => img !== null);
-
   const currentRecord = records[0];
   const sideA = records[0];
   const sideB = records[1];
-
   const catalogNumbers =
-    [sideA?.record_catalog_number, sideB?.record_catalog_number]
-      .filter(Boolean)
-      .join("|") || "Unknown Cat#";
-
-  // Bilingual metadata
+    [sideA?.record_catalog_number, sideB?.record_catalog_number].filter(Boolean).join("|") ||
+    "Unknown Cat#";
   const metadataEntries = [
     {
       title: "ARA ID",
@@ -527,7 +445,6 @@ const CollectionDetail: React.FC = () => {
   return (
     <>
       <div className="ara-main" id="ara-main">
-        {/* Top Menu */}
         <div className="ara-menu" id="ara-menu">
           <div
             className="ara-menu-title"
@@ -538,15 +455,13 @@ const CollectionDetail: React.FC = () => {
             ARMENIAN RECORD ARCHIVE
           </div>
           <div
-            className={`ara-menu-links-wrapper ${
-              isMenuVisibleState ? "expanded" : ""
-            }`}
+            className={`ara-menu-links-wrapper ${isMenuVisible ? "expanded" : ""}`}
             id="ara-menu-links-wrapper"
           >
             <Link href="/" onClick={handleCollectionClick}>
               COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ
             </Link>
-            {" ● "}
+            ●
             <Link href="/about">
               ABOUT US
               <br />
@@ -559,7 +474,7 @@ const CollectionDetail: React.FC = () => {
             onClick={handleMenuToggle}
           >
             <div
-              className={`ara-menu-icon ${isMenuVisibleState ? "clicked" : ""}`}
+              className={`ara-menu-icon ${isMenuVisible ? "clicked" : ""}`}
               id="menu-icon"
             >
               <div className="ara-menu-icon-sleeve"></div>
@@ -567,9 +482,7 @@ const CollectionDetail: React.FC = () => {
             </div>
           </div>
         </div>
-
         <div className="container">
-          {/* Header Section */}
           <div className="ara-record-header">
             <div className="ara-header__recording-label">
               {currentRecord.record_label?.label_en ?? "Unknown Label"}
@@ -585,8 +498,6 @@ const CollectionDetail: React.FC = () => {
               {catalogNumbers}
             </div>
           </div>
-
-          {/* Left: Image + Thumbnails */}
           <div
             className="ara-record-image"
             onClick={handleImageClick}
@@ -598,9 +509,7 @@ const CollectionDetail: React.FC = () => {
                   src={images[currentImageIndex]!}
                   alt="Record"
                   draggable="false"
-                  className={`ara-record-image__main ${
-                    isPlaying ? "spinning-record" : ""
-                  }`}
+                  className={`ara-record-image__main ${isPlaying ? "spinning-record" : ""}`}
                 />
               ) : (
                 <NewSampleRecordImage
@@ -623,12 +532,8 @@ const CollectionDetail: React.FC = () => {
               </div>
             )}
           </div>
-
-          {/* Right: Text Information */}
           <div className="ara-record-info">
-            {/* Track List */}
             <div className="ara-record-info__side-section">
-              {/* Side A */}
               {sideA && (
                 <div className="ara-record-info__side">
                   <h4
@@ -636,9 +541,7 @@ const CollectionDetail: React.FC = () => {
                     onClick={() => handleTrackClick(sideA)}
                     style={{ cursor: "pointer" }}
                   >
-                    {sideA.track_side
-                      ? `▶ ${sideA.track_side.toUpperCase()}`
-                      : "▶ Side A"}
+                    {sideA.track_side ? `▶ ${sideA.track_side.toUpperCase()}` : "▶ Side A"}
                   </h4>
                   <div className="ara-record-info__track-list">
                     <div
@@ -670,8 +573,6 @@ const CollectionDetail: React.FC = () => {
                   </div>
                 </div>
               )}
-
-              {/* Side B */}
               {sideB && (
                 <div className="ara-record-info__side">
                   <h4
@@ -679,9 +580,7 @@ const CollectionDetail: React.FC = () => {
                     onClick={() => handleTrackClick(sideB)}
                     style={{ cursor: "pointer" }}
                   >
-                    {sideB.track_side
-                      ? `▶ ${sideB.track_side.toUpperCase()}`
-                      : "▶ Side B"}
+                    {sideB.track_side ? `▶ ${sideB.track_side.toUpperCase()}` : "▶ Side B"}
                   </h4>
                   <div className="ara-record-info__track-list">
                     <div
@@ -714,15 +613,12 @@ const CollectionDetail: React.FC = () => {
                 </div>
               )}
             </div>
-
-            {/* Details Section */}
             <div className="ara-record-info__details-section">
-              {/* Side A Details */}
               {sideA && (
                 <div className="ara-record-info__details-entry">
                   <div className="ara-record-info__details-title">
                     {sideA.track_side
-                      ? ` ${sideA.track_side.toUpperCase()} — DETAILS`
+                      ? `${sideA.track_side.toUpperCase()} — DETAILS`
                       : "SIDE A — DETAILS"}
                   </div>
                   <div className="ara-record-info__details-content">
@@ -730,32 +626,35 @@ const CollectionDetail: React.FC = () => {
                       <span className="ara-record-info__label">Artists:</span>
                       <div className="ara-record-info__pills-container">
                         {sideA.artist_original ? (
-                          sideA.artist_original.split(",").map((artist: string, index: number) => {
-                            const processedArtist = getEnglishVersion(artist.trim());
-                            const isAvailable = availableFilters.artists.has(processedArtist);
-                            return (
-                              <span
-                                key={index}
-                                className={`ara-record-info__pill ${
-                                  !isAvailable ? "disabled" : ""
-                                }`}
-                                onClick={() =>
-                                  isAvailable && handlePillClick("artist_original", processedArtist)
-                                }
-                                style={
-                                  !isAvailable
-                                    ? {
-                                        opacity: 0.5,
-                                        cursor: "not-allowed",
-                                        backgroundColor: "#e0e0e0",
-                                      }
-                                    : undefined
-                                }
-                              >
-                                {processedArtist}
-                              </span>
-                            );
-                          })
+                          sideA.artist_original.split(",").map(
+                            (artist: string, index: number) => {
+                              const processedArtist = getEnglishVersion(artist.trim());
+                              const isAvailable = availableFilters.artists.has(processedArtist);
+                              return (
+                                <span
+                                  key={index}
+                                  className={`ara-record-info__pill ${
+                                    !isAvailable ? "disabled" : ""
+                                  }`}
+                                  onClick={() =>
+                                    isAvailable &&
+                                    handlePillClick("artist_original", processedArtist)
+                                  }
+                                  style={
+                                    !isAvailable
+                                      ? {
+                                          opacity: 0.5,
+                                          cursor: "not-allowed",
+                                          backgroundColor: "#e0e0e0",
+                                        }
+                                      : undefined
+                                  }
+                                >
+                                  {processedArtist}
+                                </span>
+                              );
+                            }
+                          )
                         ) : (
                           <span className="ara-record-info__pill">Unknown artist</span>
                         )}
@@ -830,13 +729,11 @@ const CollectionDetail: React.FC = () => {
                   </div>
                 </div>
               )}
-
-              {/* Side B Details */}
               {sideB && (
                 <div className="ara-record-info__details-entry">
                   <div className="ara-record-info__details-title">
                     {sideB.track_side
-                      ? ` ${sideB.track_side.toUpperCase()} — DETAILS`
+                      ? `${sideB.track_side.toUpperCase()} — DETAILS`
                       : "SIDE B — DETAILS"}
                   </div>
                   <div className="ara-record-info__details-content">
@@ -844,32 +741,35 @@ const CollectionDetail: React.FC = () => {
                       <span className="ara-record-info__label">Artists:</span>
                       <div className="ara-record-info__pills-container">
                         {sideB.artist_original ? (
-                          sideB.artist_original.split(",").map((artist: string, index: number) => {
-                            const processedArtist = getEnglishVersion(artist.trim());
-                            const isAvailable = availableFilters.artists.has(processedArtist);
-                            return (
-                              <span
-                                key={index}
-                                className={`ara-record-info__pill ${
-                                  !isAvailable ? "disabled" : ""
-                                }`}
-                                onClick={() =>
-                                  isAvailable && handlePillClick("artist_original", processedArtist)
-                                }
-                                style={
-                                  !isAvailable
-                                    ? {
-                                        opacity: 0.5,
-                                        cursor: "not-allowed",
-                                        backgroundColor: "#e0e0e0",
-                                      }
-                                    : undefined
-                                }
-                              >
-                                {processedArtist}
-                              </span>
-                            );
-                          })
+                          sideB.artist_original.split(",").map(
+                            (artist: string, index: number) => {
+                              const processedArtist = getEnglishVersion(artist.trim());
+                              const isAvailable = availableFilters.artists.has(processedArtist);
+                              return (
+                                <span
+                                  key={index}
+                                  className={`ara-record-info__pill ${
+                                    !isAvailable ? "disabled" : ""
+                                  }`}
+                                  onClick={() =>
+                                    isAvailable &&
+                                    handlePillClick("artist_original", processedArtist)
+                                  }
+                                  style={
+                                    !isAvailable
+                                      ? {
+                                          opacity: 0.5,
+                                          cursor: "not-allowed",
+                                          backgroundColor: "#e0e0e0",
+                                        }
+                                      : undefined
+                                  }
+                                >
+                                  {processedArtist}
+                                </span>
+                              );
+                            }
+                          )
                         ) : (
                           <span className="ara-record-info__pill">Unknown artist</span>
                         )}
@@ -946,8 +846,6 @@ const CollectionDetail: React.FC = () => {
               )}
             </div>
           </div>
-
-          {/* Metadata Section */}
           <div className="ara-record-meta-section">
             <div className="ara-record-meta-section__metadata-row">
               <div className="ara-record-meta-section__data-title">DATA CATEGORY</div>
@@ -960,7 +858,6 @@ const CollectionDetail: React.FC = () => {
                 ԿՈՂՄ Բ ՏՎՅԱԼՆԵՐ
               </div>
             </div>
-
             {metadataEntries.map((entry, idx) => (
               <div className="ara-record-meta-section__metadata-row" key={idx}>
                 <div className="ara-record-meta-section__data-title">{entry.title}</div>
@@ -976,17 +873,20 @@ const CollectionDetail: React.FC = () => {
             ))}
           </div>
         </div>
-
-        <SharePopup
-          open={isShareOpen}
-          onOpenChange={setIsShareOpen}
-          recordTitle={currentRecord.title || "Record"}
-          recordId={araId}
-        />
+        <div
+          style={{
+            display: isShareOpen ? "block" : "none",
+            color: "white",
+            padding: "1rem",
+            textAlign: "center",
+          }}
+        >
+          SHARE POPUP PLACEHOLDER
+          <br />
+          <button onClick={() => setIsShareOpen(false)}>CLOSE</button>
+        </div>
       </div>
       <Footer />
     </>
   );
-};
-
-export default CollectionDetail;
+}

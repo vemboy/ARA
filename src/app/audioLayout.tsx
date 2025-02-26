@@ -13,6 +13,7 @@ import {
 } from "react";
 import { Inter } from "next/font/google";
 import AudioPlayer from "react-h5-audio-player";
+import { useRouter } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,22 +27,16 @@ export const AudioContext = createContext<{
 } | null>(null);
 
 export function AudioLayout({ children }: { children: React.ReactNode }) {
-  // Basic track info
   const [currentSong, setSong] = useState("");
   const [currentName, setName] = useState("");
   const [currentArtistName, setArtistName] = useState("");
   const [currentSongId, setSongId] = useState("");
   const [currentAlbumArt, setAlbumArt] = useState("");
-
-  // Playback states
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-
-  // Underlying react-h5-audio-player ref
   const audioPlayerRef = useRef<AudioPlayer>(null);
-
-  // Provide in context
+  const router = useRouter();
   const audioProps = {
     setSong,
     setName,
@@ -50,16 +45,12 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
     setAlbumArt,
     audioPlayerRef,
   };
-
-  // Whether we have a valid track loaded
-  const hasSong =
-    Boolean(currentSong && currentSong.length > 0 && currentName && currentName.length > 0);
-
-  // Listen for the <audio> "play"/"pause" events
+  const hasSong = Boolean(
+    currentSong && currentSong.length > 0 && currentName && currentName.length > 0
+  );
   useEffect(() => {
     const player = audioPlayerRef.current?.audio?.current;
     if (!player) return;
-
     const handlePause = () => {
       setIsPlaying(false);
       window.dispatchEvent(new CustomEvent("audioPause"));
@@ -68,55 +59,47 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
       setIsPlaying(true);
       window.dispatchEvent(new CustomEvent("audioPlay"));
     };
-
     player.addEventListener("pause", handlePause);
     player.addEventListener("play", handlePlay);
-
     return () => {
       player.removeEventListener("pause", handlePause);
       player.removeEventListener("play", handlePlay);
     };
   }, [currentSong]);
-
-  // Update currentTime/duration as the audio plays
   useEffect(() => {
     const player = audioPlayerRef.current?.audio?.current;
     if (!player) return;
-
     const timeUpdateHandler = () => {
       setCurrentTime(player.currentTime);
       setDuration(player.duration || 0);
     };
-
     player.addEventListener("timeupdate", timeUpdateHandler);
     player.addEventListener("loadedmetadata", timeUpdateHandler);
-
     return () => {
       player.removeEventListener("timeupdate", timeUpdateHandler);
       player.removeEventListener("loadedmetadata", timeUpdateHandler);
     };
   }, [currentSong]);
 
-  // -------------------------------------------------
-  // NEW: Handle pressing "Space" to toggle play/pause
-  // -------------------------------------------------
-  useEffect(() => {
-    const handleSpacebar = (e: KeyboardEvent) => {
-      // Only toggle if a track is loaded
-      if (e.code === "Space" && hasSong) {
-        e.preventDefault(); // Prevent page from scrolling
-        handleTogglePlay();
+useEffect(() => {
+  const handleSpacebar = (e: KeyboardEvent) => {
+    if (e.code === "Space" && hasSong) {
+      if (document.activeElement instanceof HTMLElement) {
+        const tag = document.activeElement.tagName.toLowerCase();
+        if (tag === "input" || tag === "textarea" || document.activeElement.isContentEditable) {
+          return;
+        }
       }
-    };
+      e.preventDefault();
+      handleTogglePlay();
+    }
+  };
+  window.addEventListener("keydown", handleSpacebar);
+  return () => {
+    window.removeEventListener("keydown", handleSpacebar);
+  };
+}, [hasSong]);
 
-    window.addEventListener("keydown", handleSpacebar);
-    return () => {
-      window.removeEventListener("keydown", handleSpacebar);
-    };
-  }, [hasSong]);
-  // -------------------------------------------------
-
-  // Format mm:ss
   function formatTime(time: number): string {
     if (!time || isNaN(time)) return "00:00";
     const minutes = Math.floor(time / 60);
@@ -125,62 +108,49 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
     const ss = seconds < 10 ? `0${seconds}` : `${seconds}`;
     return `${mm}:${ss}`;
   }
-
-  // Click on progress bar => seek in track (if a song is loaded)
   function handleProgressClick(e: MouseEvent<HTMLDivElement>) {
-    if (!hasSong) return; // no track => do nothing
+    if (!hasSong) return;
     const player = audioPlayerRef.current?.audio?.current;
     if (!player || duration === 0) return;
-
     const rect = e.currentTarget.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const ratio = clickX / rect.width;
     player.currentTime = ratio * duration;
   }
-
-  // Toggle play/pause
   function handleTogglePlay() {
-    if (!hasSong) return; // no track => do nothing
+    if (!hasSong) return;
     const player = audioPlayerRef.current?.audio?.current;
     if (!player) return;
-
     if (player.paused) player.play();
     else player.pause();
   }
-
-  // Decide times
   let displayCurrentTime = formatTime(currentTime);
   let displayDuration = formatTime(duration);
-
-  // If we have no actual track => "00:00 | --:--"
   if (!hasSong) {
     displayCurrentTime = "00:00";
     displayDuration = "--:--";
   } else if (duration === 0) {
-    // loaded, but no metadata => second is --:--
     displayDuration = "--:--";
   }
-
-  // Fill portion of progress
   const progressRatio = hasSong && duration > 0 ? currentTime / duration : 0;
   const progressPercent = `${progressRatio * 100}%`;
-
-  // Single play/pause icon
   const playPauseIcon = isPlaying ? "❚❚" : "►";
-
   return (
     <html lang="en">
       <AudioContext.Provider value={audioProps}>
         <body className={inter.className}>
           {children}
-
           {hasSong && (
             <div className="ara-record-player-wrapper">
-              <div
-                className="ara-record-player-info"
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <div className="ara-record-player-image">
+              <div className="ara-record-player-info" style={{ display: "flex", alignItems: "center" }}>
+                <div
+                  className="ara-record-player-image"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    if (!currentSongId) return;
+                    router.push(`/record-details/${currentSongId}`);
+                  }}
+                >
                   <img
                     src={
                       hasSong
@@ -195,7 +165,13 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
                   className="ara-record-player-song-info"
                   style={{ display: "flex", alignItems: "center", marginLeft: "1rem" }}
                 >
-                  <div style={{ display: "flex", flexDirection: "column", marginRight: "1rem" }}>
+                  <div
+                    style={{ display: "flex", flexDirection: "column", marginRight: "1rem", cursor: "pointer" }}
+                    onClick={() => {
+                      if (!currentSongId) return;
+                      router.push(`/record-details/${currentSongId}`);
+                    }}
+                  >
                     <div className="ara-record-player-song-title">
                       {currentName || "Unknown Song"}
                     </div>
@@ -203,7 +179,6 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
                       {currentArtistName || "Unknown Artist"}
                     </div>
                   </div>
-
                   <div
                     onClick={handleTogglePlay}
                     style={{
@@ -216,7 +191,6 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
                   </div>
                 </div>
               </div>
-
               <div className="ara-record-player-audio-section">
                 <div
                   className="ara-record-player-progress-bar"
@@ -245,8 +219,6 @@ export function AudioLayout({ children }: { children: React.ReactNode }) {
               </div>
             </div>
           )}
-
-          {/* Hidden react-h5-audio-player */}
           <div style={{ display: "none" }}>
             <AudioPlayer ref={audioPlayerRef} src={currentSong} autoPlay={false} />
           </div>
