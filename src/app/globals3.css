@@ -1859,6 +1859,24 @@ a:active {
   transform: scale(1.0);
 }
 
+.ara-filter-items.instrument-groups {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+
+.instrument-group-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group-header {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
 .ara-credits {
   text-align: center;
   margin-top: 20px;
