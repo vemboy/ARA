@@ -44,10 +44,7 @@ export default function AboutPage() {
   const router = useRouter();
   const pathName = usePathname();
 
-  // Same scroll logic as home page:
-  // * If already on "/", scroll to "ara-search-bar" or "ara-main" with offset
-  // * Otherwise, push("/") then scroll after a delay.
-
+  // Scroll handlers
   const handleCollectionClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     if (pathName === "/") {
@@ -73,6 +70,7 @@ export default function AboutPage() {
 
   const [aboutHtml, setAboutHtml] = useState<string>("");
   const [aboutHtmlAr, setAboutHtmlAr] = useState<string>("");
+  const [creditsHtml, setCreditsHtml] = useState<string>("");
 
   // Menu state and refs
   const [isMenuVisible, setIsMenuVisible] = useState(true);
@@ -165,6 +163,21 @@ export default function AboutPage() {
       });
   }, []);
 
+  // Fetch Credits copy (filter by area === "Credits")
+  useEffect(() => {
+    axios
+      .get("https://ara.directus.app/items/Copy?filter[area][_eq]=Credits&fields=Text")
+      .then((response) => {
+        const creditsData = response.data?.data;
+        if (creditsData && creditsData.length > 0 && creditsData[0].Text) {
+          setCreditsHtml(creditsData[0].Text);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching Credits copy:", error);
+      });
+  }, []);
+
   return (
     <>
       <div className="ara-main">
@@ -209,6 +222,14 @@ export default function AboutPage() {
         </div>
 
         <AboutStats />
+
+        {/* Credits Section (centered horizontally) */}
+        {creditsHtml && (
+          <div
+            className="ara-credits"
+            dangerouslySetInnerHTML={{ __html: creditsHtml }}
+          />
+        )}
       </div>
       <Footer />
     </>

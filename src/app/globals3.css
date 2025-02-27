@@ -1859,6 +1859,12 @@ a:active {
   transform: scale(1.0);
 }
 
+.ara-credits {
+  text-align: center;
+  margin-top: 20px;
+  padding: 0 20px;
+}
+
 .ara-record-player-song-title {
   text-transform: uppercase;
   font-size: var(--player-song-title-font-size);
