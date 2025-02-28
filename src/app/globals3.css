@@ -157,7 +157,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--ara-blue);
-  font-family: 'AdelleSansARM', sans-serif;
+  font-family: 'AdelleSansARM', sans-serif !important;
 }
 
 p {

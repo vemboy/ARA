@@ -10,8 +10,9 @@ const nextConfig = {
     ],
   },
   experimental: {
-    scrollRestoration: true
-  }
+    scrollRestoration: true,
+  },
+  optimizeFonts: false, // disable automatic font optimization
 };
 
 export default nextConfig;
