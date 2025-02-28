@@ -6,33 +6,105 @@
 }
 
 @font-face {
-  font-family: "TestFitVariable";
-  src: url('FitVariable-NormalVF.ttf') format('truetype');
-  font-weight: 100 1000;
-  font-stretch: 50% 300%;
-  font-display: swap;
+  font-family: 'AdelleSansARM';
+  font-weight: 100;
+  font-style: normal;
+  src: url('/fonts/AdelleSansARM-Thin.otf') format('opentype');
 }
 
 @font-face {
   font-family: 'AdelleSansARM';
+  font-weight: 200;
+  font-style: normal;
+  src: url('/fonts/AdelleSansARM.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'AdelleSansARM';
+  font-weight: 400;
+  font-style: normal;
   src: url('/fonts/AdelleSansARM-Regular.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
 }
 
 @font-face {
-  font-family: 'AdelleSansARM-Semibold';
+  font-family: 'AdelleSansARM';
+  font-weight: 600;
+  font-style: normal;
   src: url('/fonts/AdelleSansARM-Semibold.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
 }
 
 @font-face {
-  font-family: 'AdelleSansARM-Bold';
-  src: url('/fonts/AdelleSansARM-Bold.otf') format('opentype');
-  font-weight: normal;
+  font-family: 'AdelleSansARM';
+  font-weight: 700;
   font-style: normal;
+  src: url('/fonts/AdelleSansARM-Bold.otf') format('opentype');
 }
+
+@font-face {
+  font-family: 'AdelleSansARM';
+  font-weight: 800;
+  font-style: normal;
+  src: url('/fonts/AdelleSansARM-Extrabold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'AdelleSansARM';
+  font-weight: 900;
+  font-style: normal;
+  src: url('/fonts/AdelleSansARM-Heavy.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'AdelleSansARM';
+  font-weight: 100;
+  font-style: italic;
+  src: url('/fonts/AdelleSansARM-ThinItalic.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'AdelleSansARM';
+  font-weight: 200;
+  font-style: italic;
+  src: url('/fonts/AdelleSansARM-LightItalic.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'AdelleSansARM';
+  font-weight: 400;
+  font-style: italic;
+  src: url('/fonts/AdelleSansARM-Italic.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'AdelleSansARM';
+  font-weight: 600;
+  font-style: italic;
+  src: url('/fonts/AdelleSansARM-SemiboldItalic.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'AdelleSansARM';
+  font-weight: 700;
+  font-style: italic;
+  src: url('/fonts/AdelleSansARM-BoldItalic.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'AdelleSansARM';
+  font-weight: 800;
+  font-style: italic;
+  src: url('/fonts/AdelleSansARM-ExtraboldItalic.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'AdelleSansARM';
+  font-weight: 900;
+  font-style: italic;
+  src: url('/fonts/AdelleSansARM-HeavyItalic.otf') format('opentype');
+}
+
+
+
 
 .ara-intro-text-english,
 .ara-intro-text-armenian,
@@ -130,11 +202,12 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--ara-blue);
-  font-family: 'AdelleSansARM', Arial, sans-serif;
+/*  font-family: 'AdelleSansARM', Arial, sans-serif;*/
+  font-family: 'AdelleSansARM', sans-serif;
 }
 
 p {
-  font-family: sans-serif;
+/*  font-family: sans-serif;*/
   font-size: 2rem;
   text-transform: none;
   line-height: 1.1;
@@ -147,7 +220,8 @@ img {
 }
 
 strong {
-  font-weight: bold;
+/*  font-weight: bold;*/
+  font-weight: 700;
 }
 
 html {
@@ -1195,128 +1269,6 @@ a:active {
 
 
 
-/* ============================== MOBILE MEDIA QUERY 768px ============================== */
-
-@media (max-width: 768px) {
-  :root {
-    --main-border-thickness: 1rem;
-    --main-border-padding: 1rem;
-
-    --grid-gap-size: .5rem;
-
-    --menu-title-font-size: 2.3rem;
-    --menu-icon-size: 1.7rem;
-    --menu-links-font-size: .7rem;
-
-    --intro-text-font-size: 1.2rem;
-
-    --search-icon-font-size: 3rem;
-    --search-input-font-size: 1rem;
-
-    --grid-item-circle-size: 80%;
-
-    --grid-item-title-armenian-font-size: .5rem;
-    --grid-item-title-transliteration-font-size: .5rem;
-
-    --about-text-left-font-size-heading: 8rem;
-    --about-text-left-font-size-body: 1.2rem;
-  }
-
-
-/*  TEST FOR EXPANDED IN Y-DIRECTION FOR MOBILE*/
-  .ara-menu-icon.clicked .ara-menu-icon-record {
-    transform: translateY(50%);
-  }
-
-
-  .ara-intro {
-    grid-template-columns: 1fr;
-  }
-  .ara-intro-text-english,
-  .ara-intro-text-armenian {
-    width: 100%;
-    margin-bottom: 15px;
-  }
-
-  .search-icon {
-    font-size: var(--search-icon-font-size);
-  }
-  .search-input {
-    font-size: var(--search-input-font-size);
-  }
-
-  .ara-filters-section {
-    display: none;
-  }
-
-  .ara-grid-wrapper {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .ara-grid-item {
-    grid-template-rows: .25fr auto 1fr;
-    aspect-ratio: 0.8;
-  }
-
-  .ara-grid-item-circle {
-    width: var(--grid-item-circle-size);
-    padding-bottom: var(--grid-item-circle-size);
-  }
-
-
-  .ara-grid_item_title_armenian {
-    font-size: var(--grid-item-title-armenian-font-size);
-    line-height: 1;
-  }
-
-  .ara-grid_item_title_transliteration {
-    font-size: var(--grid-item-title-transliteration-font-size);
-    line-height: 1.2;
-  }
-
-  .footer_grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: .5rem;
-    font-size: 1rem;
-  }
-
-
-  .ara-about-text-left h1,
-  .ara-about-text-right h1 {
-    font-size: var(--about-text-left-font-size-heading);
-  }
-
-
-  .ara-about-text-left p,
-  .ara-about-text-right p {
-    font-size: var(--about-text-left-font-size-body);
-  } 
-
-  
-  .ara-grid-item:hover .ara-grid-item-circle img {
-    filter: blur(0px);
-  }
-
-  .ara-grid-circle-overlay {
-    display: none;
-  }
-
-.ara-grid-item:hover .ara-grid-item-circle-overlay {
-   opacity: 0;
-  display: none;
-}
-
-  .record-image-container {
-    transform: translate(-50%, -50%) scale(2.4);
-  }
-}
-
-
-
-/* ============================== END — MOBILE MEDIA QUERY 768px ============================== */
-
-
 
 
 
@@ -1523,24 +1475,28 @@ a:active {
 
 .toggle-option.active {
   font-weight: bold;
-  text-decoration: underline;
+/*  text-decoration: underline;*/
 }
 
 .ara-record-meta-section__metadata-row {
   display: grid;
-  grid-template-columns: 250px 1fr 1fr;
+/*  grid-template-columns: 1fr 1fr 1fr;*/
+  grid-template-columns: repeat(3, minmax(100px, 1fr));
   grid-gap: 10px;
   border-top: 1px solid lightgray;
+  font-size: 1rem;
 }
 
 .ara-record-meta-section__data-english,
 .ara-record-meta-section__data-armenian {
-  padding: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .ara-record-meta-section__data-title {
   font-weight: bold;
-  padding: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   border-right: 1px solid #ddd;
 }
 
@@ -1619,9 +1575,10 @@ a:active {
   border-radius: 20%;
   background-color: lightgray;
   padding: 50px;
-  position: relative;
   aspect-ratio: 1.2;
   overflow: hidden;
+  position: sticky;
+  top:150px;
 }
 
 .ara-record-image__container {
@@ -1945,6 +1902,162 @@ a:active {
   padding-left: 2rem;
   padding-right: 2rem;
 }
+
+
+
+
+
+/* ============================== MOBILE MEDIA QUERY 768px ============================== */
+
+@media (max-width: 1000px) {
+/*@media (max-width: 768px) {*/
+  :root {
+    --main-border-thickness: 1rem;
+    --main-border-padding: 1rem;
+
+    --grid-gap-size: .5rem;
+
+    --menu-title-font-size: 2.3rem;
+    --menu-icon-size: 1.7rem;
+    --menu-links-font-size: .7rem;
+
+    --intro-text-font-size: 1.2rem;
+
+    --search-icon-font-size: 3rem;
+    --search-input-font-size: 1rem;
+
+    --grid-item-circle-size: 80%;
+
+    --grid-item-title-armenian-font-size: .5rem;
+    --grid-item-title-transliteration-font-size: .5rem;
+
+    --about-text-left-font-size-heading: 8rem;
+    --about-text-left-font-size-body: 1.2rem;
+  }
+
+
+/*  TEST FOR EXPANDED IN Y-DIRECTION FOR MOBILE*/
+  .ara-menu-icon.clicked .ara-menu-icon-record {
+    transform: translateY(50%);
+  }
+
+
+  .ara-intro {
+    grid-template-columns: 1fr;
+  }
+  .ara-intro-text-english,
+  .ara-intro-text-armenian {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .search-icon {
+    font-size: var(--search-icon-font-size);
+  }
+  .search-input {
+    font-size: var(--search-input-font-size);
+  }
+
+  .ara-filters-section {
+    display: none;
+  }
+
+  .ara-grid-wrapper {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ara-grid-item {
+    grid-template-rows: .25fr auto 1fr;
+    aspect-ratio: 0.8;
+  }
+
+  .ara-grid-item-circle {
+    width: var(--grid-item-circle-size);
+    padding-bottom: var(--grid-item-circle-size);
+  }
+
+
+  .ara-grid_item_title_armenian {
+    font-size: var(--grid-item-title-armenian-font-size);
+    line-height: 1;
+  }
+
+  .ara-grid_item_title_transliteration {
+    font-size: var(--grid-item-title-transliteration-font-size);
+    line-height: 1.2;
+  }
+
+  .footer_grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: .5rem;
+    font-size: 1rem;
+  }
+
+
+  .ara-about-text-left h1,
+  .ara-about-text-right h1 {
+    font-size: var(--about-text-left-font-size-heading);
+  }
+
+
+  .ara-about-text-left p,
+  .ara-about-text-right p {
+    font-size: var(--about-text-left-font-size-body);
+  } 
+
+  
+  .ara-grid-item:hover .ara-grid-item-circle img {
+    filter: blur(0px);
+  }
+
+  .ara-grid-circle-overlay {
+    display: none;
+  }
+
+  .ara-grid-item:hover .ara-grid-item-circle-overlay {
+     opacity: 0;
+    display: none;
+  }
+
+    .record-image-container {
+      transform: translate(-50%, -50%) scale(2.4);
+    }
+  }
+
+
+
+  .ara-header__recording-label {
+    font-size: 1.5rem;
+  }
+
+  .ara-record-image {
+    position: relative;
+    top:0px;
+  }
+
+
+
+
+  .ara-record-meta-section__metadata-row {
+    font-size: .6rem;
+  }
+
+  .ara-record-meta-section__header-title {
+    font-weight: bold;
+    font-size: .8rem;
+  }
+
+  .ara-record-meta-section__header {
+    font-size: .8rem;
+  }
+
+
+
+
+
+
+/* ============================== END — MOBILE MEDIA QUERY 768px ============================== */
 
 
 
