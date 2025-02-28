@@ -126,44 +126,6 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
     "Wind": ["clarinet", "duduk", "flute"],
   };
 
-  const handleGroupClick = (filterType: string, groupItems: string[]) => {
-    setIncludedFilters((prev) => {
-      const next = structuredClone(prev);
-      next[filterType] ??= new Set();
-      const allIncluded = groupItems.every((item) => next[filterType].has(item));
-      if (allIncluded) {
-        groupItems.forEach((item) => next[filterType].delete(item));
-      } else {
-        setExcludedFilters((prevEx) => {
-          const exCopy = structuredClone(prevEx);
-          groupItems.forEach((item) => exCopy[filterType]?.delete(item));
-          return exCopy;
-        });
-        groupItems.forEach((item) => next[filterType].add(item));
-      }
-      return next;
-    });
-  };
-
-  const handleGroupDoubleClick = (filterType: string, groupItems: string[]) => {
-    setExcludedFilters((prev) => {
-      const next = structuredClone(prev);
-      next[filterType] ??= new Set();
-      const allExcluded = groupItems.every((item) => next[filterType].has(item));
-      if (allExcluded) {
-        groupItems.forEach((item) => next[filterType].delete(item));
-      } else {
-        setIncludedFilters((prevInc) => {
-          const incCopy = structuredClone(prevInc);
-          groupItems.forEach((item) => incCopy[filterType]?.delete(item));
-          return incCopy;
-        });
-        groupItems.forEach((item) => next[filterType].add(item));
-      }
-      return next;
-    });
-  };
-
   const renderFilterItems = (items: string[], filterType: string) => {
     let sortedItems: string[];
     if (filterType === "regions") {
@@ -235,14 +197,12 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
           </div>
         ))}
       </div>
-
       <div className="ara-filter-items-wrapper">
         {activeFilter === "genres" && (
           <div className="ara-filter-items" data-filter="genre">
             {renderFilterItems(genres, "genres")}
           </div>
         )}
-
         {activeFilter === "instruments" && (
           <div className="ara-filter-items instrument-groups" data-filter="instrument">
             {Object.entries(instrumentGroupings).map(([groupHeader, groupItemsLower]) => {
@@ -259,9 +219,7 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
                 <div key={groupHeader} className="instrument-group-column">
                   <div
                     className="filter-group-header"
-                    onClick={() => handleGroupClick("instruments", groupItems)}
-                    onDoubleClick={() => handleGroupDoubleClick("instruments", groupItems)}
-                    style={{ fontWeight: "bold", marginBottom: "0.5rem", cursor: "pointer" }}
+                    style={{ fontWeight: "bold", marginBottom: "0.5rem" }}
                   >
                     {groupHeader} ({groupCount})
                   </div>
@@ -294,7 +252,6 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
             })}
           </div>
         )}
-
         {activeFilter === "record_label" && (
           <div className="ara-filter-items" data-filter="label">
             {[...labels]
@@ -324,13 +281,11 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
               })}
           </div>
         )}
-
         {activeFilter === "regions" && (
           <div className="ara-filter-items" data-filter="region">
             {renderFilterItems(regions, "regions")}
           </div>
         )}
-
         {activeFilter === "artist_original" && (
           <div className="ara-filter-items" data-filter="artist">
             {artists.map((artist) => {
@@ -366,7 +321,6 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
           </div>
         )}
       </div>
-
       {(Object.values(includedFilters).some((set) => set.size > 0) ||
         Object.values(excludedFilters).some((set) => set.size > 0)) && (
         <div style={{ marginTop: "10px" }}>

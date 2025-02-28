@@ -14,7 +14,7 @@ import {
   getImageDetailUrl,
   getPlaceholderRecordImageUrl,
 } from "@/utils/assetUtils";
-  
+
 function smoothScrollToElement(elementId: string, offset = 0) {
   const targetEl = document.getElementById(elementId);
   if (!targetEl) return;
@@ -112,6 +112,7 @@ export default function CollectionDetail() {
   const [currentTrackUrl, setCurrentTrackUrl] = useState<string | null>(null);
   const [durations, setDurations] = useState<{ [key: string]: string }>({});
   const [isShareOpen, setIsShareOpen] = useState(false);
+  const [selectedSide, setSelectedSide] = useState<"A" | "B">("A");
   const araId = pathName.split("/").slice(-1)[0];
   const currentIsPlaceholder = images[currentImageIndex] === null;
 
@@ -173,7 +174,9 @@ export default function CollectionDetail() {
         const initialRecord: any = _.first(response.data.data);
         const ARAID = initialRecord.ARAID;
         axios
-          .get(`https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}&fields=*,title_english,audio.id,record_label.*`)
+          .get(
+            `https://ara.directus.app/items/record_archive?filter[ARAID][_eq]=${ARAID}&fields=*,title_english,audio.id,record_label.*`
+          )
           .then(async (recordsResponse) => {
             let fetchedRecords = recordsResponse.data.data;
             fetchedRecords.sort((a: RecordType, b: RecordType) => {
@@ -197,7 +200,9 @@ export default function CollectionDetail() {
             setDurations(durationsObj);
             setRecords(fetchedRecords);
             const recordImages = fetchedRecords.map((record: RecordType) =>
-              record["record_image"] ? getImageDetailUrl(record["record_image"]) : null
+              record["record_image"]
+                ? getImageDetailUrl(record["record_image"])
+                : null
             );
             setImages(recordImages);
           });
@@ -269,12 +274,13 @@ export default function CollectionDetail() {
   }
 
   const hasImage = images.some((img) => img !== null);
-  const currentRecord = records[0];
   const sideA = records[0];
   const sideB = records[1];
   const catalogNumbers =
-    [sideA?.record_catalog_number, sideB?.record_catalog_number].filter(Boolean).join("|") ||
-    "Unknown Cat#";
+    [sideA?.record_catalog_number, sideB?.record_catalog_number]
+      .filter(Boolean)
+      .join("|") || "Unknown Cat#";
+
   const metadataEntries = [
     {
       title: "ARA ID",
@@ -482,10 +488,11 @@ export default function CollectionDetail() {
             </div>
           </div>
         </div>
+
         <div className="container">
           <div className="ara-record-header">
             <div className="ara-header__recording-label">
-              {currentRecord.record_label?.label_en ?? "Unknown Label"}
+              {sideA?.record_label?.label_en ?? "Unknown Label"}
             </div>
             <div
               className="ara-header__share"
@@ -498,6 +505,7 @@ export default function CollectionDetail() {
               {catalogNumbers}
             </div>
           </div>
+
           <div
             className="ara-record-image"
             onClick={handleImageClick}
@@ -509,7 +517,9 @@ export default function CollectionDetail() {
                   src={images[currentImageIndex]!}
                   alt="Record"
                   draggable="false"
-                  className={`ara-record-image__main ${isPlaying ? "spinning-record" : ""}`}
+                  className={`ara-record-image__main ${
+                    isPlaying ? "spinning-record" : ""
+                  }`}
                 />
               ) : (
                 <NewSampleRecordImage
@@ -524,355 +534,362 @@ export default function CollectionDetail() {
                   <span
                     key={idx}
                     className={
-                      "ara-record-image__dot" +
-                      (idx === currentImageIndex ? " active" : "")
+                      "ara-record-image__dot" + (idx === currentImageIndex ? " active" : "")
                     }
                   ></span>
                 ))}
               </div>
             )}
           </div>
-          <div className="ara-record-info">
-            <div className="ara-record-info__side-section">
-              {sideA && (
-                <div className="ara-record-info__side">
-                  <h4
-                    className="ara-record-info__side-title"
+
+          <div className="ara-record-info__side-section">
+            {sideA && (
+              <div className="ara-record-info__side">
+                <h4
+                  className="ara-record-info__side-title"
+                  onClick={() => handleTrackClick(sideA)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {sideA.track_side ? `▶ ${sideA.track_side.toUpperCase()}` : "▶ Side A"}
+                </h4>
+                <div className="ara-record-info__track-list">
+                  <div
+                    className="ara-record-info__track-entry"
                     onClick={() => handleTrackClick(sideA)}
-                    style={{ cursor: "pointer" }}
                   >
-                    {sideA.track_side ? `▶ ${sideA.track_side.toUpperCase()}` : "▶ Side A"}
-                  </h4>
-                  <div className="ara-record-info__track-list">
-                    <div
-                      className="ara-record-info__track-entry"
-                      onClick={() => handleTrackClick(sideA)}
-                    >
-                      <div className="ara-record-info__track-number">
-                        {sideA.track_number ?? "1A"}
+                    <div className="ara-record-info__track-number">
+                      {sideA.track_number ?? "1A"}
+                    </div>
+                    <div className="ara-record-info__song-title-container">
+                      <div className="ara-record-info__song-title">
+                        {isArmenianScript(sideA.title || "")
+                          ? sideA.title
+                          : sideA.title_armenian || "No Armenian title"}
                       </div>
-                      <div className="ara-record-info__song-title-container">
-                        <div className="ara-record-info__song-title">
-                          {isArmenianScript(sideA.title || "")
-                            ? sideA.title
-                            : sideA.title_armenian || "No Armenian title"}
-                        </div>
-                        <div className="ara-record-info__transliteration">
-                          {isArmenianScript(sideA.title || "")
-                            ? sideA.title_english || "No English transliteration"
-                            : sideA.title}
-                        </div>
-                        <div className="ara-record-info__translation">
-                          {sideA.title_translation || "No translation available"}
-                        </div>
+                      <div className="ara-record-info__transliteration">
+                        {isArmenianScript(sideA.title || "")
+                          ? sideA.title_english || "No English transliteration"
+                          : sideA.title}
                       </div>
-                      <div className="ara-record-info__song-length">
-                        {durations[sideA.id] || "No Audio"}
+                      <div className="ara-record-info__translation">
+                        {sideA.title_translation || "No translation available"}
                       </div>
+                    </div>
+                    <div className="ara-record-info__song-length">
+                      {durations[sideA.id] || "No Audio"}
                     </div>
                   </div>
                 </div>
-              )}
-              {sideB && (
-                <div className="ara-record-info__side">
-                  <h4
-                    className="ara-record-info__side-title"
-                    onClick={() => handleTrackClick(sideB)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {sideB.track_side ? `▶ ${sideB.track_side.toUpperCase()}` : "▶ Side B"}
-                  </h4>
-                  <div className="ara-record-info__track-list">
-                    <div
-                      className="ara-record-info__track-entry"
-                      onClick={() => handleTrackClick(sideB)}
-                    >
-                      <div className="ara-record-info__track-number">
-                        {sideB.track_number ?? "1B"}
-                      </div>
-                      <div className="ara-record-info__song-title-container">
-                        <div className="ara-record-info__song-title">
-                          {isArmenianScript(sideB.title || "")
-                            ? sideB.title
-                            : sideB.title_armenian || "No Armenian title"}
-                        </div>
-                        <div className="ara-record-info__transliteration">
-                          {isArmenianScript(sideB.title || "")
-                            ? sideB.title_english || "No English transliteration"
-                            : sideB.title}
-                        </div>
-                        <div className="ara-record-info__translation">
-                          {sideB.title_translation || "No translation available"}
-                        </div>
-                      </div>
-                      <div className="ara-record-info__song-length">
-                        {durations[sideB.id] || "No audio"}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="ara-record-info__details-section">
-              {sideA && (
-                <div className="ara-record-info__details-entry">
-                  <div className="ara-record-info__details-title">
-                    {sideA.track_side
-                      ? `${sideA.track_side.toUpperCase()} — DETAILS`
-                      : "SIDE A — DETAILS"}
-                  </div>
-                  <div className="ara-record-info__details-content">
-                    <div className="ara-record-info__item">
-                      <span className="ara-record-info__label">Artists:</span>
-                      <div className="ara-record-info__pills-container">
-                        {sideA.artist_original ? (
-                          sideA.artist_original.split(",").map(
-                            (artist: string, index: number) => {
-                              const processedArtist = getEnglishVersion(artist.trim());
-                              const isAvailable = availableFilters.artists.has(processedArtist);
-                              return (
-                                <span
-                                  key={index}
-                                  className={`ara-record-info__pill ${
-                                    !isAvailable ? "disabled" : ""
-                                  }`}
-                                  onClick={() =>
-                                    isAvailable &&
-                                    handlePillClick("artist_original", processedArtist)
-                                  }
-                                  style={
-                                    !isAvailable
-                                      ? {
-                                          opacity: 0.5,
-                                          cursor: "not-allowed",
-                                          backgroundColor: "#e0e0e0",
-                                        }
-                                      : undefined
-                                  }
-                                >
-                                  {processedArtist}
-                                </span>
-                              );
-                            }
-                          )
-                        ) : (
-                          <span className="ara-record-info__pill">Unknown artist</span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="ara-record-info__item">
-                      <span className="ara-record-info__label">Instrument Used:</span>
-                      <div className="ara-record-info__pills-container">
-                        {sideA.instruments ? (
-                          sideA.instruments.map((instrument: string, index: number) => (
-                            <span
-                              key={index}
-                              className="ara-record-info__pill"
-                              onClick={() =>
-                                handlePillClick("instruments", getEnglishVersion(instrument))
-                              }
-                            >
-                              {getEnglishVersion(instrument)}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="ara-record-info__pill">Unknown instrument</span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="ara-record-info__item">
-                      <span className="ara-record-info__label">Genre:</span>
-                      <div className="ara-record-info__pills-container">
-                        {sideA.genres ? (
-                          sideA.genres.map((genre: string, index: number) => (
-                            <span
-                              key={index}
-                              className="ara-record-info__pill"
-                              onClick={() =>
-                                handlePillClick("genres", getEnglishVersion(genre))
-                              }
-                            >
-                              {getEnglishVersion(genre)}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="ara-record-info__pill">Unknown genre</span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="ara-record-info__item">
-                      <span className="ara-record-info__label">Region:</span>
-                      <div className="ara-record-info__pills-container">
-                        {sideA.regions ? (
-                          sideA.regions.map((region: string, index: number) => (
-                            <span
-                              key={index}
-                              className="ara-record-info__pill"
-                              onClick={() =>
-                                handlePillClick("regions", getEnglishVersion(region))
-                              }
-                            >
-                              {getEnglishVersion(region)}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="ara-record-info__pill">Unknown region</span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="ara-record-info__item">
-                      <span className="ara-record-info__label">Year Composed:</span>
-                      <span className="ara-record-info__pill">
-                        {sideA.track_year ?? "Unknown year"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-              {sideB && (
-                <div className="ara-record-info__details-entry">
-                  <div className="ara-record-info__details-title">
-                    {sideB.track_side
-                      ? `${sideB.track_side.toUpperCase()} — DETAILS`
-                      : "SIDE B — DETAILS"}
-                  </div>
-                  <div className="ara-record-info__details-content">
-                    <div className="ara-record-info__item">
-                      <span className="ara-record-info__label">Artists:</span>
-                      <div className="ara-record-info__pills-container">
-                        {sideB.artist_original ? (
-                          sideB.artist_original.split(",").map(
-                            (artist: string, index: number) => {
-                              const processedArtist = getEnglishVersion(artist.trim());
-                              const isAvailable = availableFilters.artists.has(processedArtist);
-                              return (
-                                <span
-                                  key={index}
-                                  className={`ara-record-info__pill ${
-                                    !isAvailable ? "disabled" : ""
-                                  }`}
-                                  onClick={() =>
-                                    isAvailable &&
-                                    handlePillClick("artist_original", processedArtist)
-                                  }
-                                  style={
-                                    !isAvailable
-                                      ? {
-                                          opacity: 0.5,
-                                          cursor: "not-allowed",
-                                          backgroundColor: "#e0e0e0",
-                                        }
-                                      : undefined
-                                  }
-                                >
-                                  {processedArtist}
-                                </span>
-                              );
-                            }
-                          )
-                        ) : (
-                          <span className="ara-record-info__pill">Unknown artist</span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="ara-record-info__item">
-                      <span className="ara-record-info__label">Instrument Used:</span>
-                      <div className="ara-record-info__pills-container">
-                        {sideB.instruments ? (
-                          sideB.instruments.map((instrument: string, index: number) => (
-                            <span
-                              key={index}
-                              className="ara-record-info__pill"
-                              onClick={() =>
-                                handlePillClick("instruments", getEnglishVersion(instrument))
-                              }
-                            >
-                              {getEnglishVersion(instrument)}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="ara-record-info__pill">Unknown instrument</span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="ara-record-info__item">
-                      <span className="ara-record-info__label">Genre:</span>
-                      <div className="ara-record-info__pills-container">
-                        {sideB.genres ? (
-                          sideB.genres.map((genre: string, index: number) => (
-                            <span
-                              key={index}
-                              className="ara-record-info__pill"
-                              onClick={() =>
-                                handlePillClick("genres", getEnglishVersion(genre))
-                              }
-                            >
-                              {getEnglishVersion(genre)}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="ara-record-info__pill">Unknown genre</span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="ara-record-info__item">
-                      <span className="ara-record-info__label">Region:</span>
-                      <div className="ara-record-info__pills-container">
-                        {sideB.regions ? (
-                          sideB.regions.map((region: string, index: number) => (
-                            <span
-                              key={index}
-                              className="ara-record-info__pill"
-                              onClick={() =>
-                                handlePillClick("regions", getEnglishVersion(region))
-                              }
-                            >
-                              {getEnglishVersion(region)}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="ara-record-info__pill">Unknown region</span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="ara-record-info__item">
-                      <span className="ara-record-info__label">Year Composed:</span>
-                      <span className="ara-record-info__pill">
-                        {sideB.track_year ?? "Unknown year"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="ara-record-meta-section">
-            <div className="ara-record-meta-section__metadata-row">
-              <div className="ara-record-meta-section__data-title">DATA CATEGORY</div>
-              <div className="ara-record-meta-section__side-a-data">SIDE A DATA</div>
-              <div className="ara-record-meta-section__side-a-data-armenian">
-                ԿՈՂՄ Ա ՏՎՅԱԼՆԵՐ
               </div>
-              <div className="ara-record-meta-section__side-b-data">SIDE B DATA</div>
-              <div className="ara-record-meta-section__side-b-data-armenian">
-                ԿՈՂՄ Բ ՏՎՅԱԼՆԵՐ
+            )}
+            {sideB && (
+              <div className="ara-record-info__side">
+                <h4
+                  className="ara-record-info__side-title"
+                  onClick={() => handleTrackClick(sideB)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {sideB.track_side ? `▶ ${sideB.track_side.toUpperCase()}` : "▶ Side B"}
+                </h4>
+                <div className="ara-record-info__track-list">
+                  <div
+                    className="ara-record-info__track-entry"
+                    onClick={() => handleTrackClick(sideB)}
+                  >
+                    <div className="ara-record-info__track-number">
+                      {sideB.track_number ?? "1B"}
+                    </div>
+                    <div className="ara-record-info__song-title-container">
+                      <div className="ara-record-info__song-title">
+                        {isArmenianScript(sideB.title || "")
+                          ? sideB.title
+                          : sideB.title_armenian || "No Armenian title"}
+                      </div>
+                      <div className="ara-record-info__transliteration">
+                        {isArmenianScript(sideB.title || "")
+                          ? sideB.title_english || "No English transliteration"
+                          : sideB.title}
+                      </div>
+                      <div className="ara-record-info__translation">
+                        {sideB.title_translation || "No translation available"}
+                      </div>
+                    </div>
+                    <div className="ara-record-info__song-length">
+                      {durations[sideB.id] || "No audio"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="ara-record-info__details-section">
+            {sideA && (
+              <div className="ara-record-info__details-entry">
+                <div className="ara-record-info__details-title">
+                  {sideA.track_side
+                    ? `${sideA.track_side.toUpperCase()} — DETAILS`
+                    : "SIDE A — DETAILS"}
+                </div>
+                <div className="ara-record-info__details-content">
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Artists:</span>
+                    <div className="ara-record-info__pills-container">
+                      {sideA.artist_original ? (
+                        sideA.artist_original.split(",").map(
+                          (artist: string, index: number) => {
+                            const processedArtist = getEnglishVersion(artist.trim());
+                            const isAvailable = availableFilters.artists.has(processedArtist);
+                            return (
+                              <span
+                                key={index}
+                                className={`ara-record-info__pill ${
+                                  !isAvailable ? "disabled" : ""
+                                }`}
+                                onClick={() =>
+                                  isAvailable &&
+                                  handlePillClick("artist_original", processedArtist)
+                                }
+                                style={
+                                  !isAvailable
+                                    ? {
+                                        opacity: 0.5,
+                                        cursor: "not-allowed",
+                                        backgroundColor: "#e0e0e0",
+                                      }
+                                    : undefined
+                                }
+                              >
+                                {processedArtist}
+                              </span>
+                            );
+                          }
+                        )
+                      ) : (
+                        <span className="ara-record-info__pill">Unknown artist</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Instrument Used:</span>
+                    <div className="ara-record-info__pills-container">
+                      {sideA.instruments ? (
+                        sideA.instruments.map((instrument: string, index: number) => (
+                          <span
+                            key={index}
+                            className="ara-record-info__pill"
+                            onClick={() =>
+                              handlePillClick("instruments", getEnglishVersion(instrument))
+                            }
+                          >
+                            {getEnglishVersion(instrument)}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="ara-record-info__pill">Unknown instrument</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Genre:</span>
+                    <div className="ara-record-info__pills-container">
+                      {sideA.genres ? (
+                        sideA.genres.map((genre: string, index: number) => (
+                          <span
+                            key={index}
+                            className="ara-record-info__pill"
+                            onClick={() =>
+                              handlePillClick("genres", getEnglishVersion(genre))
+                            }
+                          >
+                            {getEnglishVersion(genre)}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="ara-record-info__pill">Unknown genre</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Region:</span>
+                    <div className="ara-record-info__pills-container">
+                      {sideA.regions ? (
+                        sideA.regions.map((region: string, index: number) => (
+                          <span
+                            key={index}
+                            className="ara-record-info__pill"
+                            onClick={() =>
+                              handlePillClick("regions", getEnglishVersion(region))
+                            }
+                          >
+                            {getEnglishVersion(region)}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="ara-record-info__pill">Unknown region</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Year Composed:</span>
+                    <span className="ara-record-info__pill">
+                      {sideA.track_year ?? "Unknown year"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+            {sideB && (
+              <div className="ara-record-info__details-entry">
+                <div className="ara-record-info__details-title">
+                  {sideB.track_side
+                    ? `${sideB.track_side.toUpperCase()} — DETAILS`
+                    : "SIDE B — DETAILS"}
+                </div>
+                <div className="ara-record-info__details-content">
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Artists:</span>
+                    <div className="ara-record-info__pills-container">
+                      {sideB.artist_original ? (
+                        sideB.artist_original.split(",").map(
+                          (artist: string, index: number) => {
+                            const processedArtist = getEnglishVersion(artist.trim());
+                            const isAvailable = availableFilters.artists.has(processedArtist);
+                            return (
+                              <span
+                                key={index}
+                                className={`ara-record-info__pill ${
+                                  !isAvailable ? "disabled" : ""
+                                }`}
+                                onClick={() =>
+                                  isAvailable &&
+                                  handlePillClick("artist_original", processedArtist)
+                                }
+                                style={
+                                  !isAvailable
+                                    ? {
+                                        opacity: 0.5,
+                                        cursor: "not-allowed",
+                                        backgroundColor: "#e0e0e0",
+                                      }
+                                    : undefined
+                                }
+                              >
+                                {processedArtist}
+                              </span>
+                            );
+                          }
+                        )
+                      ) : (
+                        <span className="ara-record-info__pill">Unknown artist</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Instrument Used:</span>
+                    <div className="ara-record-info__pills-container">
+                      {sideB.instruments ? (
+                        sideB.instruments.map((instrument: string, index: number) => (
+                          <span
+                            key={index}
+                            className="ara-record-info__pill"
+                            onClick={() =>
+                              handlePillClick("instruments", getEnglishVersion(instrument))
+                            }
+                          >
+                            {getEnglishVersion(instrument)}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="ara-record-info__pill">Unknown instrument</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Genre:</span>
+                    <div className="ara-record-info__pills-container">
+                      {sideB.genres ? (
+                        sideB.genres.map((genre: string, index: number) => (
+                          <span
+                            key={index}
+                            className="ara-record-info__pill"
+                            onClick={() =>
+                              handlePillClick("genres", getEnglishVersion(genre))
+                            }
+                          >
+                            {getEnglishVersion(genre)}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="ara-record-info__pill">Unknown genre</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Region:</span>
+                    <div className="ara-record-info__pills-container">
+                      {sideB.regions ? (
+                        sideB.regions.map((region: string, index: number) => (
+                          <span
+                            key={index}
+                            className="ara-record-info__pill"
+                            onClick={() =>
+                              handlePillClick("regions", getEnglishVersion(region))
+                            }
+                          >
+                            {getEnglishVersion(region)}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="ara-record-info__pill">Unknown region</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="ara-record-info__item">
+                    <span className="ara-record-info__label">Year Composed:</span>
+                    <span className="ara-record-info__pill">
+                      {sideB.track_year ?? "Unknown year"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="ara-record-meta-section">
+            <div className="ara-record-meta-section__header">
+              <div className="ara-record-meta-section__header-title">METADATA</div>
+              <div className="ara-record-meta-section__header-toggle">
+                <span
+                  className={`toggle-option ${selectedSide === "A" ? "active" : ""}`}
+                  onClick={() => setSelectedSide("A")}
+                >
+                  SIDE A
+                </span>
+                <span
+                  className={`toggle-option ${selectedSide === "B" ? "active" : ""}`}
+                  onClick={() => setSelectedSide("B")}
+                >
+                  SIDE B
+                </span>
               </div>
             </div>
             {metadataEntries.map((entry, idx) => (
               <div className="ara-record-meta-section__metadata-row" key={idx}>
-                <div className="ara-record-meta-section__data-title">{entry.title}</div>
-                <div className="ara-record-meta-section__side-a-data">{entry.sideA}</div>
-                <div className="ara-record-meta-section__side-a-data-armenian">
-                  {entry.sideAAm}
+                <div className="ara-record-meta-section__data-title">
+                  {entry.title}
                 </div>
-                <div className="ara-record-meta-section__side-b-data">{entry.sideB}</div>
-                <div className="ara-record-meta-section__side-b-data-armenian">
-                  {entry.sideBAm}
+                <div className="ara-record-meta-section__data-english">
+                  {selectedSide === "A" ? entry.sideA : entry.sideB}
+                </div>
+                <div className="ara-record-meta-section__data-armenian">
+                  {selectedSide === "A" ? entry.sideAAm : entry.sideBAm}
                 </div>
               </div>
             ))}
           </div>
         </div>
+
         <div
           style={{
             display: isShareOpen ? "block" : "none",

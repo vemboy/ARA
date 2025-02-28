@@ -1506,6 +1506,43 @@ a:active {
 
 
 
+.ara-record-meta-section__header-title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.ara-record-meta-section__header-toggle {
+  display: flex;
+  gap: 1rem;
+}
+
+.toggle-option {
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.toggle-option.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.ara-record-meta-section__metadata-row {
+  display: grid;
+  grid-template-columns: 250px 1fr 1fr;
+  grid-gap: 10px;
+  border-top: 1px solid lightgray;
+}
+
+.ara-record-meta-section__data-english,
+.ara-record-meta-section__data-armenian {
+  padding: 10px;
+}
+
+.ara-record-meta-section__data-title {
+  font-weight: bold;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
 
 
 
@@ -1513,8 +1550,15 @@ a:active {
 
 
 
-
-
+.ara-record-meta-section__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  margin-bottom: 1rem;
+}
 
 
 .container {
@@ -1526,7 +1570,7 @@ a:active {
     "images heading"
     "images tracklist"
     "images info"
-    "metadata metadata";
+    "images metadata";
   grid-template-columns: 35vw 2fr;
 }
 
@@ -1793,21 +1837,13 @@ a:active {
   grid-area: metadata;
 }
 
-.ara-record-meta-section__metadata-row {
-  display: grid;
-  grid-template-columns: 250px 1fr 1fr 1fr 1fr;
-  grid-gap: 10px;
-  border-top: 1px solid lightgray;
-}
+
 
 .ara-record-meta-section__metadata-row > div {
   padding: 10px;
 }
 
-.ara-record-meta-section__data-title {
-  font-weight: bold;
-  border-right: 1px solid #ddd;
-}
+
 
 .ara-record-meta-section__side-a-data,
 .ara-record-meta-section__side-a-data-armenian {
