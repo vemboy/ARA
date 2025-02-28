@@ -166,7 +166,9 @@ export default function AboutPage() {
   // Fetch Credits copy (filter by area === "Credits")
   useEffect(() => {
     axios
-      .get("https://ara.directus.app/items/Copy?filter[area][_eq]=Credits&fields=Text")
+      .get(
+        "https://ara.directus.app/items/Copy?filter[area][_eq]=Credits&fields=Text"
+      )
       .then((response) => {
         const creditsData = response.data?.data;
         if (creditsData && creditsData.length > 0 && creditsData[0].Text) {
@@ -191,7 +193,10 @@ export default function AboutPage() {
           >
             ARMENIAN RECORD ARCHIVE
           </div>
-          <div className="ara-menu-links-wrapper expanded" ref={menuLinksWrapperRef}>
+          <div
+            className="ara-menu-links-wrapper expanded"
+            ref={menuLinksWrapperRef}
+          >
             {/* COLLECTION link with our custom onClick */}
             <Link href="/" onClick={handleCollectionClick}>
               COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ
@@ -216,7 +221,7 @@ export default function AboutPage() {
             <div dangerouslySetInnerHTML={{ __html: aboutHtml }} />
           </div>
           <div className="ara-about-text-right">
-            <h1>Text AR</h1>
+            <h1>Մեր Մասին</h1>
             <div dangerouslySetInnerHTML={{ __html: aboutHtmlAr }} />
           </div>
         </div>
