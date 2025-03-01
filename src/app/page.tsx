@@ -802,6 +802,22 @@ finalRecords.forEach((rec) => {
     };
   }, []);
 
+  useEffect(() => {
+  const hash = window.location.hash;
+  if (hash) {
+    const elementId = hash.substring(1); // remove the "#"
+    const checkExistence = setInterval(() => {
+      const el = document.getElementById(elementId);
+      if (el) {
+        smoothScrollToElement(elementId, 150);
+        clearInterval(checkExistence);
+      }
+    }, 100); // check every 100ms
+    return () => clearInterval(checkExistence);
+  }
+}, []);
+
+
   /**
    * Hide/show the top menu on scroll (if user hasn't toggled it).
    * This version uses the intro element's position and also forces the menu open when near the top of the page.
