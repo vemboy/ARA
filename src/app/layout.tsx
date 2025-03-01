@@ -1,5 +1,12 @@
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  title: "ARA", // Optional title
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
 import React from "react";
 import { AudioLayout } from "./audioLayout";
 
@@ -8,11 +15,10 @@ import "./globals2.css";
 import "./globals3.css";
 import "./globals4.css";
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <AudioLayout children={children}></AudioLayout>;
+  return <AudioLayout>{children}</AudioLayout>;
 }

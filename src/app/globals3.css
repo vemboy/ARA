@@ -157,7 +157,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--ara-blue);
-  font-family: 'AdelleSansARM', sans-serif !important;
+  font-family: 'AdelleSansARM', sans-serif;
 }
 
 p {
@@ -166,6 +166,8 @@ p {
   line-height: 1.1;
   margin-bottom: 1.5rem;
 }
+
+
 
 img {
   -webkit-user-drag: none;
@@ -185,8 +187,10 @@ a:visited,
 a:hover,
 a:active {
   color: var(--ara-blue);
-  text-decoration: none;
+  
 }
+
+
 
 
 
@@ -926,7 +930,7 @@ a:active {
   overflow: auto;
 }
 
-.ara-grid_item_title_armenian {
+.ara-grid_item_title_armenian a {
   text-transform: uppercase;
   font-size: var(--grid-item-title-armenian-font-size);
   font-weight: bold;
@@ -934,9 +938,10 @@ a:active {
   white-space: nowrap;
   text-overflow: ellipsis;
   line-height: 1.3;
+  text-decoration: none !important;
 }
 
-.ara-grid_item_title_transliteration {
+.ara-grid_item_title_transliteration a {
   font-weight:300;
   font-style: italic;
   font-size: var(--grid-item-title-transliteration-font-size);
@@ -944,7 +949,46 @@ a:active {
   white-space: nowrap;
   text-overflow: ellipsis;
   line-height: 1.1;
+  text-decoration: none !important;
 }
+
+/* Add these styles to your CSS file */
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  background-color: var(--ara-blue); /* Or your preferred background */
+}
+
+.progress-bar {
+  width: 50%;      /* Adjust the width as needed */
+  height: 4px;     /* Height of the bar */
+  background-color: #ccc;
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.progress-bar::before {
+  content: "";
+  position: absolute;
+  width: 20%;
+  height: 100%;
+  background-color: var(--ara-blue);
+  animation: progress 2s infinite;
+}
+
+@keyframes progress {
+  0% {
+    left: -20%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
 
 .ara-grid-icons {
   display: grid;
@@ -1740,7 +1784,6 @@ a:active {
 .ara-record-meta-section {
   display: grid;
   grid-template-columns: 1fr;
-  border-top: 2px solid black;
   border-bottom: 2px solid black;
   grid-area: metadata;
 }
@@ -1931,11 +1974,13 @@ a:active {
   .ara-grid_item_title_armenian {
     font-size: var(--grid-item-title-armenian-font-size);
     line-height: 1;
+    text-decoration: none;
   }
 
   .ara-grid_item_title_transliteration {
     font-size: var(--grid-item-title-transliteration-font-size);
     line-height: 1.2;
+    text-decoration: none;
   }
 
   .footer_grid {
@@ -1971,11 +2016,10 @@ a:active {
     display: none;
   }
 
-    .record-image-container {
-      transform: translate(-50%, -50%) scale(2.4);
-    }
-  }
 
+  .record-image-container {
+    transform: translate(-50%, -50%) scale(2.4);
+  }
 
 
   .ara-header__recording-label {
@@ -1986,8 +2030,6 @@ a:active {
     position: relative;
     top:0px;
   }
-
-
 
 
   .ara-record-meta-section__metadata-row {
@@ -2004,7 +2046,7 @@ a:active {
   }
 
 
-
+}
 
 
 

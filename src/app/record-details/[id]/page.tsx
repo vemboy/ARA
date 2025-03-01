@@ -14,6 +14,8 @@ import {
   getImageDetailUrl,
   getPlaceholderRecordImageUrl,
 } from "@/utils/assetUtils";
+import SharePopup from "@/app/SharePopup";
+
 
 function smoothScrollToElement(elementId: string, offset = 0) {
   const targetEl = document.getElementById(elementId);
@@ -225,9 +227,13 @@ export default function CollectionDetail() {
     };
   }, [currentTrackUrl, audioPlayerRef]);
 
-  if (records.length === 0) {
-    return <div style={{ color: "white" }}>Loading or No Records Found</div>;
-  }
+if (records.length === 0) {
+  return (
+    <div className="loading-container">
+      <div className="progress-bar"></div>
+    </div>
+  );
+}
 
   function handleTrackClick(record: RecordType) {
     if (!audioContext || !record.audioUrl) return;
@@ -465,7 +471,7 @@ export default function CollectionDetail() {
             id="ara-menu-links-wrapper"
           >
             <Link href="/" onClick={handleCollectionClick}>
-              COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ
+              COLLECTION <br /> ՀԱՎԱՔԱԾՈՅ
             </Link>
             ●
             <Link href="/about">
@@ -513,14 +519,16 @@ export default function CollectionDetail() {
           >
             <div className="ara-record-image__container">
               {images[currentImageIndex] ? (
-                <img
-                  src={images[currentImageIndex]!}
-                  alt="Record"
-                  draggable="false"
-                  className={`ara-record-image__main ${
-                    isPlaying ? "spinning-record" : ""
-                  }`}
-                />
+<img
+  src={images[currentImageIndex]!}
+  alt="Record"
+  draggable="false"
+  className={`ara-record-image__main ${
+    isPlaying && records[currentImageIndex]?.audioUrl === currentTrackUrl
+      ? "spinning-record"
+      : ""
+  }`}
+/>
               ) : (
                 <NewSampleRecordImage
                   className="ara-record-image__main"
@@ -890,18 +898,14 @@ export default function CollectionDetail() {
           </div>
         </div>
 
-        <div
-          style={{
-            display: isShareOpen ? "block" : "none",
-            color: "white",
-            padding: "1rem",
-            textAlign: "center",
-          }}
-        >
-          SHARE POPUP PLACEHOLDER
-          <br />
-          <button onClick={() => setIsShareOpen(false)}>CLOSE</button>
-        </div>
+        {isShareOpen && (
+          <SharePopup
+            open={isShareOpen}
+            onOpenChange={setIsShareOpen}
+            recordTitle={sideA?.title || "Unknown Title"}
+            recordId={sideA?.ARAID || ""}
+          />
+        )}
       </div>
       <Footer />
     </>

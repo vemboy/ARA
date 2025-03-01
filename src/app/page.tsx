@@ -256,6 +256,25 @@ const sortedArtists = React.useMemo(() => {
   });
 }, [artists]);
 
+useEffect(() => {
+  const filterParam = searchParams.get("filter");
+  if (filterParam) {
+    try {
+      const parsedFilters = JSON.parse(decodeURIComponent(filterParam));
+      const convertedFilters = Object.fromEntries(
+        Object.entries(parsedFilters).map(([key, value]) => [
+          key,
+          new Set(value as string[]),
+        ])
+      ) as { [key: string]: Set<string> };
+      setIncludedFilters(convertedFilters);
+    } catch (e) {
+      console.error("Error parsing filter from URL", e);
+    }
+  }
+}, [searchParams]);
+
+
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -921,7 +940,7 @@ finalRecords.forEach((rec) => {
 
           <div className="ara-menu-links-wrapper expanded" id="ara-menu-links-wrapper" ref={menuLinksWrapperRef}>
 <Link href="/" onClick={handleCollectionClick}>
-  COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ
+  COLLECTION <br /> ՀԱՎԱՔԱԾՈՅ
 </Link>
             ●
             <Link href="/about">

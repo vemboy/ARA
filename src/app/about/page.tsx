@@ -199,7 +199,7 @@ export default function AboutPage() {
           >
             {/* COLLECTION link with our custom onClick */}
             <Link href="/" onClick={handleCollectionClick}>
-              COLLECTION <br /> ՀԱՎԱՔԱՑՈՒ
+              COLLECTION <br /> ՀԱՎԱՔԱԾՈՅ
             </Link>
             ●
             <Link href="/about">
