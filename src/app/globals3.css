@@ -255,10 +255,11 @@ a:active {
   background-color: white;
   position: sticky;
   top: 0;
+  left: 0;    /* added to force full width */
+  right: 0;   /* added to force full width */
   z-index: 10;
   padding-top: 10px;
   padding-bottom: 10px;
-  will-change: top;
 }
 
 
@@ -1031,6 +1032,18 @@ a:active {
   grid-template-columns: min-content 1fr;
   align-items: center;
   padding-right: 2rem;
+}
+
+.ara-funding {
+  text-align: center;
+  margin-top: 20px;
+  padding: 0 20px;
+}
+
+.ara-funding img {
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
 }
 
 .ara-record-player-thumbnail-img {
