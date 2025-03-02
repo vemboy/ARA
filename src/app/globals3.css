@@ -1057,6 +1057,8 @@ a:active {
   grid-template-rows: 1fr 1fr;
   line-height: 1.2;
   margin-left: 2.25vw;
+  max-width: calc(100% - 50px); /* Leave space for play button */
+  overflow: hidden;
 }
 
 .ara-record-player-song-title {
@@ -1910,10 +1912,15 @@ a:active {
 .ara-record-player-song-title {
   text-transform: uppercase;
   font-size: var(--player-song-title-font-size);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
 .ara-record-player-artist-name {
   font-size: var(--player-artist-name-font-size);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ara-record-player-audio-section {
@@ -1927,12 +1934,7 @@ a:active {
   height: 5%;
 }
 
-.ara-record-player-time {
-  font-size: var(--player-time-font-size);
-  text-align: right;
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
+
 
 
 
@@ -2068,6 +2070,12 @@ a:active {
     top:0px;
   }
 
+  .ara-record-player-time {
+  font-size: var(--player-time-font-size);
+  text-align: right;
+  padding-left: 0rem;
+  padding-right: 2rem;
+}
 
   .ara-record-meta-section__metadata-row {
     font-size: .6rem;
@@ -2088,6 +2096,7 @@ a:active {
 
 
 /* ============================== END — MOBILE MEDIA QUERY 768px ============================== */
+
 
 
 
