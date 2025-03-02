@@ -164,10 +164,16 @@ export default function AboutPage() {
   }, []);
 
   useEffect(() => {
-  // Force a tiny scroll to trigger reflow
-  window.scrollBy(0, 1);
-  window.scrollBy(0, -1);
+  // On mobile, delay adding the "expanded" class to force a reflow.
+  const timeout = setTimeout(() => {
+    if (menuLinksWrapperRef.current) {
+      menuLinksWrapperRef.current.classList.add("expanded");
+    }
+  }, 50); // 50ms delay; adjust if needed
+
+  return () => clearTimeout(timeout);
 }, []);
+
 
   // Fetch Credits copy (filter by area === "Credits")
   useEffect(() => {
@@ -199,10 +205,8 @@ export default function AboutPage() {
           >
             ARMENIAN RECORD ARCHIVE
           </div>
-          <div
-            className="ara-menu-links-wrapper expanded"
-            ref={menuLinksWrapperRef}
-          >
+<div className="ara-menu-links-wrapper" ref={menuLinksWrapperRef}>
+
             {/* COLLECTION link with our custom onClick */}
             <Link href="/" onClick={handleCollectionClick}>
               COLLECTION <br /> ՀԱՎԱՔԱԾՈՅ
