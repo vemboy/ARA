@@ -255,11 +255,10 @@ a:active {
   background-color: white;
   position: sticky;
   top: 0;
-  left: 0;    /* added to force full width */
-  right: 0;   /* added to force full width */
   z-index: 10;
   padding-top: 10px;
   padding-bottom: 10px;
+  will-change: top;
 }
 
 
@@ -928,27 +927,29 @@ a:active {
 .ara-grid-item-title {
   text-align: center;
   width: 80%;
-  overflow: auto;
+  overflow: hidden; /* Changed from 'auto' to 'hidden' to prevent scrollbar */
 }
 
 .ara-grid_item_title_armenian a {
   text-transform: uppercase;
   font-size: var(--grid-item-title-armenian-font-size);
   font-weight: bold;
-  overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  overflow: hidden; /* Add this */
+  display: block; /* Add this to make ellipsis work */
   line-height: 1.3;
   text-decoration: none !important;
 }
 
 .ara-grid_item_title_transliteration a {
-  font-weight:300;
+  font-weight: 300;
   font-style: italic;
   font-size: var(--grid-item-title-transliteration-font-size);
-  overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  overflow: hidden; /* Add this */
+  display: block; /* Add this to make ellipsis work */
   line-height: 1.1;
   text-decoration: none !important;
 }
@@ -1555,27 +1556,50 @@ a:active {
 
 .ara-record-header {
   display: grid;
-  grid-template-columns: max-content 1fr;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
   border-bottom: 2px solid black;
   padding-bottom: 13.5px;
   grid-area: heading;
-  grid-gap: 0.5rem;
+  gap: 0.5rem;
   margin-bottom: -10px;
 }
 
 .ara-header__recording-label {
   font-size: 32px;
   text-transform: uppercase;
+  grid-column: 1;
+  grid-row: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .ara-header__recording-label {
+    font-size: 1.5rem;
+    max-width: 70vw; /* Limit width on small screens */
+  }
+  
+  .ara-record-header {
+    grid-template-columns: 1fr auto;
+    width: 100%;
+    overflow: hidden; /* Prevent horizontal overflow */
+  }
 }
 
 .ara-header__share {
   font-size: 16px;
+  grid-column: 2;
+  grid-row: 1;
   justify-self: end;
 }
 
 .ara-header__recording-catalog-number {
   font-family: monospace;
   font-size: 16px;
+  grid-column: 1 / -1;
+  grid-row: 2;
 }
 
 .ara-record-image {

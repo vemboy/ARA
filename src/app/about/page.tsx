@@ -163,16 +163,7 @@ export default function AboutPage() {
       });
   }, []);
 
-  useEffect(() => {
-  // On mobile, delay adding the "expanded" class to force a reflow.
-  const timeout = setTimeout(() => {
-    if (menuLinksWrapperRef.current) {
-      menuLinksWrapperRef.current.classList.add("expanded");
-    }
-  }, 50); // 50ms delay; adjust if needed
-
-  return () => clearTimeout(timeout);
-}, []);
+  
 
 
   // Fetch Credits copy (filter by area === "Credits")
