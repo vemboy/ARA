@@ -163,6 +163,12 @@ export default function AboutPage() {
       });
   }, []);
 
+  useEffect(() => {
+  // Force a tiny scroll to trigger reflow
+  window.scrollBy(0, 1);
+  window.scrollBy(0, -1);
+}, []);
+
   // Fetch Credits copy (filter by area === "Credits")
   useEffect(() => {
     axios
