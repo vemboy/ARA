@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
   <a href="https://www.youtube.com/@armenianrecordarchive6025" target="_blank" rel="noopener noreferrer">YouTube</a>
 </div>
         <div className="blurb">
-          Made with 💙 սեր և սուրճ ☕
+          Made with 💙 սէր և սուրճ ☕
         </div>
         <div className="animated-text">
           <span>[</span>
